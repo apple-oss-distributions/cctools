@@ -1,3 +1,13 @@
+Changes for the 5.14 release (the cctools-496 release):
+- Added the constant MACOSX_DEPLOYMENT_TARGET_10_4 to the header file
+  <stuff/macosx_deployment_target.h>.  Radar bug #3445632.
+- Changed <mach-o/dyld.h> to include <AvailabilityMacros.h> and mark the
+  following API's added in 10.3::
+    extern enum DYLD_BOOL NSHasModInitObjectFileImage
+    extern struct mach_header * _dyld_get_image_header_containing_address
+    extern enum DYLD_BOOL _dyld_all_twolevel_modules_prebound
+  with AVAILABLE_MAC_OS_X_VERSION_10_3_AND_LATER.  Radar bug #3401910.
+
 Changes for the 5.13 release (the cctools-492 release):
 - Added the #define NEXT_DEBUG_ADDRESS_TO_ASSIGN to <stuff/seg_addr_table.h>
   so that seg_addr_table(1) can layout debug and profile libraries at a lower

@@ -5,6 +5,11 @@
 TODO:
 - Deal with LC_PREPAGE and unknown load commands that don't need to be swapped.
 
+Changes for the 5.11 release (the cctools-438 release):
+- Added the following entry to the table in macosx_deployment_target.c :
+    { "10.4", MACOSX_DEPLOYMENT_TARGET_10_4 },
+  Radar bug #3445632.
+
 Changes for the 5.12 release (the cctools-490 release):
 - Fixed cpusubtype_findbestarch() in best_arch.c to not select a PowerPC 970
   if not on a PowerPC 970.  And fixed it when passed the family ALL type and

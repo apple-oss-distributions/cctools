@@ -7,6 +7,14 @@ To Do:
   could have been set otherwise and does not print the next line.
 - Maybe add fat support for segedit(1)
 
+Changes for the 5.14 release (the cctools-497 release):
+- Added passing the -prebind_allow_overlap from libtool(1) to ld(1).  Radar bug
+  #3452484.
+
+Changes for the 5.14 release (the cctools-496 release):
+- Fixed a bug that caused the seg_addr_table(1) tool to reserves more space
+  than necessary for flat dylibs.  Radar bug #3440884.
+
 Changes for the 5.13 release (the cctools-493 release):
 - Fixed a bug in the redo_prebinding code that was incorrectly checking that an
   executable does not have any extra LC_PREBOUND_DYLIB load commands for

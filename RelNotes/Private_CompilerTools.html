@@ -1,5 +1,5 @@
 <HTML>
-<!--This file created 9/10/03 5:51 PM by Claris Home Page version 3.0-->
+<!--This file created 12/23/03 3:42 PM by Claris Home Page version 3.0-->
 <HEAD>
    <TITLE>Private Compiler Tools Release Notes</TITLE>
    <META NAME=GENERATOR CONTENT="Claris Home Page 3.0">
@@ -8,15 +8,15 @@
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 </HEAD>
 <BODY BGCOLOR="#FFFFFF">
-<P><FONT SIZE="-1">Mac OS X 10.3 Release Copyright 2003 by Apple
-Computer, Inc. All Rights Reserved.</FONT></P>
+<P><FONT SIZE="-1">Mac OS X December 2003 Developer Release Copyright
+2003 by Apple Computer, Inc. All Rights Reserved.</FONT></P>
 
-<H2>Private Mac OS X 10.3 Release Notes:<BR>
-Compiler Tools (cctools-495)</H2>
+<H2>Private Mac OS X long branch Release Notes:<BR>
+Compiler Tools (cctools-499)</H2>
 
-<P>This file contains release notes for the 5.13 release of the
-Compiler Tools for the Mac OS X 10.3 Release. This file contains
-information about the following topics:</P>
+<P>This file contains release notes for the 5.14 release of the
+Compiler Tools for the Mac OS X December 2003 Developer Release. This
+file contains information about the following topics:</P>
 
 <UL>
    <LI>The Mac OS X Mach-O GNU-based assemblers</LI>
@@ -27,6 +27,74 @@ information about the following topics:</P>
    
    <LI>Mach-O object tools (<B>nm</B>, <B>otool</B>, and so
    on)&nbsp;</LI>
+</UL>
+
+<H2>Notes Specific to Release 5.15 (Mac OS X long branch
+Release)</H2>
+
+<H5><FONT SIZE="+1">Changes since the last release (cctools-498 for
+the 5.14 Mac OS X December 2003 Developer release) </FONT></H5>
+
+<UL>
+   <LI>Fixed a bug in the static linker, ld(1), that caused it to
+   generate an internal error message about the count of local
+   relocation entries does not matching when jbsr pseudo instructions
+   were used when creating a dynamic library. (Radar bug
+   #3518096).</LI>
+</UL>
+
+<H2>Notes Specific to Release 5.14 (Mac OS X December 2003 Developer
+Release)</H2>
+
+<H5><FONT SIZE="+1">Changes since the last release (cctools-497 for
+the 5.14 Mac OS X December 2003 Developer release) </FONT></H5>
+
+<UL>
+   <LI>Added the PowerPC pseudo-instruction <B>jmp</B> as the
+   non-linking form of <B>jbsr</B>. (Radar bug #3458928).</LI>
+</UL>
+
+<H5><FONT SIZE="+1">Changes since the last release (cctools-496 for
+the 5.14 Mac OS X December 2003 Developer release) </FONT></H5>
+
+<UL>
+   <LI>Changed the assembler to accept the --gstabs option to be the
+   same as the -g option and treat the --gdwarf2 option as an unknown
+   option. (Radar bug #3411071).</LI>
+   
+   <LI>Change the libtool(1) command to pass the
+   -prebind_allow_overlap on to ld(1). (Radar bug #3452484).</LI>
+   
+   <LI>Fixed a bug in the static linker, ld(1), that caused it to
+   generate an error message about relocation entries in read-only
+   sections when jbsr pseudo instructions were used when creating a
+   dynamic library. (Radar bug #3452964).</LI>
+</UL>
+
+<H5><FONT SIZE="+1">Changes since the last release (cctools-495 for
+the 5.13 Mac OS X 10.3 release) </FONT></H5>
+
+<UL>
+   <LI>Added the value 10.4 to be one of the known values allowed for
+   environment variable MACOSX_DEPLOYMENT_TARGET (Radar bug
+   #3445632).</LI>
+   
+   <LI>Changed the cctools project to include the FSF COPYING file at
+   the top level of the assembler. (Radar bug #3443583).</LI>
+   
+   <LI>Changed seg_addr_table(3) so it does not reserves more space
+   than necessary for flat dylibs. (Radar bug #3440884).</LI>
+   
+   <LI>Changed NSModule(3) man page so NSLinkModule states you need
+   to pass the image path as the module name if you want to use
+   gdb(1) on it (Radar bug #3408768).</LI>
+   
+   <LI>Changed the header file &lt;mach-o/dyld.h&gt; so the API's
+   introduced in 10.3 are marked with the AvailabilityMacros (Radar
+   bug #3401910).</LI>
+   
+   <LI>Changed ld(1) to call realpath(3) on the filenames printed
+   with RC_TRACE_ARCHIVES. (Radar bug #3443289).</LI>
 </UL>
 
 <H2>Notes Specific to Release 5.13 (Mac OS X 10.3)</H2>
