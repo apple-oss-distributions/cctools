@@ -336,8 +336,10 @@ os_tools_install:
 dt_install:
 	$(MKDIRS) $(DSTROOT)$(USRBINDIR)
 	install -c -s -m 555 $(SYMROOT)/strip.NEW $(DSTROOT)$(USRBINDIR)/strip
-	install -c -s -m 555 $(SYMROOT)/size.NEW $(DSTROOT)$(USRBINDIR)/size
-	install -c -s -m 555 $(SYMROOT)/nm.NEW $(DSTROOT)$(USRBINDIR)/nm
+	install -c -s -m 555 $(SYMROOT)/size.NEW $(DSTROOT)$(USRBINDIR)/size-classic
+	(cd $(DSTROOT)$(USRBINDIR); rm -f size; ln -s llvm-size size)
+	install -c -s -m 555 $(SYMROOT)/nm.NEW $(DSTROOT)$(USRBINDIR)/nm-classic
+	(cd $(DSTROOT)$(USRBINDIR); rm -f nm; ln -s llvm-nm nm)
 	install -c -s -m 555 $(SYMROOT)/libtool.NEW \
 		$(DSTROOT)$(USRBINDIR)/libtool
 	(cd $(DSTROOT)$(USRBINDIR); rm -f ranlib; ln -s libtool ranlib)
@@ -354,6 +356,9 @@ dt_install:
 			  $(DSTROOT)$(USRBINDIR)/install_name_tool
 	install -c -s -m 555 $(SYMROOT)/codesign_allocate.NEW \
 			  $(DSTROOT)$(USRBINDIR)/codesign_allocate
+	$(MKDIRS) $(RAW_DSTROOT)/usr/libexec/DeveloperTools
+	cp $(DSTROOT)$(USRBINDIR)/codesign_allocate \
+		$(RAW_DSTROOT)/usr/libexec/DeveloperTools
 	install -c -s -m 555 $(SYMROOT)/ctf_insert.NEW \
 			  $(DSTROOT)$(USRBINDIR)/ctf_insert
 	install -c -s -m 555 $(SYMROOT)/bitcode_strip.NEW \

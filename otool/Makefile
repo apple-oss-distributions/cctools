@@ -48,7 +48,7 @@ OBJS = $(CFILES:.c=.o) ofile.o
 INSTALL_FILES = $(CFILES) $(HFILES) Makefile notes
 
 PRODUCT = otool
-all: $(OFILE_DIR) $(SYMROOT) $(PRODUCT).NEW
+all: $(OFILE_DIR) $(SYMROOT) $(PRODUCT).NEW llvm-otool.NEW
 
 $(PRODUCT).NEW:	$(OFILE_DIR) $(SYMROOT) $(OBJS)
 	$(CC) $(RC_CFLAGS) -nostdlib -r -o $(OBJROOT)/private.o \
@@ -56,6 +56,16 @@ $(PRODUCT).NEW:	$(OFILE_DIR) $(SYMROOT) $(OBJS)
 	$(CXX) $(RC_CFLAGS) $(SDK) -o $(SYMROOT)/$@ $(OBJROOT)/private.o \
 		$(LIBSTUFF) $(CXXLIB)
 	$(DSYMUTIL) $(SYMROOT)/$@
+
+llvm-otool.NEW:	$(OFILE_DIR) $(SYMROOT) llvm_otool_main.o
+	$(CC) $(RC_CFLAGS) -nostdlib -r -o $(OBJROOT)/llvm-otool-private.o \
+		llvm_otool_main.o $(LIBSTUFF)
+	$(CXX) $(RC_CFLAGS) $(SDK) -o $(SYMROOT)/$@ \
+		$(OBJROOT)/llvm-otool-private.o $(LIBSTUFF) $(CXXLIB)
+	$(DSYMUTIL) $(SYMROOT)/$@
+
+llvm_otool_main.o: main.c
+	$(CC) $(CFLAGS) $(RC_CFLAGS) -DLLVM_OTOOL -c -o $(OFILE_DIR)/$*.o $<
 
 .c.o:
 	$(CC) $(CFLAGS) $(RC_CFLAGS) -c -o $(OFILE_DIR)/$*.o $<
@@ -65,17 +75,21 @@ ofile.o: $(SRCROOT)/../libstuff/ofile.c
 		$(SRCROOT)/../libstuff/ofile.c -DOTOOL
 
 clean: shlib_clean
-	-rm -f $(SYMROOT)/$(PRODUCT).NEW
+	-rm -f $(SYMROOT)/$(PRODUCT).NEW $(SYMROOT)/llvm-otool.NEW
 	-rm -r -f *dSYM
 
 shlib_clean:
-	-cd $(OFILE_DIR); rm -f $(OBJS) private.o
+	-cd $(OFILE_DIR); rm -f llvm_otool_main.o $(OBJS) private.o \
+		llvm-otool-private.o
 	-rm -f make.out
 
 install: all
 	$(MKDIRS) $(DSTROOT)$(USRBINDIR)
 	install -c -s -m 555 $(SYMROOT)/$(PRODUCT).NEW \
-		$(DSTROOT)$(USRBINDIR)/$(PRODUCT)
+		$(DSTROOT)$(USRBINDIR)/$(PRODUCT)-classic
+	install -c -s -m 555 $(SYMROOT)/llvm-otool.NEW \
+		$(DSTROOT)$(USRBINDIR)/llvm-otool
+	(cd $(DSTROOT)$(USRBINDIR); rm -f otool; ln -s otool-classic otool)
 
 installsrc:
 	$(MKDIRS) $(SRCROOT)
