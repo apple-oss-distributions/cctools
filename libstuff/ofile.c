@@ -698,7 +698,7 @@ enum bool archives_with_fat_objects)
 #ifdef OTOOL
 	if(otool_first_ofile_map && Wflag)
 	    printf("Modification time = %ld\n", (long int)stat_buf.st_mtime);
-#endif OTOOL
+#endif /* OTOOL */
 
 	/* fill in the start of the ofile structure */
 	ofile->file_name = savestr(file_name);
@@ -3093,7 +3093,8 @@ struct ofile *ofile)
 		    }
 		    break;
 		}
-	    	if(mh->cputype == CPU_TYPE_POWERPC){
+	    	if(mh->cputype == CPU_TYPE_POWERPC ||
+	    	   mh->cputype == CPU_TYPE_VEO){
 		    ppc_thread_state_t *nrw_cpu;
 
 		    nflavor = 0;

@@ -69,4 +69,4 @@ __private_extern__ void free_sets(
 __private_extern__ void clean_archives_and_fats(
     void);
 
-#endif RLD
+#endif /* RLD */

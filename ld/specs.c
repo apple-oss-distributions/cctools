@@ -23,7 +23,7 @@
  */
 #ifdef SHLIB
 #include "shlib.h"
-#endif SHLIB
+#endif /* SHLIB */
 /*
  * This file contains the routines to manage the structures that hold the
  * command line specifications about segment and sections.
@@ -369,7 +369,7 @@ process_segment_specs(void)
 	    }
 	}
 }
-#endif !defined(RLD)
+#endif /* !defined(RLD) */
 
 #ifdef DEBUG
 #ifndef RLD
@@ -432,7 +432,7 @@ print_segment_specs(void)
 	    }
 	}
 }
-#endif !defined(RLD)
+#endif /* !defined(RLD) */
 
 __private_extern__
 void
@@ -452,4 +452,4 @@ vm_prot_t prot)
 	else
 	    print("-");
 }
-#endif DEBUG
+#endif /* DEBUG */

@@ -155,8 +155,10 @@ enum bool launched = FALSE;
 enum bool executable_prebound = FALSE;
 
 static struct segment_command *data_seg;
+#if 0 /* disable until NXProtectZone() works again */
 static void get_data_segment(
     void);
+#endif
 
 /*
  * The variable executables_path is an absolute path of the executable being
@@ -521,6 +523,7 @@ char *envp[])
 		                sizeof("DYLD_TRACE=") - 1) == 0){
 		    dyld_trace = TRUE;
 		}
+#if 0 /* disable until NXProtectZone() works again */
 		else if(strncmp(*p, "DYLD_MEM_PROTECT=",
 		                sizeof("DYLD_MEM_PROTECT=") - 1) == 0){
 		    dyld_mem_protect = TRUE;
@@ -530,6 +533,7 @@ char *envp[])
 		    mem_prot_debug_lock = *debug_thread_lock;
 		    debug_thread_lock = &mem_prot_debug_lock;
 		}
+#endif
 		else if(strncmp(*p, "DYLD_EBADEXEC_ONLY=",
 		                sizeof("DYLD_EBADEXEC_ONLY=") - 1) == 0){
 		    dyld_ebadexec_only = TRUE;
@@ -674,6 +678,7 @@ void)
 }
 #endif /* DYLD_PROFILING */
 
+#if 0 /* disable until NXProtectZone() works again */
 /*
  * get_data_segment() sets data_seg to point at the data segment command for the
  * dynamic linker.
@@ -699,6 +704,7 @@ void)
 	}
 	data_seg = NULL;
 }
+#endif
 
 void
 protect_data_segment(

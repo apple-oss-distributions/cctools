@@ -363,7 +363,8 @@ struct load_command *load_commands)
 		    }
 		    break;
 		}
-	    	if(mh->cputype == CPU_TYPE_POWERPC){
+	    	if(mh->cputype == CPU_TYPE_POWERPC ||
+	    	   mh->cputype == CPU_TYPE_VEO){
 		    ppc_thread_state_t *cpu;
 		    ppc_float_state_t *fpu;
 		    ppc_exception_state_t *except;
@@ -935,7 +936,8 @@ struct load_command *load_commands)
 		    }
 		    break;
 		}
-	    	if(mh->cputype == CPU_TYPE_POWERPC){
+	    	if(mh->cputype == CPU_TYPE_POWERPC ||
+	    	   mh->cputype == CPU_TYPE_VEO){
 		    ppc_thread_state_t *cpu;
 		    ppc_float_state_t *fpu;
 		    ppc_exception_state_t *except;

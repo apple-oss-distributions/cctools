@@ -106,7 +106,7 @@ struct merged_symbol {
 #define NSYMBOLS 2001
 #else
 #define NSYMBOLS 201
-#endif RLD
+#endif /* RLD */
 /* The number of size of the hash table in a merged_symbol_list */
 #define SYMBOL_LIST_HASH_SIZE	(NSYMBOLS * 2)
 
@@ -138,7 +138,7 @@ struct string_block {
 #ifdef RLD
     long set_num;		/* the object file set number these strings */
 				/*  come from. */
-#endif RLD
+#endif /* RLD */
     struct string_block *next;	/* the next block */
 };
 
@@ -182,6 +182,12 @@ __private_extern__ struct merged_symbol_list *merged_symbol_lists;
 __private_extern__ unsigned long nmerged_symbols;
 __private_extern__ unsigned long nmerged_private_symbols;
 __private_extern__ unsigned long nmerged_symbols_referenced_only_from_dylibs;
+
+/*
+ * nstripped_merged_symbols is set to the number of merged symbol being stripped
+ * out when the strip_level is STRIP_DYNAMIC_EXECUTABLE.
+ */
+__private_extern__ unsigned long nstripped_merged_symbols;
 
 /*
  * The head of the list of the blocks that store the strings for the merged
@@ -384,7 +390,7 @@ __private_extern__ void free_multiple_defs(
     void);
 __private_extern__ void remove_merged_symbols(
     void);
-#endif RLD
+#endif /* RLD */
 
 __private_extern__ struct section *get_output_section(
     unsigned long sect);
@@ -395,4 +401,4 @@ __private_extern__ void print_symbol_list(
     enum bool input_based);
 __private_extern__ void print_undefined_list(
     void);
-#endif DEBUG
+#endif /* DEBUG */

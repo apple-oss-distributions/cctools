@@ -424,7 +424,7 @@ make_exthash(void)
 		extp = extp->next;
 	    }
 	}
-#endif HOST_DEBUG
+#endif /* HOST_DEBUG */
 }
 
 /*
@@ -633,7 +633,7 @@ object_list[i]->pu_symbols[l].n_value);
 			object_list[i]->pu_symbols[j].n_value);
 	    }
 	}
-#endif HOST_DEBUG
+#endif /* HOST_DEBUG */
 }
 
 /*
@@ -667,7 +667,7 @@ make_references(void)
 		extp = extp->next;
 	    }
 	}
-#endif HOST_DEBUG
+#endif /* HOST_DEBUG */
 
 	/*
 	 * Create a file definition symbol name for each host object file.
@@ -782,7 +782,7 @@ make_references(void)
 		refp = refp->next;
 	    }
 	}
-#endif HOST_DEBUG
+#endif /* HOST_DEBUG */
 }
 
 /*

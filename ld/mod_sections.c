@@ -23,7 +23,7 @@
  */
 #ifdef SHLIB
 #include "shlib.h"
-#endif SHLIB
+#endif /* SHLIB */
 /*
  * This file contains the routines that deal with module initialization and
  * termination function pointer sections. 
@@ -56,8 +56,8 @@
  */
 static struct merged_section *dylib_ms_init = NULL;
 static struct merged_section *dylib_ms_term = NULL;
-static unsigned long ninit = 0;
-static unsigned long nterm = 0;
+__private_extern__ unsigned long ninit = 0;
+__private_extern__ unsigned long nterm = 0;
 #endif /* !defined(RLD) */
 
 /*

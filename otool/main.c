@@ -1826,7 +1826,8 @@ enum bool verbose)
 				object_byte_sex, relocs, nrelocs, symbols,
 				nsymbols, sorted_symbols, nsorted_symbols,
 				strings, strings_size, verbose);
-		else if(cputype == CPU_TYPE_POWERPC)
+		else if(cputype == CPU_TYPE_POWERPC ||
+			cputype == CPU_TYPE_VEO)
 		    j = ppc_disassemble(sect, size - i, cur_addr, addr,
 				object_byte_sex, relocs, nrelocs, symbols,
 				nsymbols, sorted_symbols, nsorted_symbols,

@@ -23,7 +23,7 @@
  */
 #ifdef SHLIB
 #include "shlib.h"
-#endif SHLIB
+#endif /* SHLIB */
 #ifndef RLD
 /*
  * This file contains the routines to manage the fixed VM shared libraries
@@ -79,7 +79,7 @@ merge_fvmlibs(void)
 	/* in this function" can safely be ignored */
 	fl = NULL;;
 	mfl = NULL;;
-#endif DEBUG
+#endif /* DEBUG */
 
 	/*
 	 * First process all the load commands for the fixed VM libraries
@@ -324,5 +324,5 @@ print_fvmlib_segments(void)
 	    p = &(msg->next);
 	}
 }
-#endif DEBUG
-#endif !defined(RLD)
+#endif /* DEBUG */
+#endif /* !defined(RLD) */

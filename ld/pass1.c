@@ -23,7 +23,7 @@
  */
 #ifdef SHLIB
 #include "shlib.h"
-#endif SHLIB
+#endif /* SHLIB */
 /*
  * This file contains the routines that drives pass1 of the link-editor.  In
  * pass1 the objects needed from archives are selected for loading and all of
@@ -112,7 +112,7 @@ __private_extern__ char *standard_framework_dirs[] = {
 
 /* the pointer to the head of the base object file's segments */
 __private_extern__ struct merged_segment *base_obj_segments = NULL;
-#endif !defined(RLD)
+#endif /* !defined(RLD) */
 
 #if !defined(SA_RLD) && !(defined(KLD) && defined(__STATIC__))
 /*
@@ -264,7 +264,7 @@ static void add_base_obj_segment(
 static char *mkstr(
 	const char *args,
 	...);
-#endif !defined(RLD)
+#endif /* !defined(RLD) */
 
 #if !defined(SA_RLD) && !(defined(KLD) && defined(__STATIC__))
 /*
@@ -301,7 +301,7 @@ enum bool bundle_loader)
     char *file_name;
 #ifndef RLD
     char *p, *type;
-#endif !defined(RLD)
+#endif /* !defined(RLD) */
     kern_return_t r;
     unsigned long file_size;
     char *file_addr;
@@ -317,7 +317,7 @@ enum bool bundle_loader)
 	/* The compiler "warning: `file_name' may be used uninitialized in */
 	/* this function" can safely be ignored */
 	file_name = NULL;
-#endif DEBUG
+#endif /* DEBUG */
 
 	fd = -1;
 #ifndef RLD
@@ -373,7 +373,7 @@ enum bool bundle_loader)
 	    }
 	}
 	else
-#endif !defined(RLD)
+#endif /* !defined(RLD) */
 	{
 	    if((fd = open(name, O_RDONLY, 0)) == -1){
 		system_error("can't open: %s", name);
@@ -442,7 +442,7 @@ enum bool bundle_loader)
 	{
 #ifdef RLD
 	    new_archive_or_fat(file_name, file_addr, file_size);
-#endif RLD
+#endif /* RLD */
 	    pass1_fat(file_name, file_addr, file_size, base_name, FALSE,
 		      bundle_loader);
 	}
@@ -876,7 +876,7 @@ enum bool bundle_loader)
     struct ar_hdr *ar_hdr;
     unsigned long length;
     struct dynamic_library *p;
-#endif !defined(RLD)
+#endif /* !defined(RLD) */
     struct ar_hdr *symdef_ar_hdr;
     char *symdef_ar_name, *ar_name;
     unsigned long symdef_length, nranlibs, string_size, ar_name_size;
@@ -1159,7 +1159,7 @@ down:
 	    }
 	    return;
 	}
-#endif !defined(RLD)
+#endif /* !defined(RLD) */
 
 	/*
 	 * If there are no undefined symbols then the archive doesn't have
@@ -1172,7 +1172,7 @@ down:
 #ifdef RLD
 	if(from_fat_file == FALSE)
 	    new_archive_or_fat(file_name, file_addr, file_size);
-#endif RLD
+#endif /* RLD */
 	/*
 	 * The file is an archive so get the symdef file
 	 */
@@ -1430,7 +1430,7 @@ down:
 	    p->ranlib_strings = bsearch_strings;
 	    return;
 	}
-#endif !defined(RLD)
+#endif /* !defined(RLD) */
 
 	/*
 	 * Two possible algorithms are used to determine which members from the
@@ -1480,7 +1480,7 @@ down:
 		    cur_obj->from_fat_file = from_fat_file;
 #else
 		    cur_obj->file_name = file_name;
-#endif RLD
+#endif /* RLD */
 		    cur_obj->ar_hdr = (struct ar_hdr *)(file_addr +
 							ranlib->ran_off);
 		    if(strncmp(cur_obj->ar_hdr->ar_name, AR_EFMT1,
@@ -1576,7 +1576,7 @@ down:
 			    cur_obj->from_fat_file = from_fat_file;
 #else
 			    cur_obj->file_name = file_name;
-#endif RLD
+#endif /* RLD */
 			    cur_obj->ar_hdr = (struct ar_hdr *)(file_addr +
 							ranlibs[i].ran_off);
 			    if(strncmp(cur_obj->ar_hdr->ar_name, AR_EFMT1,
@@ -1746,9 +1746,10 @@ unsigned long file_size)
 	    length = round(obj_size, sizeof(short));
 	    offset += length;
 	}
-	if(no_arch_warnings == FALSE &&
-	   arch_flag.cputype != 0 && mixed_types == FALSE &&
+	if(arch_flag.cputype != 0 && mixed_types == FALSE &&
 	   arch_flag.cputype != cputype && cputype != 0){
+	    if(no_arch_warnings == TRUE)
+		return(FALSE);
 	    new_arch = get_arch_name_from_types(cputype, cpusubtype);
 	    prev_arch = get_arch_name_from_types(arch_flag.cputype,
 						 arch_flag.cpusubtype);
@@ -1842,7 +1843,7 @@ enum bool bundle_loader)
 	cur_obj->from_fat_file = from_fat_file;
 #else
 	cur_obj->file_name = file_name;
-#endif RLD
+#endif /* RLD */
 	cur_obj->obj_addr = file_addr;
 	cur_obj->obj_size = file_size;
 #ifndef RLD
@@ -1852,7 +1853,7 @@ enum bool bundle_loader)
 	 */
 	if(base_name == TRUE)
 	    base_obj = cur_obj;
-#endif !defined(RLD)
+#endif /* !defined(RLD) */
 
 	merge(dylib_only, bundle_loader);
 
@@ -1863,7 +1864,7 @@ enum bool bundle_loader)
 	 */
 	if(base_name == TRUE)
 	    collect_base_obj_segments();
-#endif !defined(RLD)
+#endif /* !defined(RLD) */
 	return;
 }
 
@@ -3469,6 +3470,8 @@ struct dynamic_library *p)
 	    pass1_object(file_name, file_addr, file_size, FALSE, FALSE, TRUE,
 			 FALSE);
 	}
+	if(errors)
+	    return(FALSE);
 	if(cur_obj == NULL || cur_obj->dylib == FALSE)
 	    return(FALSE);
 
@@ -3842,13 +3845,13 @@ enum bool bundle_loader)
 	    merge_fvmlibs();
 	    if(errors)
 		goto merge_return;
-#else defined(RLD)
+#else /* defined(RLD) */
 	    if(cur_obj != base_obj){
 		error_with_cur_obj("can't dynamicly load fixed VM shared "
 				   "library");
 		goto merge_return;
 	    }
-#endif defined(RLD)
+#endif /* defined(RLD) */
 	}
 
 	/* if this object has any dynamic shared library stuff merge it */
@@ -3861,13 +3864,13 @@ enum bool bundle_loader)
 		goto merge_return;
 	    if(cur_obj->dylinker)
 		goto merge_return;
-#else defined(RLD)
+#else /* defined(RLD) */
 	    if(cur_obj != base_obj){
 		error_with_cur_obj("can't used dynamic libraries or dynamic "
 		    "linker with rld based interfaces");
 		goto merge_return;
 	    }
-#endif defined(RLD)
+#endif /* defined(RLD) */
 	}
 
 	/* merged it's sections */
@@ -5443,7 +5446,7 @@ unsigned long strsize)
 	/* merged the base program's symbols */
 	merge_symbols();
 }
-#endif RLD
+#endif /* RLD */
 
 /*
  * check_size_offset() is used by check_cur_obj() to check a pair of sizes,
@@ -5469,10 +5472,10 @@ unsigned long cmd)
 		 */
 		warning_with_cur_obj("%s in load command %lu not aligned on %lu"
 				     " byte boundary", offset_str, cmd, align);
-#else !defined(mc68000)
+#else /* !defined(mc68000) */
 		error_with_cur_obj("%s in load command %lu not aligned on %lu "
 				   "byte boundary", offset_str, cmd, align);
-#endif mc68000
+#endif /* mc68000 */
 		return;
 	    }
 	    if(offset > cur_obj->obj_size){
@@ -5517,11 +5520,11 @@ char *sectname)
 		warning_with_cur_obj("%s of section %lu (%.16s,%.16s) in load "
 		    "command %lu not aligned on %lu byte boundary", offset_str,
 		    sect, segname, sectname, cmd, align);
-#else !defined(mc68000)
+#else /* !defined(mc68000) */
 		error_with_cur_obj("%s of section %lu (%.16s,%.16s) in load "
 		    "command %lu not aligned on %lu byte boundary", offset_str,
 		    sect, segname, sectname, cmd, align);
-#endif mc68000
+#endif /* mc68000 */
 		return;
 	    }
 	    if(offset > cur_obj->obj_size){
@@ -5637,4 +5640,4 @@ const char *args,
 	}
 	return(s);
 }
-#endif !defined(RLD)
+#endif /* !defined(RLD) */

@@ -116,7 +116,7 @@ getsectbynamefromheaderwithswap(
 		    swap_segment_command(sgp, NX_BigEndian);
 #else
 		    swap_segment_command(sgp, NX_LittleEndian);
-#endif __LITTLE_ENDIAN__
+#endif /* __LITTLE_ENDIAN__ */
 		}
 	    
 		if(strncmp(sgp->segname, segname, sizeof(sgp->segname)) == 0 ||
@@ -129,7 +129,7 @@ getsectbynamefromheaderwithswap(
 			swap_section(sp, sgp->nsects, NX_BigEndian);
 #else
 			swap_section(sp, sgp->nsects, NX_LittleEndian);
-#endif __LITTLE_ENDIAN__
+#endif /* __LITTLE_ENDIAN__ */
 		    }
 		
 		    for(j = 0; j < sgp->nsects; j++){

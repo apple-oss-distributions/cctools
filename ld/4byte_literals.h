@@ -45,7 +45,7 @@ struct literal4_data {
     unsigned long nfiles;	/* number of files with this section */
     unsigned long nliterals;	/* total number of literals in the input files*/
 				/*  merged into this section  */
-#endif DEBUG
+#endif /* DEBUG */
 };
 
 /* the number of entries in the hash table */
@@ -94,4 +94,4 @@ __private_extern__ void print_literal4_data(
 __private_extern__ void literal4_data_stats(
     struct literal4_data *data,
     struct merged_section *ms);
-#endif DEBUG
+#endif /* DEBUG */

@@ -24,7 +24,7 @@
 #ifdef SHLIB
 #include "shlib.h"
 #undef moninitrld
-#endif SHLIB
+#endif /* SHLIB */
 #ifdef RLD
 /*
  * This file contains the functions of the RLD package.
@@ -1697,7 +1697,7 @@ void)
 	    for(j = 0; j < rld_loaded_state[i].nobject_filenames; j++)
 		print("\t\t%s\n", rld_loaded_state[i].object_filenames[j]);
 	}
-#endif RLD_TEST
+#endif /* RLD_TEST */
 }
 #endif /* !(defined(KLD) && defined(__STATIC__)) */
 
@@ -2163,4 +2163,4 @@ _NSGetMachExecuteHeader(void)
 }
 #endif /* defined(KLD) && defined(__STATIC__) */
 
-#endif RLD
+#endif /* RLD */

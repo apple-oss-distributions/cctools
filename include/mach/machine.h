@@ -130,7 +130,7 @@ extern struct machine_info	machine_info;
 extern struct machine_slot	machine_slot[];
 
 extern vm_offset_t		interrupt_stack[];
-#endif	KERNEL
+#endif	/* KERNEL */
 
 /*
  *	Machine types known by all.
@@ -155,6 +155,7 @@ extern vm_offset_t		interrupt_stack[];
 #define CPU_TYPE_RS6000		((cpu_type_t) 17)
 #define CPU_TYPE_MC98000	((cpu_type_t) 18)
 #define CPU_TYPE_POWERPC	((cpu_type_t) 18)
+#define CPU_TYPE_VEO		((cpu_type_t) 255)
 		
 
 /*
@@ -355,4 +356,13 @@ extern vm_offset_t		interrupt_stack[];
 #define CPU_SUBTYPE_POWERPC_7400	((cpu_subtype_t) 10)
 #define CPU_SUBTYPE_POWERPC_7450	((cpu_subtype_t) 11)
 
-#endif	_MACH_MACHINE_H_
+/*
+ * VEO subtypes
+ * Note: the CPU_SUBTYPE_VEO_ALL will likely change over time to be defined as
+ * one of the specific subtypes.
+ */
+#define CPU_SUBTYPE_VEO_1	((cpu_subtype_t) 1)
+#define CPU_SUBTYPE_VEO_2	((cpu_subtype_t) 2)
+#define CPU_SUBTYPE_VEO_ALL	CPU_SUBTYPE_VEO_2
+
+#endif	/* _MACH_MACHINE_H_ */

@@ -267,7 +267,7 @@ done1:		;
 		       nl[i].name);
 	    }
 	}
-#endif DEBUG
+#endif /* DEBUG */
 }
 
 #ifdef __OPENSTEP__
@@ -368,7 +368,7 @@ void)
 			(unsigned int)nl[i].value, nl[i].name);
 	    }
 	}
-#endif DEBUG
+#endif /* DEBUG */
 	/*
 	 * Resort the symbol table.
 	 */
@@ -468,7 +468,7 @@ void)
 			(unsigned int)nl[i].value, nl[i].name);
 	    }
 	}
-#endif DEBUG
+#endif /* DEBUG */
 	/*
 	 * Resort the symbol table.
 	 */

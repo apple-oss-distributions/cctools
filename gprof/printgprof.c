@@ -738,7 +738,7 @@ arctype *thatp)
 		thatp->arc_count, thatchildp->ncall);
 	    printf("\n");
 	}
-#endif DEBUG
+#endif /* DEBUG */
 	if(thisparentp == thischildp){
 	    /* this is a self call */
 	    return(LESSTHAN);

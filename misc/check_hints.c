@@ -316,7 +316,7 @@ char **envp)
 		printf("%s(%s) module %lu defines %s\n", hints[i].library_name,
 		       hints[i].module_name, hints[i].module_index,
 		       hints[i].symbol_name);
-#endif DEBUG
+#endif /* DEBUG */
 	}
 	if(errors != 0)
 	    return(EXIT_FAILURE);
@@ -453,7 +453,7 @@ unsigned long *size)
 	    printf("library_name = %s symbol_name %s\n",
 		   (*hints)[i].library_name, (*hints)[i].symbol_name);
 	}
-#endif DEBUG
+#endif /* DEBUG */
 }
 
 /*

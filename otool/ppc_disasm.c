@@ -3230,7 +3230,7 @@ enum bool verbose)
 		    r_type == PPC_RELOC_LO14)
 		value = other_half << 16 | value;
 	    else if(r_type == PPC_RELOC_JBSR)
-		value += other_half;
+		value = other_half;
 	    if(r_scattered &&
                (r_type != PPC_RELOC_HI16_SECTDIFF &&
                 r_type != PPC_RELOC_HA16_SECTDIFF &&

@@ -235,6 +235,6 @@ struct nlist {
  * The function nlist(3) from the C library.
  */
 extern int nlist (const char *filename, struct nlist *list);
-#endif __STRICT_BSD__
+#endif /* __STRICT_BSD__ */
 
-#endif _MACHO_LIST_H_
+#endif /* _MACHO_LIST_H_ */

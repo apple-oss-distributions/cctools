@@ -525,7 +525,8 @@ void *cookie)
 		else
 		    symbols[i].n_un.n_name = symbols[i].n_un.n_strx + strings;
 
-		if((symbols[i].n_type & N_TYPE) == N_INDR){
+		if((symbols[i].n_type & N_STAB) == 0 &&
+		   (symbols[i].n_type & N_TYPE) == N_INDR){
 		    if(symbols[i].n_value == 0)
 			symbols[i].n_value = (long)"";
 		    else if(symbols[i].n_value > st->strsize)
@@ -796,7 +797,8 @@ char *arch_name)
 		else
 		    printf("%08x %s", (unsigned int)symbols[i].n_un.n_strx,
 			   symbols[i].n_un.n_strx + strings);
-		if((symbols[i].n_type & N_TYPE) == N_INDR){
+		if((symbols[i].n_type & N_STAB) == 0 &&
+		   (symbols[i].n_type & N_TYPE) == N_INDR){
 		    if(symbols[i].n_value == 0)
 			printf(" (indirect for %08lx (null))\n",
 			       symbols[i].n_value);
@@ -991,7 +993,8 @@ struct value_diff *value_diffs)
 		else
 		    printf("%08x %s", (unsigned int)symbols[i].n_un.n_strx,
 			   symbols[i].n_un.n_strx + strings);
-		if((symbols[i].n_type & N_TYPE) == N_INDR){
+		if((symbols[i].n_type & N_STAB) == 0 &&
+		   (symbols[i].n_type & N_TYPE) == N_INDR){
 		    if(symbols[i].n_value == 0)
 			printf(" (indirect for %08lx (null))\n",
 			       symbols[i].n_value);
@@ -1139,6 +1142,9 @@ static const struct stabnames stabnames[] = {
     { N_LSYM,  "LSYM" },
     { N_BINCL, "BINCL" },
     { N_SOL,   "SOL" },
+    { N_PARAMS,"PARAM" },
+    { N_VERSION,"VERS" },
+    { N_OLEVEL,"OLEV" },
     { N_PSYM,  "PSYM" },
     { N_EINCL, "EINCL" },
     { N_ENTRY, "ENTRY" },

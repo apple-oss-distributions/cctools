@@ -616,7 +616,10 @@ char **envp)
 		        strcmp(argv[i], "-dylib_file") == 0 ||
 		        strcmp(argv[i], "-final_output") == 0 ||
 		        strcmp(argv[i], "-headerpad") == 0 ||
-		        strcmp(argv[i], "-weak_reference_mismatches") == 0){
+		        strcmp(argv[i], "-weak_reference_mismatches") == 0 ||
+		        strcmp(argv[i], "-u") == 0 ||
+		        strcmp(argv[i], "-exported_symbols_list") == 0 ||
+		        strcmp(argv[i], "-unexported_symbols_list") == 0){
 		    if(cmd_flags.ranlib == TRUE){
 			error("unknown option: %s", argv[i]);
 			usage();
@@ -638,6 +641,7 @@ char **envp)
 		        strcmp(argv[i], "-Si") == 0 ||
 		        strcmp(argv[i], "-S") == 0 ||
 		        strcmp(argv[i], "-X") == 0 ||
+		        strcmp(argv[i], "-x") == 0 ||
 		        strcmp(argv[i], "-whatsloaded") == 0 ||
 			strcmp(argv[i], "-whyload") == 0 ||
 			strcmp(argv[i], "-arch_errors_fatal") == 0 ||
@@ -649,7 +653,9 @@ char **envp)
 			strcmp(argv[i], "-headerpad_max_install_names") == 0 ||
 			strcmp(argv[i], "-prebind_all_twolevel_modules") == 0 ||
 			strcmp(argv[i], "-ObjC") == 0 ||
-			strcmp(argv[i], "-M") == 0){
+			strcmp(argv[i], "-M") == 0 ||
+			strcmp(argv[i], "-single_module") == 0 ||
+			strcmp(argv[i], "-multi_module") == 0){
 		    if(cmd_flags.ranlib == TRUE){
 			error("unknown option: %s", argv[i]);
 			usage();
@@ -657,6 +663,13 @@ char **envp)
 		    cmd_flags.ldflags = reallocate(cmd_flags.ldflags,
 				sizeof(char *) * (cmd_flags.nldflags + 1));
 		    cmd_flags.ldflags[cmd_flags.nldflags++] = argv[i];
+		}
+		else if(strcmp(argv[i], "-no_arch_warnings") == 0){
+		    if(cmd_flags.ranlib == TRUE){
+			error("unknown option: %s", argv[i]);
+			usage();
+		    }
+		    /* ignore this flag */
 		}
 		else if(strcmp(argv[i], "-prebind") == 0){
 		    if(cmd_flags.ranlib == TRUE){

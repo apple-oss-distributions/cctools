@@ -317,7 +317,7 @@ char *old_target)
 		extp = extp->next;
 	    }
 	}
-#endif DEBUG
+#endif /* DEBUG */
 }
 
 /*

@@ -86,4 +86,4 @@ __private_extern__ void print_segment_specs(
     void);
 __private_extern__ void print_prot(
     vm_prot_t prot);
-#endif DEBUG
+#endif /* DEBUG */

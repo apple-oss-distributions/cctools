@@ -24,7 +24,7 @@
 #undef CATS_BUG_FIX1
 #ifdef SHLIB
 #include "shlib.h"
-#endif SHLIB
+#endif /* SHLIB */
 /*
  * This file contains the routines to manage the structures that hold the
  * information for the rld package of the object file sets.
@@ -212,4 +212,4 @@ free_sets(void)
 	nsets = 0;
 	cur_set = -1;
 }
-#endif RLD
+#endif /* RLD */

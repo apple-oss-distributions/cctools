@@ -82,7 +82,7 @@ typedef struct cproc {
 	unsigned int stack_size;
 #if	NeXT
 	int	error;
-#endif	NeXT
+#endif	/* NeXT */
 
 } *cproc_t;
 
@@ -102,14 +102,14 @@ typedef struct cproc {
 #define CPROC_INITIAL_STACK	0x1
 #if	NeXT
 #define	CPROC_NOCACHE_THREAD	/* Don't try to cache this cthread on exit */
-#endif	NeXT
+#endif	/* NeXT */
 
 /*
  * C Threads imports:
  */
 #ifdef __STRICT_BSD__
 extern char *malloc();
-#endif __STRICT_BSD__
+#endif /* __STRICT_BSD__ */
 
 /*
  * Mach imports:
@@ -123,7 +123,7 @@ extern void mach_error();
 extern exit();
 #else
 #include <stdlib.h>
-#endif __STRICT_BSD__
+#endif /* __STRICT_BSD__ */
 
 /*
  * Macro for MACH kernel calls.
@@ -150,9 +150,9 @@ extern int cthread_debug;
  */
 extern printf(), fprintf(), abort();
 
-#else	DEBUG
+#else	/* DEBUG */
 
 #define	private static
 #define	TRACE(x)
 
-#endif	DEBUG
+#endif	/* DEBUG */

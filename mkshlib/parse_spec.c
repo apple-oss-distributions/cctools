@@ -331,7 +331,7 @@ parse_spec(void)
 		   oddball_list[i]->name, oddball_list[i]->private,
 		   oddball_list[i]->nobranch, oddball_list[i]->undefined);
 	}
-#endif SPEC_DEBUG
+#endif /* SPEC_DEBUG */
 	free(oddball_list);
 
 	/*

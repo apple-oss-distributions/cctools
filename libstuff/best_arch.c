@@ -254,6 +254,22 @@ unsigned long nfat_archs)
 		}
 	    }
 	    break;
+	case CPU_TYPE_VEO:
+	    /*
+	     * An exact match was not found.  So for the VEO subtypes if VEO1
+	     * is wanted then VEO2 can be used.  But if VEO2 is wanted only
+	     * VEO2 can be used.  Any unknown values don't match.
+	     */
+	    switch(cpusubtype){
+	    case CPU_SUBTYPE_VEO_1:
+		for(i = 0; i < nfat_archs; i++){
+		    if(fat_archs[i].cputype != cputype)
+			continue;
+		    if(fat_archs[i].cpusubtype == CPU_SUBTYPE_VEO_2)
+			return(fat_archs + i);
+		}
+	    }
+	    break;
 	case CPU_TYPE_MC88000:
 	    for(i = 0; i < nfat_archs; i++){
 		if(fat_archs[i].cputype != cputype)
@@ -408,6 +424,20 @@ cpu_subtype_t cpusubtype2)
 		return(cpusubtype1);
 	    else
 		return(cpusubtype2);
+	    break; /* logically can't get here */
+
+	case CPU_TYPE_VEO:
+	    /*
+	     * Combining VEO1 with VEO2 returns VEO1.  Any unknown values don't
+	     * combine.
+	     */
+	    if(cpusubtype1 == CPU_SUBTYPE_VEO_1 &&
+	       cpusubtype2 == CPU_SUBTYPE_VEO_2)
+		return(CPU_SUBTYPE_VEO_1);
+	    if(cpusubtype1 == CPU_SUBTYPE_VEO_2 &&
+	       cpusubtype2 == CPU_SUBTYPE_VEO_1)
+		return(CPU_SUBTYPE_VEO_1);
+	    return((cpu_subtype_t)-1);
 	    break; /* logically can't get here */
 
 	case CPU_TYPE_MC88000:
