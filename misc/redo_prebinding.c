@@ -3,21 +3,20 @@
  *
  * @APPLE_LICENSE_HEADER_START@
  * 
- * Portions Copyright (c) 1999 Apple Computer, Inc.  All Rights
- * Reserved.  This file contains Original Code and/or Modifications of
- * Original Code as defined in and that are subject to the Apple Public
- * Source License Version 1.1 (the "License").  You may not use this file
- * except in compliance with the License.  Please obtain a copy of the
- * License at http://www.apple.com/publicsource and read it before using
- * this file.
+ * This file contains Original Code and/or Modifications of Original Code
+ * as defined in and that are subject to the Apple Public Source License
+ * Version 2.0 (the 'License'). You may not use this file except in
+ * compliance with the License. Please obtain a copy of the License at
+ * http://www.opensource.apple.com/apsl/ and read it before using this
+ * file.
  * 
  * The Original Code and all software distributed under the License are
- * distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, EITHER
+ * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
  * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE OR NON- INFRINGEMENT.  Please see the
- * License for the specific language governing rights and limitations
- * under the License.
+ * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
+ * Please see the License for the specific language governing rights and
+ * limitations under the License.
  * 
  * @APPLE_LICENSE_HEADER_END@
  */
@@ -324,8 +323,6 @@ static enum bool load_library(
     unsigned long *image_pointer);
 
 static enum bool load_dependent_libraries(void);
-
-static void check_for_extra_LC_PREBOUND_DYLIB(void);
 
 static void print_two_level_info(
     struct lib *lib);
@@ -2229,15 +2226,6 @@ void)
 	}
 
 	/*
-	 * If this is an executable, make sure there are no extra
-	 * LC_PREBOUND_DYLIB load commands as dyld will check this not
-	 * use the prebinding.
-	 */
-	if(arch->object->mh->filetype == MH_EXECUTE){
-	    check_for_extra_LC_PREBOUND_DYLIB();
-	}
-	
-	/*
 	 * If check_only is set then load_library() checked the time stamps and
 	 * did an exit(1) if they did not match.  So if we get here this arch
 	 * has been checked so just return so the other archs can be checked.
@@ -2528,72 +2516,6 @@ void)
 	    }
 	}
 	return(TRUE);
-}
-
-/*
- * check_for_extra_LC_PREBOUND_DYLIB() checks to see that all the libraries for
- * the LC_PREBOUND_DYLIB() load commands have been loaded by the dependent
- * libraries.  If there are extra LC_PREBOUND_DYLIB() load commands for
- * libraries that are not loaded this reports the errors and calls redo_exit(1).
- */
-static
-void
-check_for_extra_LC_PREBOUND_DYLIB(
-void)
-{
-    unsigned long i, j;
-    struct load_command *lc, *load_commands;
-    struct prebound_dylib_command *pbdylib;
-    char *dylib_name;
-    enum bool found, found_by_stat;
-    struct stat stat_buf;
-
-	load_commands = arch->object->load_commands;
-	lc = load_commands;
-	for(i = 0; i < arch->object->mh->ncmds; i++){
-	    if(lc->cmd == LC_PREBOUND_DYLIB){
-		pbdylib = (struct prebound_dylib_command *)lc;
-		dylib_name = (char *)pbdylib + pbdylib->name.offset;
-		if(stat(dylib_name, &stat_buf) == -1){
-		    stat_buf.st_dev = 0;
-		    stat_buf.st_ino = 0;
-		}
-		found = FALSE;
-		found_by_stat = FALSE;
-		for(j = 0; j < nlibs; j++){
-		    if(strcmp(libs[j].dylib_name, dylib_name) == 0){
-			found = TRUE;
-			break;
-		    }
-		    if(stat_buf.st_dev == libs[j].dev && 
-		       stat_buf.st_ino == libs[j].ino){
-			found_by_stat = TRUE;
-			break;
-		    }
-		}
-		if(found_by_stat == TRUE){
-		    error("executable: %s (architecture %s) must be rebuilt, "
-			  "dynamic shared library: %s does not match its "
-			  "install_name: %s", arch->file_name, arch_name,
-			  dylib_name, libs[j].dylib_name);
-#ifdef LIBRARY_API
-		    if(check_if_needed == TRUE){
-			only_if_needed_retval = 
-			    REDO_PREBINDING_NEEDS_REBUILDING;
-		    }
-#endif
-		    redo_exit(1);
-		}
-		if(found == FALSE && check_only == TRUE){
-		    error("executable: %s (architecture %s) must be rebuilt, "
-			  "LC_PREBOUND_DYLIB found for dynamic shared library: "
-			  "%s but it was not loaded", arch->file_name,
-			  arch_name, dylib_name);
-		    redo_exit(1);
-		}
-	    }
-	    lc = (struct load_command *)((char *)lc + lc->cmdsize);
-	}
 }
 
 /*
