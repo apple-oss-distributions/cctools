@@ -16,7 +16,6 @@ OLD_LIBKLD = NO
 BUILD_DYLIBS = YES
 LTO = -DLTO_SUPPORT
 
-
 ifeq "macos" "$(RC_OS)"
   TRIE := $(shell if [ "$(RC_MAJOR_RELEASE_TRAIN)" = "Tiger" ] || \
 		     [ "$(RC_MAJOR_RELEASE_TRAIN)" = "Leopard" ] || \
@@ -108,7 +107,7 @@ install:
 	@if [ $(SRCROOT) ];						\
 	then								\
 	    projName=`basename $(SRCROOT) | 				\
-		sed 's/-[-0-9.]*//' | sed 's/\.cvs//' | sed 's/_PONDEROSA//'`; \
+		sed 's/-[-0-9.]*//' | sed 's/\.cvs//'`;			\
 	    if [ "$$projName" = cctools ];				\
 	    then							\
 		target=install_tools;					\
@@ -411,7 +410,7 @@ fromGASsrc:
 installhdrs: $(DSTROOT)
 	@if [ $(SRCROOT) ];						\
 	then								\
-	    projName=`basename $(SRCROOT) | sed 's/-[0-9.]*//' | sed 's/_PONDEROSA//'`;	\
+	    projName=`basename $(SRCROOT) | sed 's/-[0-9.]*//'`;	\
 	    if [ "$$projName" = cctools -a $(RC_OS) = macos ] &&	\
 	       [ "$(RC_ProjectName)" != "cctools_ofiles_Sim" ] &&	\
 	       [ "$(RC_FORCEHDRS)" != "YES" ];				\
