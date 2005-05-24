@@ -9,6 +9,62 @@ To Do:
   could have been set otherwise and does not print the next line.
 - Maybe add fat support for segedit(1)
 
+Changes for the 5.18 release (and SUTiCambridge) (the cctools-590 release):
+- Added a call to update_dyld_section() in unprebind_arch() in
+  redo_prebinding.c to set the (__DATA,__dyld) section contents to a
+  canonical value.  Radar bug #4126660.
+- In reset_symbol_pointers() in redo_prebinding.c added a conditional resetting
+  symbol pointers defined in the image.  The conditional is if either the
+  MH_WEAK_DEFINES or MH_BINDS_TO_WEAK flags are present then the symbol pointer
+  is set back to zero or to the value for lazy binding and assumed that if
+  the symbol is defined it is being used from the image.  This is because the
+  Tiger dyld when prebinding may set the symbol pointer to an address in another
+  image even if the symbol is defined in the image being prebound.  Radar bug
+  #4126666.
+
+Changes for the 5.18 release (and SUTiAtlanta) (the cctools-588 release):
+- Added more code in build_new_symbol_table() in redo_prebinding.c for fix up
+  the FCS Tiger dyld prebinding problem with stabs that are in the AppKit well
+  enough to allow the Software Update patching that uses the undo prebinding 
+  operation to work. Radar bug #4113681.
+  - If the module table gets updated when unprebinding with the change below and
+    that adjustment is not the same as the vmslide then the N_STSYM and N_SO
+    stabs are corrected.
+
+Changes for the 5.18 release (and in SUTiAtlanta) (the cctools-587 release):
+- Added code build_new_symbol_table() in redo_prebinding.c to fix up the FCS
+  Tiger dyld prebinding problems well enough to allow the Software Update
+  patching that uses the undo prebinding operation to work.  Radar bug #4108651.
+  - When updating the module table when unprebinding code was added to calculate
+    the value to adjust the objc_module_info_addr entries from the difference
+    between the the address of the (__OBJC,__module_info) section and the module
+    table entry with the lowest objc_module_info_addr value.
+  - Code was added at the end of the routine to set the n_value of absolute
+    global symbols that start with ".objc" or end with ".eh" to zero.
+- Changed process_archs() in redo_prebinding.c to set 
+  arch->dont_update_LC_ID_DYLIB_timestamp to TRUE for 64-bit archs so their
+  time stamps don't get changed.  Radar bug #4105452.
+
+Changes for the 5.18 release (the cctools-583 release):
+- Changed the Makefile so that when RC_XBS is set to YES then the compiler
+  options -MD and -dependency-file as well as the md(1) program are not used.
+  Radar bug #4029936.
+
+Changes for the 5.18 release (the cctools-580 release):
+- Changed it so that the default for MACOSX_DEPLOYMENT_TARGET is 10.4 for i386.
+  Radar bug #4081062.
+  - Changed the call to get_macosx_deployment_target() in unprebind_arch() in
+    redo_prebinding.c to pass the additional cputype parameter from the arch's
+    cputype.
+  - Changed the call to get_macosx_deployment_target() in main() in
+    seg_addr_table.c to pass the additional cputype parameter as CPU_TYPE_ANY.
+
+Changes for the 5.17 release (the cctools-577 release):
+- Fixed a bug in the libredo_prebinding code that caused it to report an error
+  when there was a relocation entry at the very end of a segment.  The problem
+  was in contents_pointer_for_vmaddr() in redo_prebinding.c where it was using
+  < when it should have been using <= in checking to see which segment a vmaddr
+  is in.  Radar bug #4054854.
 
 Changes for the 5.17 release (the cctools-572 release):
 - Changed nm(1) when the -P option is used to print a 0 for the size.  Radar

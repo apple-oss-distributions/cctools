@@ -1,5 +1,7 @@
 RC_OS = macos
 OFLAG = -O
+LEGACY = -D_MACH_I386_THREAD_STATUS_FPSTATE_LEGACY_FIELD_NAMES_ \
+	 -D_ARCHITECTURE_I386_FPU_FPSTATE_LEGACY_FIELD_NAMES_
 KERN = -fno-builtin -finline -fno-keep-inline-functions -fsigned-bitfields \
        -force_cpusubtype_ALL -msoft-float -nostdinc \
 -I$(NEXT_ROOT)/System/Library/Frameworks/Kernel.framework/PrivateHeaders/libsa \
@@ -16,21 +18,24 @@ ifeq "macos" "$(RC_OS)"
 	     echo -Wno-long-double -no-cpp-precomp ; \
 	     fi; )
   CC := $(shell if [ "$(RC_RELEASE)" == "Tiger" ] || \
-		   [ "$(RC_RELEASE)" == "Gordian" ]; then \
+		   [ "$(RC_RELEASE)" == "Gordian" ] || \
+		   [ "$(RC_RELEASE)" == "Saffron" ] || \
+		   [ "$(RC_USE_GCC35_FOR_PPC64)" == "YES" ]; then \
 		     echo gcc-3.5 ; \
 		else \
 		     echo "$(CC)" ; \
 	     fi; )
 endif
 ifeq "mwccppc" "$(notdir $(CC))"
-  CFLAGS = $(OFLAG) -g \
+  CFLAGS = $(OFLAG) -g $(LEGACY) \
      -I$(SRCROOT) -I$(SRCROOT)/../include -I$(OFILE_DIR)
 else
-  CFLAGS = $(OFLAG) -g -Wall $(X_CFLAGS) \
+  CFLAGS = $(OFLAG) -g -Wall $(X_CFLAGS) $(LEGACY) \
      -I$(SRCROOT) -I$(SRCROOT)/../include -I$(OFILE_DIR)
 endif
 
-USE_DEPENDENCY_FILE := $(shell if [ "$(notdir $(CC))" != "mwccppc" ]; then \
+USE_DEPENDENCY_FILE := $(shell if [ "$(notdir $(CC))" != "mwccppc" ] && \
+				  [ "$(RC_XBS)" != "YES" ]; then \
 	     echo YES ; else echo NO ; \
 	     fi; )
 
