@@ -95,6 +95,9 @@ static void perform_an_assembly_pass(
 /* used by error calls (exported) */
 char *progname = NULL;
 
+/* non-NULL if AS_SECURE_LOG_FILE is set */
+const char *secure_log_file = NULL;
+
 int
 main(
 int argc,
@@ -511,7 +514,7 @@ char **envp)
 				as_fatal("I expected 'i860' after "
 				       "-arch for this assembler.");
 #endif
-#ifdef I386
+#if defined(I386) && !defined(ARCH64)
 			    if(strcmp(*work_argv, "i486") == 0){
 				if(archflag_cpusubtype != -1 &&
 				   archflag_cpusubtype !=
@@ -609,6 +612,11 @@ char **envp)
 				   "'pentIIm3', or 'pentIIm5' after -arch "
 				   "for this assembler.");
 #endif
+#if defined(I386) && defined(ARCH64)
+			    if(strcmp(*work_argv, "x86_64") != 0)
+			      as_fatal("I expected 'x86_64' after "
+				       "-arch for this assembler.");
+#endif
 #ifdef HPPA
 			    if(strcmp(*work_argv, "hppa") != 0)
 				as_fatal("I expected 'hppa' after "
@@ -658,6 +666,12 @@ unknown_flag:
 	    force_cpusubtype_ALL = TRUE;
 	if(force_cpusubtype_ALL && specific_archflag)
 	    archflag_cpusubtype = -1;
+
+	/*
+	 * Test to see if the AS_SECURE_LOG_FILE environment
+	 * variable is set and save the value.
+	 */
+	secure_log_file = getenv("AS_SECURE_LOG_FILE");
 
 	/*
 	 * Call the initialization routines.

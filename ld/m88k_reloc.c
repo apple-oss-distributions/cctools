@@ -71,7 +71,7 @@ struct section_map *section_map)
     char *strings;
     enum bool force_extern_reloc;
     struct undefined_map *undefined_map;
-    struct merged_symbol *merged_symbol, **hash_pointer;
+    struct merged_symbol *merged_symbol;
     struct section_map *local_map, *pair_local_map;
     struct relocation_info *reloc, *pair_reloc;
     struct scattered_relocation_info *sreloc, *spair_reloc;
@@ -328,14 +328,13 @@ struct section_map *section_map)
 		    if((nlists[symbolnum].n_type & N_TYPE) == N_SECT &&
 		       (cur_obj->section_maps[nlists[symbolnum].n_sect-1].
 			s->flags & SECTION_TYPE) == S_COALESCED){
-			hash_pointer = lookup_symbol(strings +
+			merged_symbol = lookup_symbol(strings +
 					     nlists[symbolnum].n_un.n_strx);
-			if(hash_pointer == NULL){
+			if(merged_symbol->name_len == 0){
 			    fatal("internal error, in m88k_reloc() failed to "
 			          "lookup coalesced symbol %s", strings +
 				  nlists[symbolnum].n_un.n_strx);
 			}
-			merged_symbol = *hash_pointer;
 		    }
 		    else{
 			if((nlists[symbolnum].n_type & N_EXT) != N_EXT ||
@@ -482,11 +481,29 @@ struct section_map *section_map)
 		    }
 		    local_map = &(cur_obj->section_maps[r_symbolnum - 1]);
 		    local_map->output_section->referenced = TRUE;
+		    if(local_map->s->flags & S_ATTR_DEBUG){
+			error_with_cur_obj("illegal reference to debug section,"
+			    " from non-debug section (%.16s,%.16s) via "
+			    "relocation entry (%lu) to section (%.16s,%.16s)",
+			    section_map->s->segname, section_map->s->sectname,
+			    i, local_map->s->segname, local_map->s->sectname);
+			return;
+		    }
 		    pair_local_map = NULL;
 		    if(r_type == M88K_RELOC_SECTDIFF){
 			pair_local_map =
 			    &(cur_obj->section_maps[pair_r_symbolnum - 1]);
 			pair_local_map->output_section->referenced = TRUE;
+			if(pair_local_map->s->flags & S_ATTR_DEBUG){
+			    error_with_cur_obj("illegal reference to debug "
+				"section, from non-debug section (%.16s,%.16s) "
+				"via relocation entry (%lu) to section (%.16s,"
+				"%.16s)", section_map->s->segname,
+				section_map->s->sectname, i,
+				pair_local_map->s->segname,
+				pair_local_map->s->sectname);
+			    return;
+			}
 		    }
 		    if(local_map->nfine_relocs == 0 && 
 		       (pair_local_map == NULL ||

@@ -85,6 +85,17 @@ struct object_file {
 	*localsym_blocks;	/*  that are to be excluded from the output */
     struct section_map		/* Current map of symbols used for -sectorder */
 	*cur_section_map;	/*  that is being processed from this object */
+    char *resolved_path;	/* The full path name and length of the name */
+    unsigned long		/*  for N_OSO stabs added with the -Sp option */
+	resolved_path_len;
+    const char * dwarf_name;	/* The name of the main source file, */
+    const char * dwarf_comp_dir; /* and the current directory, */
+				/*  from the DWARF information; NULL if none */
+    size_t * dwarf_source_data; /* See read_dwarf_info in pass1.c for */
+				/*  an explanation.  */
+    const char * * dwarf_paths; /* Array of DWARF source file pathnames.  */
+    size_t dwarf_num_paths;	/* Length of dwarf_paths.  */
+  
 #ifdef RLD
     long set_num;		/* The set number this object belongs to. */
     enum bool user_obj_addr;	/* TRUE if the user allocated the object */
@@ -209,6 +220,26 @@ struct fine_reloc {
     unsigned long output_offset;     /* offset in the output file for the item*/
     struct merged_symbol	     /* the global merged_symbol for the item */
 		  *merged_symbol;    /*  if any (else NULL) */
+    struct ref *refs;		     /* if dead code stripping list of refs */
+};
+
+/*
+ * When dead code stripping a linked list of these ref structures are created
+ * from the relocation entries for each fine_reloc.  There are fields if this
+ * is for an external reference and fields for a local references.  One set of
+ * fields are set and the other are set to NULL.
+ */
+struct ref {
+    /* if this reference came from an external symbol this is set */
+    struct merged_symbol *merged_symbol;
+
+    /* if this reference is to a local block these are set */
+    struct fine_reloc *fine_reloc;
+    struct section_map *map;
+    struct object_file *obj;
+
+    /* next reference in the list if any, else NULL */
+    struct ref *next;
 };
 
 /*
@@ -285,6 +316,8 @@ __private_extern__ void print_obj_name(
     struct object_file *obj);
 __private_extern__ unsigned long size_ar_name(
     struct ar_hdr *ar_hdr);
+__private_extern__ void set_obj_resolved_path(
+    struct object_file *obj);
 __private_extern__ void print_whatsloaded(
     void);
 __private_extern__ enum bool is_dylib_module_loaded(

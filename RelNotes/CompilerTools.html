@@ -1,13 +1,13 @@
 <HTML>
-<!--This file created 3/21/05 5:22 PM by Claris Home Page version 3.0-->
+<!--This file created 5/16/06 12:00 PM by Claris Home Page version 3.0-->
 <HEAD>
    <TITLE>Mac OS X Compiler Tools Release Notes</TITLE>
    <META NAME=GENERATOR CONTENT="Claris Home Page 3.0">
-   <X-CLARIS-WINDOW TOP=185 BOTTOM=987 LEFT=190 RIGHT=874>
+   <X-CLARIS-WINDOW TOP=166 BOTTOM=968 LEFT=96 RIGHT=780>
    <X-CLARIS-TAGVIEW MODE=minimal>
 </HEAD>
 <BODY BGCOLOR="#FFFFFF">
-<H1>Mac OS X Xcode 2.1 Release Notes:<BR>
+<H1>Mac OS X Xcode 3.0 Release Notes:<BR>
 Compiler Tools</H1>
 
 <P><!-- start of path --> <TABLE BORDER=0 CELLSPACING=0 WIDTH=600 valign=left>
@@ -19,10 +19,11 @@ Compiler Tools</H1>
    </TR>
 </TABLE>
 <BR>
-<!-- end of path --> <A HREF="index.html"><IMG SRC="Images/up.gif" WIDTH=36 HEIGHT=16 BORDER=0 ALIGN=bottom></A></P>
+<!-- end of path --> <A HREF="index.html"><IMG SRC="../Images/up.gif" X-CLARIS-USEIMAGEWIDTH X-CLARIS-USEIMAGEHEIGHT ALIGN=bottom></A></P>
 
-<P>These notes are for the MacOS X Xcode 2.1 Release of the compiler
-tools. They contain information about the following topics:</P>
+<P>These notes are for the MacOS X Xcode 2.4 Release of the
+compiler tools. They contain information about the following
+topics:</P>
 
 <UL>
    <LI>The Mac OS X Mach-O GNU-based assemblers</LI>
@@ -32,6 +33,60 @@ tools. They contain information about the following topics:</P>
    <LI>Mach-O object file tools (<B>nm</B>, <B>otool</B>, and so
    on)</LI>
 </UL>
+
+<H2>Notes Specific to Mac OS X Xcode 3.0 Release</H2>
+
+<P>The tools now support development of 64-bit Mach-O binaries for
+Intel with the -arch x86_64 flag.</P>
+
+<P>The design of the relocation entries for the x86_64 architecture
+does not make it possible to strip local symbols from relocable
+object files. As such the feature of running strip(1) with the -x
+option to limit the symbols to just the exported symbols is not
+available on the x86_64 architecture. And the strip(1) -x option for
+an x86_64 object file does nothing.</P>
+
+<H2>Notes Specific to Mac OS X Xcode 2.4 Release</H2>
+
+<P>The one feature of this release is support for the Intel
+Vanderpool instructions in the assembler and disassembler.</P>
+
+<H2>Notes Specific to Mac OS X Xcode 2.3 Release</H2>
+
+<P>The major new feature for this release is the support of the use
+of DWARF for debug information.</P>
+
+<P>The other new feature for this release is the support of the .quad
+assembler directive for the 32-bit assemblers. With this feature the
+assembler now treates all expressions as 64-bit values. This change
+can cause code code to no longer assemble. For example the following
+construct:</P>
+
+<P>addi r11, r11, (-33120 &lt;&lt; 16) &gt;&gt; 16</P>
+
+<P>will now generate an error of the form:</P>
+
+<P>x.s:1:Parameter error: expression out of range (parameter 3)</P>
+
+<P>The correct way this should be coded is:</P>
+
+<P>addi r11, r11, lo16(-33120)</P>
+
+<H2>Notes Specific to Mac OS X Xcode 2.2.1 Release</H2>
+
+<P>There are no new features and only bug fixes. But there are some
+changes to improve the performance of the static link editor.</P>
+
+<H2>Notes Specific to Mac OS X Xcode 2.2 Release</H2>
+
+<H2>New Features</H2>
+
+<P>The static link editor now supports the new option -Sp to strip,
+edit and add debugging symbols so the debugger can used most of the
+debugging symbols from the object files.</P>
+
+<P>The ar(1) tool has the new -S option to suppress building the
+table of contents.</P>
 
 <H2>Notes Specific to Mac OS X Xcode 2.1 Release</H2>
 
@@ -1205,6 +1260,6 @@ the PowerPC architecture, is not supported by the Mac OS X assembler.
 This instruction is assembled by <B>ppcasm</B>.</P>
 
 <P><FONT SIZE="-2" FACE="Geneva,Helvetica,Arial">Copyright &copy;
-2003 Apple Computer, Inc.</FONT></P>
+2006 Apple Computer, Inc.</FONT></P>
 </BODY>
 </HTML>

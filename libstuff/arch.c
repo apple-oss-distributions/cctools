@@ -47,6 +47,7 @@ static const struct arch_flag arch_flags[] = {
 
     /* architecture families */
     { "ppc64",     CPU_TYPE_POWERPC64, CPU_SUBTYPE_POWERPC_ALL },
+    { "x86_64",    CPU_TYPE_X86_64, CPU_SUBTYPE_X86_64_ALL },
     /* specific architecture implementations */
     { "ppc970-64", CPU_TYPE_POWERPC64, CPU_SUBTYPE_POWERPC_970 },
 
@@ -298,6 +299,20 @@ const struct arch_flag *flag)
 	    return(0x1000); /* 4K */
 	else
 	    return(0x2000); /* 8K */
+}
+
+/*
+ * get_segprot_from_flag() returns the default segment protection.
+ */
+__private_extern__
+vm_prot_t
+get_segprot_from_flag(
+const struct arch_flag *flag)
+{
+	if(flag->cputype == CPU_TYPE_I386)
+	    return(VM_PROT_READ | VM_PROT_WRITE);
+	else
+	    return(VM_PROT_READ | VM_PROT_WRITE | VM_PROT_EXECUTE);
 }
 
 /*

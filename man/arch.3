@@ -1,4 +1,4 @@
-.Dd May 7, 2005
+.Dd July 28, 2005
 .Dt ARCH 3
 .Sh NAME
 .Nm NXGetAllArchInfos ,
@@ -23,13 +23,13 @@
 .Ft extern cpu_subtype_t
 .Fn NXCombineCpuSubtypes "cpu_type_t cputype" "cpu_subtype_t cpusubtype1" "cpu_subtype_t cpusubtype2"
 .Sh DESCRIPTION
-These functions are intended for use in programs that have to deal with fat
-files or programs that can target multiple architectures.
+These functions are intended for use in programs that have to deal with
+universal files or programs that can target multiple architectures.
 Typically, a program will use a command-line argument that starts with
 .Dq \-arch \fBname\fR ,
 where this specifies an architecture.
 These functions and data structures provide some help for processing
-architecture flags and then processing the contents of a fat file.
+architecture flags and then processing the contents of a universal file.
 .Pp
 The structure
 .Ar NXArchInfo
@@ -51,8 +51,9 @@ The currently known architectures are:
 .Bl -column hppa7100LC CPU_TYPE_POWERPC CPU_SUBTYPE_MC68030_ONLY
 .It Em Name Ta Em "CPU Type" Ta Em "CPU Subtype" Ta Em Description
 .It ppc Ta CPU_TYPE_POWERPC Ta CPU_SUBTYPE_POWERPC_ALL Ta PowerPC
-.It ppc64 Ta CPU_TYPE_POWERPC64 Ta CPU_SUBTYPE_POWERPC64_ALL Ta PowerPC (interim 64-bit)
+.It ppc64 Ta CPU_TYPE_POWERPC64 Ta CPU_SUBTYPE_POWERPC64_ALL Ta PowerPC 64-bit
 .It i386 Ta CPU_TYPE_I386 Ta CPU_SUBTYPE_I386_ALL Ta Intel 80x86
+.It x86_64 Ta CPU_TYPE_X86_64 Ta CPU_SUBTYPE_X86_64_ALL Ta Intel x86-64
 .It m68k Ta CPU_TYPE_MC680x0 Ta CPU_SUBTYPE_MC680x0_ALL Ta Motorola 68K
 .It hppa Ta CPU_TYPE_HPPA Ta CPU_SUBTYPE_HPPA_ALL Ta HP-PA
 .It i860 Ta CPU_TYPE_I860 Ta CPU_SUBTYPE_I860_ALL Ta Intel 860

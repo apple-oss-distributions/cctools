@@ -20,6 +20,10 @@
  * 
  * @APPLE_LICENSE_HEADER_END@
  */
+#define __darwin_i386_exception_state i386_exception_state
+#define __darwin_i386_float_state i386_float_state
+#define __darwin_i386_thread_state i386_thread_state
+
 #ifndef RLD
 #ifdef SHLIB
 #include "shlib.h"
@@ -589,9 +593,15 @@ void *cookie)
 						 arch_flags[0].cpusubtype);
 		    }
 #ifdef OTOOL
-		    if(ofile.mh != NULL &&
-		       ofile.mh->magic == SWAP_LONG(MH_MAGIC)){
-			if((cpu_type_t)SWAP_LONG(ofile.mh->cputype) ==
+		    if(ofile.mh != NULL){
+		        if(ofile.mh->magic == MH_MAGIC &&
+			   ofile.mh->cputype == arch_flags[i].cputype &&
+			   (ofile.mh->cpusubtype == arch_flags[i].cpusubtype ||
+			    family == TRUE)){
+			    arch_found = TRUE;
+			}
+		        if(ofile.mh->magic == SWAP_LONG(MH_MAGIC) &&
+			   (cpu_type_t)SWAP_LONG(ofile.mh->cputype) ==
 				arch_flags[i].cputype &&
 			   ((cpu_subtype_t)SWAP_LONG(ofile.mh->cpusubtype) ==
 				arch_flags[i].cpusubtype ||
@@ -599,9 +609,15 @@ void *cookie)
 			    arch_found = TRUE;
 			}
 		    }
-		    else if(ofile.mh64 != NULL &&
-		       ofile.mh64->magic == SWAP_LONG(MH_MAGIC_64)){
-			if((cpu_type_t)SWAP_LONG(ofile.mh64->cputype) ==
+		    else if(ofile.mh64 != NULL){
+		        if(ofile.mh64->magic == MH_MAGIC_64 &&
+			   ofile.mh64->cputype == arch_flags[i].cputype &&
+			   (ofile.mh64->cpusubtype ==arch_flags[i].cpusubtype ||
+			    family == TRUE)){
+			    arch_found = TRUE;
+			}
+		        if(ofile.mh64->magic == SWAP_LONG(MH_MAGIC_64) &&
+			   (cpu_type_t)SWAP_LONG(ofile.mh64->cputype) ==
 				arch_flags[i].cputype &&
 			   ((cpu_subtype_t)SWAP_LONG(ofile.mh64->cpusubtype) ==
 				arch_flags[i].cpusubtype ||
@@ -2924,6 +2940,7 @@ struct ofile *ofile)
     struct routines_command_64 *rc64;
     struct twolevel_hints_command *hints;
     struct prebind_cksum_command *cs;
+    struct uuid_command *uuid;
     unsigned long flavor, count, nflavor;
     char *p, *state;
 
@@ -2986,6 +3003,7 @@ struct ofile *ofile)
 	rc64 = NULL;
 	hints = NULL;
 	cs = NULL;
+	uuid = NULL;
 	for(i = 0, lc = load_commands; i < ncmds; i++){
 	    l = *lc;
 	    if(swapped)
@@ -3017,7 +3035,7 @@ struct ofile *ofile)
 		    swap_segment_command(sg, host_byte_sex);
 		if(sg->cmdsize != sizeof(struct segment_command) +
 				     sg->nsects * sizeof(struct section)){
-		    Mach_O_error(ofile, "malformed object (inconsistant "
+		    Mach_O_error(ofile, "malformed object (inconsistent "
 				 "cmdsize in LC_SEGMENT command %lu for the "
 				 "number of sections)", i);
 		    return(CHECK_BAD);
@@ -3080,7 +3098,7 @@ struct ofile *ofile)
 		    swap_segment_command_64(sg64, host_byte_sex);
 		if(sg64->cmdsize != sizeof(struct segment_command_64) +
 				     sg64->nsects * sizeof(struct section_64)){
-		    Mach_O_error(ofile, "malformed object (inconsistant "
+		    Mach_O_error(ofile, "malformed object (inconsistent "
 				 "cmdsize in LC_SEGMENT_64 command %lu for "
 				 "the number of sections)", i);
 		    return(CHECK_BAD);
@@ -3353,6 +3371,21 @@ struct ofile *ofile)
 		if(cs->cmdsize != sizeof(struct prebind_cksum_command)){
 		    Mach_O_error(ofile, "malformed object (LC_PREBIND_CKSUM "
 			"command %lu has incorrect cmdsize)", i);
+		    return(CHECK_BAD);
+		}
+		break;
+
+	    case LC_UUID:
+		if(uuid != NULL){
+		    Mach_O_error(ofile, "malformed object (more than one "
+			"LC_UUID command)");
+		    return(CHECK_BAD);
+		}
+		uuid = (struct uuid_command *)lc;
+		if(swapped)
+		    swap_uuid_command(uuid, host_byte_sex);
+		if(uuid->cmdsize != sizeof(struct uuid_command)){
+		    Mach_O_error(ofile, "malformed object (LC_UUID command %lu "			"has incorrect cmdsize)", i);
 		    return(CHECK_BAD);
 		}
 		break;
@@ -3890,9 +3923,18 @@ struct ofile *ofile)
 		}
 	    	if(cputype == CPU_TYPE_I386){
 		    i386_thread_state_t *cpu;
+/* current i386 thread states */
+#if i386_THREAD_STATE == 1
+		    struct i386_float_state *fpu;
+		    i386_exception_state_t *exc;
+#endif /* i386_THREAD_STATE == 1 */
+
+/* i386 thread states on older releases */
+#if i386_THREAD_STATE == -1
 		    i386_thread_fpstate_t *fpu;
 		    i386_thread_exceptstate_t *exc;
 		    i386_thread_cthreadstate_t *user;
+#endif /* i386_THREAD_STATE == -1 */
 
 		    nflavor = 0;
 		    p = (char *)ut + ut->cmdsize;
@@ -3911,6 +3953,13 @@ struct ofile *ofile)
 			state += sizeof(unsigned long);
 			switch(flavor){
 			case i386_THREAD_STATE:
+#if i386_THREAD_STATE == 1
+			case -1:
+#endif /* i386_THREAD_STATE == 1 */
+/* i386 thread states on older releases */
+#if i386_THREAD_STATE == -1
+			case 1:
+#endif /* i386_THREAD_STATE == -1 */
 			    if(count != i386_THREAD_STATE_COUNT){
 				Mach_O_error(ofile, "malformed object (count "
 				    "not i386_THREAD_STATE_COUNT for flavor "
@@ -3925,6 +3974,43 @@ struct ofile *ofile)
 				swap_i386_thread_state(cpu, host_byte_sex);
 			    state += sizeof(i386_thread_state_t);
 			    break;
+/* current i386 thread states */
+#if i386_THREAD_STATE == 1
+			case i386_FLOAT_STATE:
+			    if(count != i386_FLOAT_STATE_COUNT){
+				Mach_O_error(ofile, "malformed object (count "
+				    "not i386_FLOAT_STATE_COUNT for flavor "
+				    "number %lu which is a i386_FLOAT_STATE "
+				    "flavor in %s command %lu)", nflavor,
+				    ut->cmd == LC_UNIXTHREAD ? "LC_UNIXTHREAD" :
+				    "LC_THREAD", i);
+				return(CHECK_BAD);
+			    }
+			    fpu = (struct i386_float_state *)state;
+			    if(swapped)
+				swap_i386_float_state(fpu, host_byte_sex);
+			    state += sizeof(struct i386_float_state);
+			    break;
+			case i386_EXCEPTION_STATE:
+			    if(count != I386_EXCEPTION_STATE_COUNT){
+				Mach_O_error(ofile, "malformed object (count "
+				    "not I386_EXCEPTION_STATE_COUNT for "
+				    "flavor number %lu which is a i386_"
+				    "EXCEPTION_STATE flavor in %s command %lu)",
+				    nflavor,
+				    ut->cmd == LC_UNIXTHREAD ? "LC_UNIXTHREAD" :
+				    "LC_THREAD", i);
+				return(CHECK_BAD);
+			    }
+			    exc = (i386_exception_state_t *)state;
+			    if(swapped)
+				swap_i386_exception_state(exc,host_byte_sex);
+			    state += sizeof(i386_exception_state_t);
+			    break;
+#endif /* i386_THREAD_STATE == 1 */
+
+/* i386 thread states on older releases */
+#if i386_THREAD_STATE == -1
 			case i386_THREAD_FPSTATE:
 			    if(count != i386_THREAD_FPSTATE_COUNT){
 				Mach_O_error(ofile, "malformed object (count "
@@ -3973,6 +4059,7 @@ struct ofile *ofile)
 							      host_byte_sex);
 			    state += sizeof(i386_thread_cthreadstate_t);
 			    break;
+#endif /* i386_THREAD_STATE == -1 */
 			default:
 			    if(swapped){
 				Mach_O_error(ofile, "malformed object (unknown "
@@ -3989,6 +4076,58 @@ struct ofile *ofile)
 		    }
 		    break;
 		}
+#ifdef x86_THREAD_STATE64_COUNT
+	    	if(cputype == CPU_TYPE_X86_64){
+		    x86_thread_state64_t *cpu;
+
+		    nflavor = 0;
+		    p = (char *)ut + ut->cmdsize;
+		    while(state < p){
+			flavor = *((unsigned long *)state);
+			if(swapped){
+			    flavor = SWAP_LONG(flavor);
+			    *((unsigned long *)state) = flavor;
+			}
+			state += sizeof(unsigned long);
+			count = *((unsigned long *)state);
+			if(swapped){
+			    count = SWAP_LONG(count);
+			    *((unsigned long *)state) = count;
+			}
+			state += sizeof(unsigned long);
+			switch(flavor){
+			case x86_THREAD_STATE64:
+			    if(count != x86_THREAD_STATE64_COUNT){
+				Mach_O_error(ofile, "malformed object (count "
+				    "not x86_THREAD_STATE64_COUNT for "
+				    "flavor number %lu which is a x86_THREAD_"
+				    "STATE64 flavor in %s command %lu)",
+				    nflavor, ut->cmd == LC_UNIXTHREAD ? 
+				    "LC_UNIXTHREAD" : "LC_THREAD", i);
+				return(CHECK_BAD);
+			    }
+			    cpu = (x86_thread_state64_t *)state;
+			    if(swapped)
+				swap_x86_thread_state64(cpu, host_byte_sex);
+			    state += sizeof(x86_thread_state64_t);
+			    break;
+			default:
+			    if(swapped){
+				Mach_O_error(ofile, "malformed object (unknown "
+				    "flavor for flavor number %lu in %s command"
+				    " %lu can't byte swap it)", nflavor,
+				    ut->cmd == LC_UNIXTHREAD ? "LC_UNIXTHREAD" :
+				    "LC_THREAD", i);
+				return(CHECK_BAD);
+			    }
+			    state += count * sizeof(long);
+			    break;
+			}
+			nflavor++;
+		    }
+		    break;
+		}
+#endif /* x86_THREAD_STATE64_COUNT */
 	    	if(cputype == CPU_TYPE_HPPA){
 		    struct hp_pa_integer_thread_state *cpu;
 		    struct hp_pa_frame_thread_state *frame;
@@ -4250,9 +4389,9 @@ struct ofile *ofile)
 		}
 	    }
 	}
-	/* check for an inconsistant size of the load commands */
+	/* check for an inconsistent size of the load commands */
 	if((char *)load_commands + sizeofcmds != (char *)lc){
-	    Mach_O_error(ofile, "malformed object (inconsistant sizeofcmds "
+	    Mach_O_error(ofile, "malformed object (inconsistent sizeofcmds "
 			 "field in mach header)");
 	    return(CHECK_BAD);
 	}
