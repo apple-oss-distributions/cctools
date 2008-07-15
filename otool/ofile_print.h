@@ -282,6 +282,10 @@ extern void print_rpath_command(
     struct rpath_command *rpath,
     struct load_command *lc);
 
+extern void print_encryption_info_command(
+    struct encryption_info_command *ec,
+    unsigned long object_size);
+
 extern void print_thread_states(
     char *begin, 
     char *end,
@@ -413,7 +417,7 @@ extern void print_objc_segment(
     unsigned long nsorted_symbols,
     enum bool verbose);
 
-extern void print_objc2(
+extern void print_objc2_64bit(
     cpu_type_t cputype,
     struct load_command *load_commands,
     uint32_t ncmds,
@@ -422,6 +426,26 @@ extern void print_objc2(
     char *object_addr,
     unsigned long object_size,
     struct nlist_64 *symbols64,
+    unsigned long nsymbols,
+    char *strings,
+    unsigned long strings_size,
+    struct symbol *sorted_symbols,
+    unsigned long nsorted_symbols,
+    struct relocation_info *ext_relocs,
+    unsigned long next_relocs,
+    struct relocation_info *loc_relocs,
+    unsigned long nloc_relocs,
+    enum bool verbose);
+
+extern void print_objc2_32bit(
+    cpu_type_t cputype,
+    struct load_command *load_commands,
+    uint32_t ncmds,
+    uint32_t sizeofcmds,
+    enum byte_sex object_byte_sex,
+    char *object_addr,
+    unsigned long object_size,
+    struct nlist *symbols,
     unsigned long nsymbols,
     char *strings,
     unsigned long strings_size,
@@ -478,8 +502,35 @@ extern void print_objc_runtime_setup_section(
     unsigned long object_size,
     enum bool verbose);
 
+extern void print_coff_reloc_section(
+    struct load_command *load_commands,
+    uint32_t ncmds,
+    uint32_t sizeofcmds,
+    uint32_t filetype,
+    enum byte_sex object_byte_sex,
+    char *object_addr,
+    unsigned long object_size,
+    enum bool verbose);
+
 extern void print_label(
-    unsigned long addr,
+    uint64_t addr,
     enum bool colon_and_newline,
     struct symbol *sorted_symbols,
     unsigned long nsorted_symbols);
+
+extern enum bool get_sect_info(
+    char *segname,
+    char *sectname,
+    struct load_command *load_commands,
+    uint32_t ncmds,
+    uint32_t sizeofcmds,
+    uint32_t filetype,
+    enum byte_sex load_commands_byte_sex,
+    char *object_addr,
+    unsigned long object_size,
+    char **sect_pointer,
+    uint64_t *sect_size,
+    uint64_t *sect_addr,
+    struct relocation_info **sect_relocs,
+    unsigned long *sect_nrelocs,
+    unsigned long *sect_flags);

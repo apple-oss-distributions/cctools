@@ -511,6 +511,7 @@ void *cookie)
 	    else if((mh_flags & MH_TWOLEVEL) == MH_TWOLEVEL &&
 		    (lc->cmd == LC_LOAD_DYLIB ||
 		     lc->cmd == LC_LOAD_WEAK_DYLIB ||
+		     lc->cmd == LC_LAZY_LOAD_DYLIB ||
 		     lc->cmd == LC_REEXPORT_DYLIB)){
 		process_flags.nlibs++;
 	    }
@@ -603,6 +604,7 @@ void *cookie)
 	    for (i = 0; i < ncmds; i++){
 		if(lc->cmd == LC_LOAD_DYLIB ||
 		   lc->cmd == LC_LOAD_WEAK_DYLIB ||
+		   lc->cmd == LC_LAZY_LOAD_DYLIB ||
 		   lc->cmd == LC_REEXPORT_DYLIB){
 		    dl = (struct dylib_command *)lc;
 		    process_flags.lib_names[j] =
@@ -1175,6 +1177,9 @@ char *arch_name)
 	    if(ofile->mh_filetype == MH_OBJECT &&
 	       (symbols[i].nl.n_desc & N_NO_DEAD_STRIP) == N_NO_DEAD_STRIP)
 		    printf("[no dead strip] ");
+
+	    if((symbols[i].nl.n_desc & N_ARM_THUMB_DEF) == N_ARM_THUMB_DEF)
+		    printf("[Thumb] ");
 
 	    if((symbols[i].nl.n_type & N_TYPE) == N_INDR)
 		printf("%s (for %s)", symbols[i].name, symbols[i].indr_name);

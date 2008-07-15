@@ -209,6 +209,7 @@
 #include <mach-o/ppc/reloc.h>
 #include <mach-o/hppa/reloc.h>
 #include <mach-o/sparc/reloc.h>
+#include <mach-o/arm/reloc.h>
 #include "stuff/symbol.h"
 #include "stuff/ofile.h"
 #include "stuff/allocate.h"
@@ -1450,6 +1451,29 @@ NS32:
 		    break;
 		}
 		break;
+	    case CPU_TYPE_ARM:
+		printf("     ARM");
+		switch(cpusubtype){
+		case CPU_SUBTYPE_ARM_ALL:
+		    printf("        ALL");
+		    break;
+		case CPU_SUBTYPE_ARM_V4T:
+		    printf("        V4T");
+		    break;
+		case CPU_SUBTYPE_ARM_V5TEJ:
+		    printf("      V5TEJ");
+		    break;
+		case CPU_SUBTYPE_ARM_XSCALE:
+		    printf("     XSCALE");
+		    break;
+		case CPU_SUBTYPE_ARM_V6:
+		    printf("         V6");
+		    break;
+		default:
+		    printf(" %10d", cpusubtype & ~CPU_SUBTYPE_MASK);
+		    break;
+		}
+		break;
 	    default:
 		printf(" %7d %10d", cputype, cpusubtype & ~CPU_SUBTYPE_MASK);
 		break;
@@ -1635,6 +1659,7 @@ enum bool very_verbose)
     struct uuid_command uuid;
     struct linkedit_data_command ld;
     struct rpath_command rpath;
+    struct encryption_info_command encrypt;
 
 	host_byte_sex = get_host_byte_sex();
 	swapped = host_byte_sex != load_commands_byte_sex;
@@ -1775,6 +1800,7 @@ enum bool very_verbose)
 	    case LC_LOAD_DYLIB:
 	    case LC_LOAD_WEAK_DYLIB:
 	    case LC_REEXPORT_DYLIB:
+	    case LC_LAZY_LOAD_DYLIB:
 		memset((char *)&dl, '\0', sizeof(struct dylib_command));
 		size = left < sizeof(struct dylib_command) ?
 		       left : sizeof(struct dylib_command);
@@ -1974,6 +2000,17 @@ enum bool very_verbose)
 		print_rpath_command(&rpath, lc);
 		break;
 
+	    case LC_ENCRYPTION_INFO:
+		memset((char *)&encrypt, '\0',
+		       sizeof(struct encryption_info_command));
+		size = left < sizeof(struct encryption_info_command) ?
+		       left : sizeof(struct encryption_info_command);
+		memcpy((char *)&encrypt, (char *)lc, size);
+		if(swapped)
+		    swap_encryption_command(&encrypt, host_byte_sex);
+		print_encryption_info_command(&encrypt, object_size);
+		break;
+
 	    default:
 		printf("      cmd ?(0x%08x) Unknown load command\n",
 		       (unsigned int)l.cmd);
@@ -2070,6 +2107,7 @@ enum bool verbose)
 	    case LC_LOAD_DYLIB:
 	    case LC_LOAD_WEAK_DYLIB:
 	    case LC_REEXPORT_DYLIB:
+	    case LC_LAZY_LOAD_DYLIB:
 		if(just_id == TRUE)
 		    break;
 	    case LC_ID_DYLIB:
@@ -2105,7 +2143,9 @@ enum bool verbose)
 		    else if(l.cmd == LC_LOAD_DYLIB)
 			printf("LC_LOAD_DYLIB ");
 		    else if(l.cmd == LC_LOAD_WEAK_DYLIB)
-			printf("LC_LOAD_WEAK_DYLIB ");
+			printf("LC_REEXPORT_DYLIB ");
+		    else if(l.cmd == LC_LAZY_LOAD_DYLIB)
+			printf("LC_LAZY_LOAD_DYLIB ");
 		    else if(l.cmd == LC_REEXPORT_DYLIB)
 			printf("LC_LOAD_WEAK_DYLIB ");
 		    else
@@ -2345,6 +2385,10 @@ enum bool verbose)
 		printf(" S_COALESCED\n");
 	    else if(section_type == S_INTERPOSING)
 		printf(" S_INTERPOSING\n");
+	    else if(section_type == S_DTRACE_DOF)
+		printf(" S_DTRACE_DOF\n");
+	    else if(section_type == S_LAZY_DYLIB_SYMBOL_POINTERS)
+		printf(" S_LAZY_DYLIB_SYMBOL_POINTERS\n");
 	    else
 		printf(" 0x%08x\n", (unsigned int)section_type);
 
@@ -2379,6 +2423,7 @@ enum bool verbose)
 	printf(" reserved1 %u", reserved1);
 	if(section_type == S_SYMBOL_STUBS ||
 	   section_type == S_LAZY_SYMBOL_POINTERS ||
+	   section_type == S_LAZY_DYLIB_SYMBOL_POINTERS ||
 	   section_type == S_NON_LAZY_SYMBOL_POINTERS)
 	    printf(" (index into indirect symbol table)\n");
 	else
@@ -2620,9 +2665,9 @@ struct load_command *lc)
 }
 
 /*
- * print an LC_ID_DYLIB, LC_LOAD_DYLIB, LC_LOAD_WEAK_DYLIB or LC_REEXPORT_DYLIB
- * command.  The dylib_command structure specified must be aligned correctly and
- * in the host byte sex.
+ * print an LC_ID_DYLIB, LC_LOAD_DYLIB, LC_LOAD_WEAK_DYLIB, LC_REEXPORT_DYLIB or
+ * LC_LAZY_LOAD_DYLIB command.  The dylib_command structure specified must be
+ * aligned correctly and in the host byte sex.
  */
 void
 print_dylib_command(
@@ -2639,6 +2684,8 @@ struct load_command *lc)
 	    printf("          cmd LC_LOAD_WEAK_DYLIB\n");
 	else if(dl->cmd == LC_REEXPORT_DYLIB)
 	    printf("          cmd LC_REEXPORT_DYLIB\n");
+	else if(dl->cmd == LC_LAZY_LOAD_DYLIB)
+	    printf("          cmd LC_LAZY_LOAD_DYLIB\n");
 	else
 	    printf("          cmd %u (unknown)\n", dl->cmd);
 	printf("      cmdsize %u", dl->cmdsize);
@@ -3069,6 +3116,34 @@ struct load_command *lc)
 	else{
 	    printf("         path ?(bad offset %u)\n", rpath->path.offset);
 	}
+}
+
+/*
+ * print an LC_ENCRYPTION_INFO command.  The encryption_info_command structure
+ * specified must be aligned correctly and in the host byte sex.
+ */
+void
+print_encryption_info_command(
+struct encryption_info_command *ec,
+unsigned long object_size)
+{
+	printf("          cmd LC_ENCRYPTION_INFO\n");
+	printf("      cmdsize %u", ec->cmdsize);
+	if(ec->cmdsize < sizeof(struct encryption_info_command))
+	    printf(" Incorrect size\n");
+	else
+	    printf("\n");
+	printf(" cryptoff  %u", ec->cryptoff);
+	if(ec->cryptoff > object_size)
+	    printf(" (past end of file)\n");
+	else
+	    printf("\n");
+	printf(" cryptsize %u", ec->cryptsize);
+	if(ec->cryptsize + ec->cryptoff > object_size)
+	    printf(" (past end of file)\n");
+	else
+	    printf("\n");
+	printf(" cryptid   %u\n", ec->cryptid);
 }
 
 /*
@@ -5074,6 +5149,72 @@ print_x86_debug_state64:
 		}
 	    }
 	}
+	else if(cputype == CPU_TYPE_ARM){
+	    struct arm_thread_state cpu;
+	    while(begin < end){
+		if(end - begin > (ptrdiff_t)sizeof(unsigned long)){
+		    memcpy((char *)&flavor, begin, sizeof(unsigned long));
+		    begin += sizeof(unsigned long);
+		}
+		else{
+		    flavor = 0;
+		    begin = end;
+		}
+		if(swapped)
+		    flavor = SWAP_LONG(flavor);
+		if(end - begin > (ptrdiff_t)sizeof(unsigned long)){
+		    memcpy((char *)&count, begin, sizeof(unsigned long));
+		    begin += sizeof(unsigned long);
+		}
+		else{
+		    count = 0;
+		    begin = end;
+		}
+		if(swapped)
+		    count = SWAP_LONG(count);
+
+		switch(flavor){
+		case ARM_THREAD_STATE:
+		    printf("     flavor ARM_THREAD_STATE\n");
+		    if(count == ARM_THREAD_STATE_COUNT)
+			printf("      count ARM_THREAD_STATE_COUNT\n");
+		    else
+			printf("      count %lu (not ARM_THREAD_STATE_"
+			       "COUNT)\n", count);
+		    left = end - begin;
+		    if(left >= sizeof(struct arm_thread_state)){
+		        memcpy((char *)&cpu, begin,
+			       sizeof(struct arm_thread_state));
+		        begin += sizeof(struct arm_thread_state);
+		    }
+		    else{
+		        memset((char *)&cpu, '\0',
+			       sizeof(struct arm_thread_state));
+		        memcpy((char *)&cpu, begin, left);
+		        begin += left;
+		    }
+		    if(swapped)
+			swap_arm_thread_state_t(&cpu, host_byte_sex);
+		    printf(
+		       "\t    r0  0x%08x r1     0x%08x r2  0x%08x r3  0x%08x\n"
+		       "\t    r4  0x%08x r5     0x%08x r6  0x%08x r7  0x%08x\n"
+		       "\t    r8  0x%08x r9     0x%08x r10 0x%08x r11 0x%08x\n"
+		       "\t    r12 0x%08x r13    0x%08x r14 0x%08x r15 0x%08x\n"
+		       "\t    r16 0x%08x\n",
+			cpu.r0, cpu.r1, cpu.r2, cpu.r3, cpu.r4, cpu.r5, cpu.r6,
+			cpu.r7, cpu.r8, cpu.r9, cpu.r10, cpu.r11, cpu.r12,
+			cpu.r13, cpu.r14, cpu.r15, cpu.r16);
+		    break;
+		default:
+		    printf("     flavor %lu (unknown)\n", flavor);
+		    printf("      count %lu\n", count);
+		    printf("      state:\n");
+		    print_unknown_state(begin, end, count, swapped);
+		    begin += count * sizeof(unsigned long);
+		    break;
+		}
+	    }
+	}
 	else{
 	    while(begin < end){
 		if(end - begin > (ptrdiff_t)sizeof(unsigned long)){
@@ -5443,6 +5584,8 @@ enum bool verbose)
 			sr->r_type == HPPA_RELOC_PAIR) ||
 		       (cputype == CPU_TYPE_SPARC &&
 			sr->r_type == SPARC_RELOC_PAIR) ||
+		       (cputype == CPU_TYPE_ARM &&
+			sr->r_type == ARM_RELOC_PAIR) ||
 		       (cputype == CPU_TYPE_I860 &&
 			sr->r_type == I860_RELOC_PAIR))
 			    printf("         ");
@@ -5495,6 +5638,8 @@ enum bool verbose)
 			    sr->r_type == M88K_RELOC_PAIR) ||
 			   (cputype == CPU_TYPE_SPARC &&
 			    sr->r_type == SPARC_RELOC_PAIR) ||
+			   (cputype == CPU_TYPE_ARM &&
+			    sr->r_type == ARM_RELOC_PAIR) ||
 			   (cputype == CPU_TYPE_I860 &&
 			    sr->r_type == I860_RELOC_PAIR))
 			    printf(" half = 0x%04x ",
@@ -5560,6 +5705,8 @@ enum bool verbose)
 			(sr->r_type == HPPA_RELOC_SECTDIFF ||
 			 sr->r_type == HPPA_RELOC_HI21_SECTDIFF ||
 			 sr->r_type == HPPA_RELOC_LO14_SECTDIFF)) ||
+		       (cputype == CPU_TYPE_ARM &&
+			 sr->r_type == ARM_RELOC_SECTDIFF) ||
 		       (cputype == CPU_TYPE_SPARC &&
 			(sr->r_type == SPARC_RELOC_SECTDIFF ||
 			 sr->r_type == SPARC_RELOC_HI22_SECTDIFF ||
@@ -5597,6 +5744,8 @@ enum bool verbose)
 			reloc.r_type == HPPA_RELOC_PAIR) ||
 		       (cputype == CPU_TYPE_SPARC &&
 			reloc.r_type == SPARC_RELOC_PAIR) ||
+		       (cputype == CPU_TYPE_ARM &&
+			reloc.r_type == ARM_RELOC_PAIR) ||
 		       (cputype == CPU_TYPE_I860 &&
 			reloc.r_type == I860_RELOC_PAIR))
 			    printf("         ");
@@ -5674,6 +5823,8 @@ enum bool verbose)
 			}
 			else if((cputype == CPU_TYPE_HPPA &&
 				 reloc.r_type == HPPA_RELOC_PAIR) ||
+				(cputype == CPU_TYPE_ARM &&
+				 reloc.r_type == ARM_RELOC_PAIR) ||
 				(cputype == CPU_TYPE_SPARC &&
 				 reloc.r_type == SPARC_RELOC_PAIR)){
 			    printf(" other_part = 0x%06x\n",
@@ -5760,6 +5911,12 @@ static char *sparc_r_types[] = {
 	" 10 (?) ", " 11 (?) ", " 12 (?) ", " 13 (?) ", " 14 (?) ", " 15 (?) "
 };
 
+static char *arm_r_types[] = {
+	"VANILLA ", "PAIR    ", "SECTDIFF", "LOCSDIF ", "PBLAPTR ",
+	"BR24    ", "T_BR22  ", " 7 (?)  ", " 8 (?)  ", " 9 (?)  ", 
+	" 10 (?) ", " 11 (?) ", " 12 (?) ", " 13 (?) ", " 14 (?) ", " 15 (?) "
+};
+
 static
 void
 print_r_type(
@@ -5801,6 +5958,9 @@ enum bool predicted)
 	    break;
 	case CPU_TYPE_SPARC:
 	    printf("%s", sparc_r_types[r_type]);
+	    break;
+	case CPU_TYPE_ARM:
+	    printf("%s", arm_r_types[r_type]);
 	    break;
 	default:
 	    printf("%-7lu ", r_type);
@@ -6126,6 +6286,7 @@ enum bool verbose)
     enum byte_sex host_byte_sex;
     enum bool swapped;
     unsigned long i, j, k, left, size, nsects, n, count, stride, section_type;
+    uint64_t bigsize;
     char *p;
     struct load_command *lc, l;
     struct segment_command sg;
@@ -6172,10 +6333,16 @@ enum bool verbose)
 		memset((char *)&sg, '\0', sizeof(struct segment_command));
 		size = left < sizeof(struct segment_command) ?
 		       left : sizeof(struct segment_command);
+		left -= size;
 		memcpy((char *)&sg, (char *)lc, size);
 		if(swapped)
 		    swap_segment_command(&sg, host_byte_sex);
-
+		bigsize = size + sg.nsects*sizeof(struct section);
+		if(bigsize > sg.cmdsize){
+		    printf("number of sections in load command %lu extends "
+			   "past end of load commands\n", i);
+		    sg.nsects = (sg.cmdsize-size) / sizeof(struct section);
+		}
 		nsects += sg.nsects;
 		sect_ind = reallocate(sect_ind,
 			      nsects * sizeof(struct section_indirect_info));
@@ -6265,7 +6432,8 @@ enum bool verbose)
 		}
 	    }
 	    else if(section_type == S_LAZY_SYMBOL_POINTERS ||
-	            section_type == S_NON_LAZY_SYMBOL_POINTERS){
+	            section_type == S_NON_LAZY_SYMBOL_POINTERS ||
+	            section_type == S_LAZY_DYLIB_SYMBOL_POINTERS){
 		if(cputype & CPU_ARCH_ABI64)
 		    stride = 8;
 		else
@@ -6308,6 +6476,18 @@ enum bool verbose)
 		if(indirect_symbols[j + n] ==
 		   (INDIRECT_SYMBOL_LOCAL | INDIRECT_SYMBOL_ABS)){
 		    printf("LOCAL ABSOLUTE\n");
+		    continue;
+		}
+		if((cputype == CPU_TYPE_I386) &&
+		   (section_type == S_SYMBOL_STUBS) &&
+		   (indirect_symbols[j + n] == INDIRECT_SYMBOL_ABS)){
+		    /* 
+		     * Processor cannot atomically update JMP instructions that 
+		     * cross cache line boundary, so the unified static link
+		     * editor does not use those entries and marks the indirect 
+		     * table entry for them with INDIRECT_SYMBOL_ABS.
+		     */ 
+		    printf("ABSOLUTE\n");
 		    continue;
 		}
 		printf("%5u ", indirect_symbols[j + n]);
@@ -6403,6 +6583,7 @@ enum bool verbose)
 	    case LC_LOAD_DYLIB:
 	    case LC_LOAD_WEAK_DYLIB:
 	    case LC_REEXPORT_DYLIB:
+	    case LC_LAZY_LOAD_DYLIB:
 		memset((char *)&dl, '\0', sizeof(struct dylib_command));
 		size = left < sizeof(struct dylib_command) ?
 		       left : sizeof(struct dylib_command);
@@ -7350,6 +7531,7 @@ const unsigned long strings_size)
 		    section_type = s.flags & SECTION_TYPE;
 		    if((section_type == S_NON_LAZY_SYMBOL_POINTERS ||
 		        section_type == S_LAZY_SYMBOL_POINTERS ||
+		        section_type == S_LAZY_DYLIB_SYMBOL_POINTERS ||
 		        section_type == S_SYMBOL_STUBS) &&
 		        value >= s.addr && value < s.addr + s.size){
 			if(section_type == S_SYMBOL_STUBS)
@@ -7383,6 +7565,7 @@ const unsigned long strings_size)
 		    section_type = s64.flags & SECTION_TYPE;
 		    if((section_type == S_NON_LAZY_SYMBOL_POINTERS ||
 		        section_type == S_LAZY_SYMBOL_POINTERS ||
+		        section_type == S_LAZY_DYLIB_SYMBOL_POINTERS ||
 		        section_type == S_SYMBOL_STUBS) &&
 		        value >= s64.addr && value < s64.addr + s64.size){
 			if(section_type == S_SYMBOL_STUBS)
@@ -7490,7 +7673,7 @@ uint64_t addr)
  */
 void
 print_label(
-unsigned long addr,
+uint64_t addr,
 enum bool colon_and_newline,
 struct symbol *sorted_symbols,
 unsigned long nsorted_symbols)

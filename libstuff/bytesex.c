@@ -200,6 +200,7 @@
 #include <mach/i386/thread_status.h>
 #include <mach/hppa/thread_status.h>
 #include <mach/sparc/thread_status.h>
+#include <mach/arm/thread_status.h>
 #include <mach-o/nlist.h>
 #include <mach-o/reloc.h>
 #include <mach-o/ranlib.h>
@@ -2330,6 +2331,30 @@ enum byte_sex target_byte_sex)
 
 __private_extern__
 void
+swap_arm_thread_state_t(
+struct arm_thread_state *cpu,
+enum byte_sex target_byte_sex)
+{
+	cpu->r0 = SWAP_INT(cpu->r0);
+	cpu->r1 = SWAP_INT(cpu->r1);
+	cpu->r2 = SWAP_INT(cpu->r2);
+	cpu->r3 = SWAP_INT(cpu->r3);
+	cpu->r4 = SWAP_INT(cpu->r4);
+	cpu->r5 = SWAP_INT(cpu->r5);
+	cpu->r6 = SWAP_INT(cpu->r6);
+	cpu->r7 = SWAP_INT(cpu->r7);
+	cpu->r8 = SWAP_INT(cpu->r8);
+	cpu->r9 = SWAP_INT(cpu->r9);
+	cpu->r10 = SWAP_INT(cpu->r10);
+	cpu->r11 = SWAP_INT(cpu->r11);
+	cpu->r12 = SWAP_INT(cpu->r12);
+	cpu->r13 = SWAP_INT(cpu->r13);
+	cpu->r14 = SWAP_INT(cpu->r14);
+	cpu->r15 = SWAP_INT(cpu->r15);
+}
+
+__private_extern__
+void
 swap_ident_command(
 struct ident_command *id_cmd,
 enum byte_sex target_byte_sex)
@@ -2486,6 +2511,19 @@ enum byte_sex target_byte_sex)
 	rpath_cmd->cmd = SWAP_INT(rpath_cmd->cmd);
 	rpath_cmd->cmdsize = SWAP_INT(rpath_cmd->cmdsize);
 	rpath_cmd->path.offset = SWAP_INT(rpath_cmd->path.offset);
+}
+
+__private_extern__
+ void
+swap_encryption_command(
+struct encryption_info_command *ec,
+enum byte_sex target_byte_sex)
+{
+	ec->cmd = SWAP_INT(ec->cmd);
+	ec->cmdsize = SWAP_INT(ec->cmdsize);
+	ec->cryptoff = SWAP_INT(ec->cryptoff);
+	ec->cryptsize = SWAP_INT(ec->cryptsize);
+	ec->cryptid = SWAP_INT(ec->cryptid);
 }
 
 __private_extern__

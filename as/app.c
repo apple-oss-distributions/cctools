@@ -70,6 +70,7 @@ void)
 	memset(lex, '\0', sizeof(lex));		/* Trust NOBODY! */
 	lex [' ']		|= LEX_IS_WHITESPACE;
 	lex ['\t']		|= LEX_IS_WHITESPACE;
+	lex ['\r']		|= LEX_IS_WHITESPACE;
 	for (p =symbol_chars;*p;++p)
 		lex [(int)*p] |= LEX_IS_SYMBOL_COMPONENT;
 	lex ['\n']		|= LEX_IS_LINE_SEPERATOR;
@@ -130,9 +131,20 @@ FILE *fp)
 		6: putting out \ escape in a "d string.
 		7: After putting out a .file, put out string.
 		8: After putting out a .file string, flush until newline.
+	        FROM line 358
+		9: After seeing symbol char in state 3 (keep 1white after symchar)
+	       10: After seeing whitespace in state 9 (keep white before symchar)
 		-1: output string in out_string and go to the state in old_state
 		-2: flush text until a '*' '/' is seen, then go to state old_state
 	*/
+
+			       
+  /* FROM line 379 */
+  /* I added states 9 and 10 because the MIPS ECOFF assembler uses
+     constructs like ``.loc 1 20''.  This was turning into ``.loc
+     120''.  States 9 and 10 ensure that a space is never dropped in
+     between characters which could appear in an identifier.  Ian
+     Taylor, ian@cygnus.com.  */
 
 #ifndef NeXT_MOD	/* .include feature */
 	static state;
@@ -316,7 +328,10 @@ FILE *fp)
 			return ' ';
 		}
 #endif
-		else goto flushchar;
+		/* FROM line 900 */
+		if (state == 9)
+		  state = 10;
+		goto flushchar;
 
 	case '/':
 		ch=getc_unlocked(fp);
@@ -409,6 +424,33 @@ FILE *fp)
 
 	default:
 	deal_misc:
+		/* FROM line 1234 */
+		if (IS_SYMBOL_COMPONENT (ch))
+		  {
+		    if (state == 10)
+		      {
+			/* This is a symbol character following another symbol
+			   character, with whitespace in between.  We skipped
+			   the whitespace earlier, so output it now.  */
+			ungetc(ch, fp);
+			state = 3;
+			ch = ' ';
+			return ch;
+		      }
+
+		    if (state == 3)
+		      state = 9;
+		  }
+		/* FROM line 1321 */
+		else if (state == 9)
+		  {
+		    /* FROM line 1324 */
+		    state = 3;
+		  }
+		else if (state == 10)
+		  /* FROM line 1345 */
+		  state = 3;
+
 		if(state==0 && IS_LINE_COMMENT(ch)) {
 			do ch=getc_unlocked(fp);
 			while(ch!=EOF && IS_WHITESPACE(ch));

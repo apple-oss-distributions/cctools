@@ -42,6 +42,7 @@
 #include "ppc_disasm.h"
 #include "hppa_disasm.h"
 #include "sparc_disasm.h"
+#include "arm_disasm.h"
 
 /* Name of this program for error messages (argv[0]) */
 char *progname = NULL;
@@ -73,6 +74,7 @@ enum bool iflag = FALSE; /* print the shared library initialization table */
 enum bool Wflag = FALSE; /* print the mod time of an archive as a number */
 enum bool Xflag = FALSE; /* don't print leading address in disassembly */
 enum bool Zflag = FALSE; /* don't use simplified ppc mnemonics in disassembly */
+enum bool Bflag = FALSE; /* force Thumb disassembly (ARM objects only) */
 char *pflag = NULL; 	 /* procedure name to start disassembling from */
 char *segname = NULL;	 /* name of the section to print the contents of */
 char *sectname = NULL;
@@ -176,23 +178,6 @@ static int rel_compare(
     struct relocation_info *rel1,
     struct relocation_info *rel2);
 
-static enum bool get_sect_info(
-    char *segname,
-    char *sectname,
-    struct load_command *load_commands,
-    uint32_t ncmds,
-    uint32_t sizeofcmds,
-    uint32_t filetype,
-    enum byte_sex load_commands_byte_sex,
-    char *object_addr,
-    unsigned long object_size,
-    char **sect_pointer,
-    uint64_t *sect_size,
-    uint64_t *sect_addr,
-    struct relocation_info **sect_relocs,
-    unsigned long *sect_nrelocs,
-    unsigned long *sect_flags);
-
 static void get_linked_reloc_info(
     struct load_command *load_commands,
     uint32_t ncmds,
@@ -226,7 +211,8 @@ static void print_text(
     uint32_t ncmds,
     uint32_t sizeofcmds,
     enum bool disassemble,
-    enum bool verbose);
+    enum bool verbose,
+    cpu_subtype_t cpusubtype);
 
 static void print_argstrings(
     uint32_t magic,
@@ -418,6 +404,9 @@ char **envp)
 		case 'm':
 		    use_member_syntax = FALSE;
 		    break;
+		case 'B':
+		    Bflag = TRUE;
+		    break;
 		default:
 		    error("unknown char `%c' in flag %s\n", argv[i][j],argv[i]);
 		    usage();
@@ -506,6 +495,7 @@ void)
 	fprintf(stderr, "\t-c print argument strings of a core file\n");
 	fprintf(stderr, "\t-X print no leading addresses or headers\n");
 	fprintf(stderr, "\t-m don't use archive(member) syntax\n");
+	fprintf(stderr, "\t-B force Thumb disassembly (ARM objects only)\n");
 	exit(EXIT_FAILURE);
 }
 
@@ -531,6 +521,7 @@ void *cookie) /* cookie is not used */
     char *strings, *p;
     uint32_t n_strx;
     uint8_t n_type;
+    uint16_t n_desc;
     uint64_t n_value;
     char *sect;
     unsigned long sect_nrelocs, sect_flags, nrelocs, next_relocs, nloc_relocs;
@@ -831,6 +822,7 @@ void *cookie) /* cookie is not used */
 	    if(mh_filetype == MH_DYLIB_STUB &&
 	       ((sect_flags & SECTION_TYPE) == S_NON_LAZY_SYMBOL_POINTERS ||
 	        (sect_flags & SECTION_TYPE) == S_LAZY_SYMBOL_POINTERS ||
+		(sect_flags & SECTION_TYPE) == S_LAZY_DYLIB_SYMBOL_POINTERS ||
 	        (sect_flags & SECTION_TYPE) == S_SYMBOL_STUBS))
 		sect_size = 0;
 	}
@@ -894,11 +886,13 @@ void *cookie) /* cookie is not used */
 		    if(symbols != NULL){
 			n_strx = symbols[i].n_un.n_strx;
 			n_type = symbols[i].n_type;
+			n_desc = symbols[i].n_desc;
 			n_value = symbols[i].n_value;
 		    }
 		    else{
 			n_strx = symbols64[i].n_un.n_strx;
 			n_type = symbols64[i].n_type;
+			n_desc = symbols64[i].n_desc;
 			n_value = symbols64[i].n_value;
 		    }
 		    if(n_strx > 0 && n_strx < strings_size)
@@ -919,6 +913,8 @@ void *cookie) /* cookie is not used */
 			    continue;
 			sorted_symbols[nsorted_symbols].n_value = n_value;
 			sorted_symbols[nsorted_symbols].name = p;
+			sorted_symbols[nsorted_symbols].is_thumb =
+			    n_desc & N_ARM_THUMB_DEF;
 			nsorted_symbols++;
 		    }
 		}
@@ -1089,7 +1085,7 @@ void *cookie) /* cookie is not used */
 		       nsorted_symbols, symbols, symbols64, nsymbols, strings,
 		       strings_size, relocs, nrelocs, indirect_symbols,
 		       nindirect_symbols, ofile->load_commands, mh_ncmds,
-		       mh_sizeofcmds, vflag, Vflag);
+		       mh_sizeofcmds, vflag, Vflag, mh_cpusubtype);
 
 	    if(relocs != NULL && relocs != sect_relocs)
 		free(relocs);
@@ -1169,6 +1165,14 @@ void *cookie) /* cookie is not used */
 		   mh_sizeofcmds, ofile->object_byte_sex, ofile->object_addr,
 		   ofile->object_size, vflag);
 	    }
+#ifdef EFI_SUPPORT
+	    else if(strcmp(segname, "__RELOC") == 0 &&
+	       strcmp(sectname, "__reloc") == 0 && vflag == TRUE){
+		print_coff_reloc_section(ofile->load_commands, mh_ncmds,
+		   mh_sizeofcmds, mh_filetype, ofile->object_byte_sex,
+		   ofile->object_addr, ofile->object_size, vflag);
+	    }
+#endif
 	    else if(get_sect_info(segname, sectname, ofile->load_commands,
 		mh_ncmds, mh_sizeofcmds, mh_filetype, ofile->object_byte_sex,
 		addr, size, &sect, &sect_size, &sect_addr,
@@ -1291,18 +1295,56 @@ void *cookie) /* cookie is not used */
 		    swap_relocation_info(loc_relocs, nloc_relocs,
 					 get_host_byte_sex());
 		}
-		print_objc2(mh_cputype, ofile->load_commands, mh_ncmds,
+		print_objc2_64bit(mh_cputype, ofile->load_commands, mh_ncmds,
 			    mh_sizeofcmds, ofile->object_byte_sex,
 			    ofile->object_addr, ofile->object_size, symbols64,
 			    nsymbols, strings, strings_size, sorted_symbols,
 			    nsorted_symbols, ext_relocs, next_relocs,
 			    loc_relocs, nloc_relocs, vflag);
 	    }
-	    else
-		print_objc_segment(ofile->load_commands, mh_ncmds,mh_sizeofcmds,
-			           ofile->object_byte_sex, ofile->object_addr,
-			           ofile->object_size, sorted_symbols,
-			           nsorted_symbols, vflag);
+	    else if(mh_cputype == CPU_TYPE_ARM){
+		get_linked_reloc_info(ofile->load_commands, mh_ncmds,
+			mh_sizeofcmds, ofile->object_byte_sex,
+			ofile->object_addr, ofile->object_size, &ext_relocs,
+			&next_relocs, &loc_relocs, &nloc_relocs);
+		/* create aligned relocations entries as needed */
+		relocs = NULL;
+		nrelocs = 0;
+		if((long)ext_relocs % sizeof(long) != 0 ||
+		   ofile->object_byte_sex != get_host_byte_sex()){
+		    relocs = allocate(next_relocs *
+				      sizeof(struct relocation_info));
+		    memcpy(relocs, ext_relocs, next_relocs *
+			   sizeof(struct relocation_info));
+		    ext_relocs = relocs;
+		}
+		if((long)loc_relocs % sizeof(long) != 0 ||
+		   ofile->object_byte_sex != get_host_byte_sex()){
+		    relocs = allocate(nloc_relocs *
+				      sizeof(struct relocation_info));
+		    memcpy(relocs, loc_relocs, nloc_relocs *
+			   sizeof(struct relocation_info));
+		    loc_relocs = relocs;
+		}
+		if(ofile->object_byte_sex != get_host_byte_sex()){
+		    swap_relocation_info(ext_relocs, next_relocs,
+					 get_host_byte_sex());
+		    swap_relocation_info(loc_relocs, nloc_relocs,
+					 get_host_byte_sex());
+		}
+		print_objc2_32bit(mh_cputype, ofile->load_commands, mh_ncmds,
+			    mh_sizeofcmds, ofile->object_byte_sex,
+			    ofile->object_addr, ofile->object_size, symbols,
+			    nsymbols, strings, strings_size, sorted_symbols,
+			    nsorted_symbols, ext_relocs, next_relocs,
+			    loc_relocs, nloc_relocs, vflag);
+	    }
+	    else{
+		 print_objc_segment(ofile->load_commands,mh_ncmds,mh_sizeofcmds,
+				    ofile->object_byte_sex, ofile->object_addr,
+				    ofile->object_size, sorted_symbols,
+				    nsorted_symbols, vflag);
+	    }
 	}
 
 	if(load_commands != NULL)
@@ -1906,7 +1948,6 @@ struct relocation_info *rel2)
 	    return(1);
 }
 
-static
 enum bool
 get_sect_info(
 char *segname,				/* input */
@@ -2066,7 +2107,7 @@ unsigned long *sect_flags)
 		*sect_size = s.size;
 	    }
 	    else{
-		if(s.offset >= object_size){
+		if(s.offset > object_size){
 		    printf("section offset for section (%.16s,%.16s) is past "
 			   "end of file\n", s.segname, s.sectname);
 		}
@@ -2107,7 +2148,7 @@ unsigned long *sect_flags)
 		*sect_size = s64.size;
 	    }
 	    else{
-		if(s64.offset >= object_size){
+		if(s64.offset > object_size){
 		    printf("section offset for section (%.16s,%.16s) is past "
 			   "end of file\n", s64.segname, s64.sectname);
 		}
@@ -2231,7 +2272,8 @@ struct load_command *load_commands,
 uint32_t ncmds,
 uint32_t sizeofcmds,
 enum bool disassemble,
-enum bool verbose)
+enum bool verbose,
+cpu_subtype_t cpusubtype)
 {
     enum byte_sex host_byte_sex;
     enum bool swapped;
@@ -2334,6 +2376,13 @@ enum bool verbose)
 				strings, strings_size, indirect_symbols,
 				nindirect_symbols, load_commands, ncmds,
 				sizeofcmds, verbose);
+		else if(cputype == CPU_TYPE_ARM)
+		    j = arm_disassemble(sect, size - i, cur_addr, addr,
+				object_byte_sex, relocs, nrelocs, symbols,
+				nsymbols, sorted_symbols, nsorted_symbols,
+				strings, strings_size, indirect_symbols,
+				nindirect_symbols, load_commands, ncmds,
+				sizeofcmds, cpusubtype, verbose);
 		else{
 		    printf("Can't disassemble unknown cputype %d\n", cputype);
 		    return;
