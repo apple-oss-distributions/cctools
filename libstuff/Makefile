@@ -7,7 +7,7 @@ LEGACY = -D_MACH_I386_THREAD_STATUS_FPSTATE_LEGACY_FIELD_NAMES_ \
 
 ifeq "" "$(NEXT_ROOT)"
 KERN = -fno-builtin -finline -fno-keep-inline-functions -fsigned-bitfields \
-       -force_cpusubtype_ALL -msoft-float -nostdinc \
+       -msoft-float -nostdinc \
        -iwithsysroot /System/Library/Frameworks/Kernel.framework/PrivateHeaders/libsa \
        -iwithsysroot /System/Library/Frameworks/Kernel.framework/PrivateHeaders \
        -iwithsysroot /System/Library/Frameworks/Kernel.framework/Headers/libsa \
@@ -16,7 +16,7 @@ KERN = -fno-builtin -finline -fno-keep-inline-functions -fsigned-bitfields \
        -DKERNEL -DKERNEL_PRIVATE -DAPPLE -DNeXT -DLIBSA_PRIVATE
 else
 KERN = -fno-builtin -finline -fno-keep-inline-functions -fsigned-bitfields \
-       -force_cpusubtype_ALL -msoft-float -nostdinc \
+       -msoft-float -nostdinc \
 -I$(NEXT_ROOT)/System/Library/Frameworks/Kernel.framework/PrivateHeaders/libsa \
 -I$(NEXT_ROOT)/System/Library/Frameworks/Kernel.framework/PrivateHeaders \
        -I$(NEXT_ROOT)/System/Library/Frameworks/Kernel.framework/Headers/libsa \
@@ -241,6 +241,7 @@ ifeq "NO" "$(USE_DEPENDENCY_FILE)"
 
 lto.o: lto.c
 	$(CC) -std=c99 $(CFLAGS) $(RC_CFLAGS) $(COPTS) -c \
+		-I/Developer/usr/local/include \
 		-o $(OFILE_DIR)/$*.o $<
 else
 .c.o:
@@ -251,6 +252,7 @@ else
 
 lto.o: lto.c
 	$(CC) -std=c99 $(CFLAGS) $(RC_CFLAGS) $(COPTS) -c \
+		-I/Developer/usr/local/include \
 		-MD -dependency-file $(OFILE_DIR)/$*.d \
 		-o $(OFILE_DIR)/$*.o $<
 	md -d -u $(OFILE_DIR)/Makedep $(OFILE_DIR)/$*.d
