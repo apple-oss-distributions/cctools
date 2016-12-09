@@ -53,6 +53,24 @@ enum NXByteOrder target_byte_sex)
 }
 
 void
+swap_fat_arch_64(
+struct fat_arch_64 *fat_archs64,
+uint32_t nfat_arch,
+enum NXByteOrder target_byte_sex)
+{
+    uint32_t i;
+
+	for(i = 0; i < nfat_arch; i++){
+	    fat_archs64[i].cputype    = OSSwapInt32(fat_archs64[i].cputype);
+	    fat_archs64[i].cpusubtype = OSSwapInt32(fat_archs64[i].cpusubtype);
+	    fat_archs64[i].offset     = OSSwapInt64(fat_archs64[i].offset);
+	    fat_archs64[i].size       = OSSwapInt64(fat_archs64[i].size);
+	    fat_archs64[i].align      = OSSwapInt32(fat_archs64[i].align);
+	    fat_archs64[i].reserved   = OSSwapInt32(fat_archs64[i].reserved);
+	}
+}
+
+void
 swap_mach_header(
 struct mach_header *mh,
 enum NXByteOrder target_byte_sex)
@@ -559,6 +577,20 @@ enum NXByteOrder target_byte_sex)
 	for(i = 0; i < nranlibs; i++){
 	    ranlibs[i].ran_un.ran_strx = OSSwapInt32(ranlibs[i].ran_un.ran_strx);
 	    ranlibs[i].ran_off = OSSwapInt32(ranlibs[i].ran_off);
+	}
+}
+
+void
+swap_ranlib_64(
+struct ranlib_64 *ranlibs,
+uint64_t nranlibs,
+enum NXByteOrder target_byte_sex)
+{
+    uint64_t i;
+
+	for(i = 0; i < nranlibs; i++){
+	    ranlibs[i].ran_un.ran_strx = OSSwapInt64(ranlibs[i].ran_un.ran_strx);
+	    ranlibs[i].ran_off = OSSwapInt64(ranlibs[i].ran_off);
 	}
 }
 

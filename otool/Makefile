@@ -89,7 +89,7 @@ install: all
 		$(DSTROOT)$(USRBINDIR)/$(PRODUCT)-classic
 	install -c -s -m 555 $(SYMROOT)/llvm-otool.NEW \
 		$(DSTROOT)$(USRBINDIR)/llvm-otool
-	(cd $(DSTROOT)$(USRBINDIR); rm -f otool; ln -s otool-classic otool)
+	(cd $(DSTROOT)$(USRBINDIR); rm -f otool; ln -s llvm-otool otool)
 
 installsrc:
 	$(MKDIRS) $(SRCROOT)

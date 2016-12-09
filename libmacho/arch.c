@@ -297,6 +297,673 @@ cpu_subtype_t cpusubtype)
 }
 
 /*
+ * internal_NXFindBestFatArch() is passed a cputype and cpusubtype and a
+ * either set of fat_arch structs or fat_arch_64 structs and selects the best
+ * one that matches (if any) and returns an index to the array of structs or
+ * -1 if none works for the cputype and cpusubtype.  The fat_arch structs or
+ * fat_arch_64 structs must be in the host byte sex and correct such that the
+ * fat_archs really points to enough memory for nfat_arch structs.  It is
+ * possible that this routine could fail if new cputypes or cpusubtypes are
+ * added and an old version of this routine is used.  But if there is an exact
+ * match between the cputype and cpusubtype and one of the structs this routine
+ * will always succeed.
+ */
+int32_t
+internal_NXFindBestFatArch(
+cpu_type_t cputype,
+cpu_subtype_t cpusubtype,
+struct fat_arch *fat_archs,
+struct fat_arch_64 *fat_archs64,
+uint32_t nfat_archs)
+{
+    uint32_t i;
+    int32_t lowest_family, lowest_model, lowest_index;
+    cpu_type_t fat_cputype;
+    cpu_subtype_t fat_cpusubtype;
+
+    /*
+     * Look for the first exact match.
+     */
+    for(i = 0; i < nfat_archs; i++){
+	if(fat_archs64 != NULL){
+	    fat_cputype = fat_archs64[i].cputype;
+	    fat_cpusubtype = fat_archs64[i].cpusubtype;
+	}
+	else{
+	    fat_cputype = fat_archs[i].cputype;
+	    fat_cpusubtype = fat_archs[i].cpusubtype;
+	}
+	if(fat_cputype == cputype &&
+		(fat_cpusubtype & ~CPU_SUBTYPE_MASK) ==
+		(cpusubtype & ~CPU_SUBTYPE_MASK))
+	    return(i);
+    }
+
+    /*
+     * An exact match was not found so find the next best match which is
+     * cputype dependent.
+     */
+    switch(cputype){
+	case CPU_TYPE_I386:
+	    switch(cpusubtype & ~CPU_SUBTYPE_MASK){
+		default:
+		    /*
+		     * Intel cpusubtypes after the pentium (same as 586) are handled
+		     * such that they require an exact match or they can use the
+		     * pentium.  If that is not found call into the loop for the
+		     * earilier subtypes.
+		     */
+		    for(i = 0; i < nfat_archs; i++){
+			if(fat_archs64 != NULL){
+			    fat_cputype = fat_archs64[i].cputype;
+			    fat_cpusubtype = fat_archs64[i].cpusubtype;
+			}
+			else{
+			    fat_cputype = fat_archs[i].cputype;
+			    fat_cpusubtype = fat_archs[i].cpusubtype;
+			}
+			if(fat_cputype != cputype)
+			    continue;
+			if((fat_cpusubtype & ~CPU_SUBTYPE_MASK) ==
+				CPU_SUBTYPE_PENT)
+			    return(i);
+		    }
+		case CPU_SUBTYPE_PENT:
+		case CPU_SUBTYPE_486SX:
+		    /*
+		     * Since an exact match as not found look for the i486 else
+		     * break into the loop to look for the i386_ALL.
+		     */
+		    for(i = 0; i < nfat_archs; i++){
+			if(fat_archs64 != NULL){
+			    fat_cputype = fat_archs64[i].cputype;
+			    fat_cpusubtype = fat_archs64[i].cpusubtype;
+			}
+			else{
+			    fat_cputype = fat_archs[i].cputype;
+			    fat_cpusubtype = fat_archs[i].cpusubtype;
+			}
+			if(fat_cputype != cputype)
+			    continue;
+			if((fat_cpusubtype & ~CPU_SUBTYPE_MASK) ==
+				CPU_SUBTYPE_486)
+			    return(i);
+		    }
+		    break;
+		case CPU_SUBTYPE_I386_ALL:
+		    /* case CPU_SUBTYPE_I386: same as above */
+		case CPU_SUBTYPE_486:
+		    break;
+	    }
+	    for(i = 0; i < nfat_archs; i++){
+		if(fat_archs64 != NULL){
+		    fat_cputype = fat_archs64[i].cputype;
+		    fat_cpusubtype = fat_archs64[i].cpusubtype;
+		}
+		else{
+		    fat_cputype = fat_archs[i].cputype;
+		    fat_cpusubtype = fat_archs[i].cpusubtype;
+		}
+		if(fat_cputype != cputype)
+		    continue;
+		if((fat_cpusubtype & ~CPU_SUBTYPE_MASK) ==
+			CPU_SUBTYPE_I386_ALL)
+		    return(i);
+	    }
+
+	    /*
+	     * A match failed, promote as little as possible.
+	     */
+	    for(i = 0; i < nfat_archs; i++){
+		if(fat_archs64 != NULL){
+		    fat_cputype = fat_archs64[i].cputype;
+		    fat_cpusubtype = fat_archs64[i].cpusubtype;
+		}
+		else{
+		    fat_cputype = fat_archs[i].cputype;
+		    fat_cpusubtype = fat_archs[i].cpusubtype;
+		}
+		if(fat_cputype != cputype)
+		    continue;
+		if((fat_cpusubtype & ~CPU_SUBTYPE_MASK) ==
+			CPU_SUBTYPE_486)
+		    return(i);
+	    }
+	    for(i = 0; i < nfat_archs; i++){
+		if(fat_archs64 != NULL){
+		    fat_cputype = fat_archs64[i].cputype;
+		    fat_cpusubtype = fat_archs64[i].cpusubtype;
+		}
+		else{
+		    fat_cputype = fat_archs[i].cputype;
+		    fat_cpusubtype = fat_archs[i].cpusubtype;
+		}
+		if(fat_cputype != cputype)
+		    continue;
+		if((fat_cpusubtype & ~CPU_SUBTYPE_MASK) ==
+			CPU_SUBTYPE_486SX)
+		    return(i);
+	    }
+	    for(i = 0; i < nfat_archs; i++){
+		if(fat_archs64 != NULL){
+		    fat_cputype = fat_archs64[i].cputype;
+		    fat_cpusubtype = fat_archs64[i].cpusubtype;
+		}
+		else{
+		    fat_cputype = fat_archs[i].cputype;
+		    fat_cpusubtype = fat_archs[i].cpusubtype;
+		}
+		if(fat_cputype != cputype)
+		    continue;
+		if((fat_cpusubtype & ~CPU_SUBTYPE_MASK) ==
+			CPU_SUBTYPE_586)
+		    return(i);
+	    }
+	    /*
+	     * Now look for the lowest family and in that the lowest model.
+	     */
+	    lowest_family = CPU_SUBTYPE_INTEL_FAMILY_MAX + 1;
+	    for(i = 0; i < nfat_archs; i++){
+		if(fat_archs64 != NULL){
+		    fat_cputype = fat_archs64[i].cputype;
+		    fat_cpusubtype = fat_archs64[i].cpusubtype;
+		}
+		else{
+		    fat_cputype = fat_archs[i].cputype;
+		    fat_cpusubtype = fat_archs[i].cpusubtype;
+		}
+		if(fat_cputype != cputype)
+		    continue;
+		if(CPU_SUBTYPE_INTEL_FAMILY(fat_cpusubtype &
+			    ~CPU_SUBTYPE_MASK) < lowest_family)
+		    lowest_family = CPU_SUBTYPE_INTEL_FAMILY(
+			    fat_cpusubtype & ~CPU_SUBTYPE_MASK);
+	    }
+	    /* if no intel cputypes found return NULL */
+	    if(lowest_family == CPU_SUBTYPE_INTEL_FAMILY_MAX + 1)
+		return(-1);
+	    lowest_model = INT_MAX;
+	    lowest_index = -1;
+	    for(i = 0; i < nfat_archs; i++){
+		if(fat_archs64 != NULL){
+		    fat_cputype = fat_archs64[i].cputype;
+		    fat_cpusubtype = fat_archs64[i].cpusubtype;
+		}
+		else{
+		    fat_cputype = fat_archs[i].cputype;
+		    fat_cpusubtype = fat_archs[i].cpusubtype;
+		}
+		if(fat_cputype != cputype)
+		    continue;
+		if(CPU_SUBTYPE_INTEL_FAMILY(fat_cpusubtype &
+			    ~CPU_SUBTYPE_MASK) == lowest_family){
+		    if(CPU_SUBTYPE_INTEL_MODEL(fat_cpusubtype &
+				~CPU_SUBTYPE_MASK) < lowest_model){
+			lowest_model = CPU_SUBTYPE_INTEL_MODEL(
+				fat_cpusubtype &
+				~CPU_SUBTYPE_MASK);
+			lowest_index = i;
+		    }
+		}
+	    }
+	    return(lowest_index);
+	case CPU_TYPE_X86_64:
+	    for(i = 0; i < nfat_archs; i++){
+		if(fat_archs64 != NULL){
+		    fat_cputype = fat_archs64[i].cputype;
+		    fat_cpusubtype = fat_archs64[i].cpusubtype;
+		}
+		else{
+		    fat_cputype = fat_archs[i].cputype;
+		    fat_cpusubtype = fat_archs[i].cpusubtype;
+		}
+		if(fat_cputype != cputype)
+		    continue;
+		if((fat_cpusubtype & ~CPU_SUBTYPE_MASK) ==
+			CPU_SUBTYPE_X86_64_ALL)
+		    return(i);
+	    }
+	    break;
+	case CPU_TYPE_MC680x0:
+	    for(i = 0; i < nfat_archs; i++){
+		if(fat_archs64 != NULL){
+		    fat_cputype = fat_archs64[i].cputype;
+		    fat_cpusubtype = fat_archs64[i].cpusubtype;
+		}
+		else{
+		    fat_cputype = fat_archs[i].cputype;
+		    fat_cpusubtype = fat_archs[i].cpusubtype;
+		}
+		if(fat_cputype != cputype)
+		    continue;
+		if((fat_cpusubtype & ~CPU_SUBTYPE_MASK) ==
+			CPU_SUBTYPE_MC680x0_ALL)
+		    return(i);
+	    }
+	    /*
+	     * Try to promote if starting from CPU_SUBTYPE_MC680x0_ALL and
+	     * favor the CPU_SUBTYPE_MC68040 over the CPU_SUBTYPE_MC68030_ONLY.
+	     */
+	    if((cpusubtype & ~CPU_SUBTYPE_MASK) == CPU_SUBTYPE_MC680x0_ALL){
+		for(i = 0; i < nfat_archs; i++){
+		    if(fat_archs64 != NULL){
+			fat_cputype = fat_archs64[i].cputype;
+			fat_cpusubtype = fat_archs64[i].cpusubtype;
+		    }
+		    else{
+			fat_cputype = fat_archs[i].cputype;
+			fat_cpusubtype = fat_archs[i].cpusubtype;
+		    }
+		    if(fat_cputype != cputype)
+			continue;
+		    if((fat_cpusubtype & ~CPU_SUBTYPE_MASK) ==
+			    CPU_SUBTYPE_MC68040)
+			return(i);
+		}
+		for(i = 0; i < nfat_archs; i++){
+		    if(fat_archs64 != NULL){
+			fat_cputype = fat_archs64[i].cputype;
+			fat_cpusubtype = fat_archs64[i].cpusubtype;
+		    }
+		    else{
+			fat_cputype = fat_archs[i].cputype;
+			fat_cpusubtype = fat_archs[i].cpusubtype;
+		    }
+		    if(fat_cputype != cputype)
+			continue;
+		    if((fat_cpusubtype & ~CPU_SUBTYPE_MASK) ==
+			    CPU_SUBTYPE_MC68030_ONLY)
+			return(i);
+		}
+	    }
+	    break;
+	case CPU_TYPE_POWERPC:
+	    /*
+	     * An exact match as not found.  So for all the PowerPC subtypes
+	     * pick the subtype from the following order starting from a subtype
+	     * that will work (contains 64-bit instructions or altivec if
+	     * needed):
+	     *	970, 7450, 7400, 750, 604e, 604, 603ev, 603e, 603, ALL
+	     * Note the 601 is NOT in the list above.  It is only picked via
+	     * an exact match.  For an unknown subtype pick only the ALL type if
+	     * it exists.
+	     */
+	    switch(cpusubtype & ~CPU_SUBTYPE_MASK){
+		case CPU_SUBTYPE_POWERPC_ALL:
+		    /*
+		     * The CPU_SUBTYPE_POWERPC_ALL is only used by the development
+		     * environment tools when building a generic ALL type binary.
+		     * In the case of a non-exact match we pick the most current
+		     * processor.
+		     */
+		case CPU_SUBTYPE_POWERPC_970:
+		    for(i = 0; i < nfat_archs; i++){
+			if(fat_archs64 != NULL){
+			    fat_cputype = fat_archs64[i].cputype;
+			    fat_cpusubtype = fat_archs64[i].cpusubtype;
+			}
+			else{
+			    fat_cputype = fat_archs[i].cputype;
+			    fat_cpusubtype = fat_archs[i].cpusubtype;
+			}
+			if(fat_cputype != cputype)
+			    continue;
+			if((fat_cpusubtype & ~CPU_SUBTYPE_MASK) ==
+				CPU_SUBTYPE_POWERPC_970)
+			    return(i);
+		    }
+		case CPU_SUBTYPE_POWERPC_7450:
+		case CPU_SUBTYPE_POWERPC_7400:
+		    for(i = 0; i < nfat_archs; i++){
+			if(fat_archs64 != NULL){
+			    fat_cputype = fat_archs64[i].cputype;
+			    fat_cpusubtype = fat_archs64[i].cpusubtype;
+			}
+			else{
+			    fat_cputype = fat_archs[i].cputype;
+			    fat_cpusubtype = fat_archs[i].cpusubtype;
+			}
+			if(fat_cputype != cputype)
+			    continue;
+			if((fat_cpusubtype & ~CPU_SUBTYPE_MASK) ==
+				CPU_SUBTYPE_POWERPC_7450)
+			    return(i);
+		    }
+		    for(i = 0; i < nfat_archs; i++){
+			if(fat_archs64 != NULL){
+			    fat_cputype = fat_archs64[i].cputype;
+			    fat_cpusubtype = fat_archs64[i].cpusubtype;
+			}
+			else{
+			    fat_cputype = fat_archs[i].cputype;
+			    fat_cpusubtype = fat_archs[i].cpusubtype;
+			}
+			if(fat_cputype != cputype)
+			    continue;
+			if((fat_cpusubtype & ~CPU_SUBTYPE_MASK) ==
+				CPU_SUBTYPE_POWERPC_7400)
+			    return(i);
+		    }
+		case CPU_SUBTYPE_POWERPC_750:
+		case CPU_SUBTYPE_POWERPC_604e:
+		case CPU_SUBTYPE_POWERPC_604:
+		case CPU_SUBTYPE_POWERPC_603ev:
+		case CPU_SUBTYPE_POWERPC_603e:
+		case CPU_SUBTYPE_POWERPC_603:
+		    for(i = 0; i < nfat_archs; i++){
+			if(fat_archs64 != NULL){
+			    fat_cputype = fat_archs64[i].cputype;
+			    fat_cpusubtype = fat_archs64[i].cpusubtype;
+			}
+			else{
+			    fat_cputype = fat_archs[i].cputype;
+			    fat_cpusubtype = fat_archs[i].cpusubtype;
+			}
+			if(fat_cputype != cputype)
+			    continue;
+			if((fat_cpusubtype & CPU_SUBTYPE_MASK) ==
+				CPU_SUBTYPE_POWERPC_750)
+			    return(i);
+		    }
+		    for(i = 0; i < nfat_archs; i++){
+			if(fat_archs64 != NULL){
+			    fat_cputype = fat_archs64[i].cputype;
+			    fat_cpusubtype = fat_archs64[i].cpusubtype;
+			}
+			else{
+			    fat_cputype = fat_archs[i].cputype;
+			    fat_cpusubtype = fat_archs[i].cpusubtype;
+			}
+			if(fat_cputype != cputype)
+			    continue;
+			if((fat_cpusubtype & ~CPU_SUBTYPE_MASK) ==
+				CPU_SUBTYPE_POWERPC_604e)
+			    return(i);
+		    }
+		    for(i = 0; i < nfat_archs; i++){
+			if(fat_archs64 != NULL){
+			    fat_cputype = fat_archs64[i].cputype;
+			    fat_cpusubtype = fat_archs64[i].cpusubtype;
+			}
+			else{
+			    fat_cputype = fat_archs[i].cputype;
+			    fat_cpusubtype = fat_archs[i].cpusubtype;
+			}
+			if(fat_cputype != cputype)
+			    continue;
+			if((fat_cpusubtype & ~CPU_SUBTYPE_MASK) ==
+				CPU_SUBTYPE_POWERPC_604)
+			    return(i);
+		    }
+		    for(i = 0; i < nfat_archs; i++){
+			if(fat_archs64 != NULL){
+			    fat_cputype = fat_archs64[i].cputype;
+			    fat_cpusubtype = fat_archs64[i].cpusubtype;
+			}
+			else{
+			    fat_cputype = fat_archs[i].cputype;
+			    fat_cpusubtype = fat_archs[i].cpusubtype;
+			}
+			if((fat_cputype & ~CPU_SUBTYPE_MASK) != cputype)
+			    continue;
+			if((fat_cpusubtype & ~CPU_SUBTYPE_MASK) ==
+				CPU_SUBTYPE_POWERPC_603ev)
+			    return(i);
+		    }
+		    for(i = 0; i < nfat_archs; i++){
+			if(fat_archs64 != NULL){
+			    fat_cputype = fat_archs64[i].cputype;
+			    fat_cpusubtype = fat_archs64[i].cpusubtype;
+			}
+			else{
+			    fat_cputype = fat_archs[i].cputype;
+			    fat_cpusubtype = fat_archs[i].cpusubtype;
+			}
+			if(fat_cputype != cputype)
+			    continue;
+			if((fat_cpusubtype & ~CPU_SUBTYPE_MASK) ==
+				CPU_SUBTYPE_POWERPC_603e)
+			    return(i);
+		    }
+		    for(i = 0; i < nfat_archs; i++){
+			if(fat_archs64 != NULL){
+			    fat_cputype = fat_archs64[i].cputype;
+			    fat_cpusubtype = fat_archs64[i].cpusubtype;
+			}
+			else{
+			    fat_cputype = fat_archs[i].cputype;
+			    fat_cpusubtype = fat_archs[i].cpusubtype;
+			}
+			if(fat_cputype != cputype)
+			    continue;
+			if((fat_cpusubtype & ~CPU_SUBTYPE_MASK) ==
+				CPU_SUBTYPE_POWERPC_603)
+			    return(i);
+		    }
+		default:
+		    for(i = 0; i < nfat_archs; i++){
+			if(fat_archs64 != NULL){
+			    fat_cputype = fat_archs64[i].cputype;
+			    fat_cpusubtype = fat_archs64[i].cpusubtype;
+			}
+			else{
+			    fat_cputype = fat_archs[i].cputype;
+			    fat_cpusubtype = fat_archs[i].cpusubtype;
+			}
+			if(fat_cputype != cputype)
+			    continue;
+			if((fat_cpusubtype & ~CPU_SUBTYPE_MASK) ==
+				CPU_SUBTYPE_POWERPC_ALL)
+			    return(i);
+		    }
+	    }
+	    break;
+	case CPU_TYPE_POWERPC64:
+	    /*
+	     * An exact match as not found.  So for all the PowerPC64 subtypes
+	     * pick the subtype from the following order starting from a subtype
+	     * that will work (contains 64-bit instructions or altivec if
+	     * needed):
+	     *	970 (currently only the one 64-bit subtype)
+	     * For an unknown subtype pick only the ALL type if it exists.
+	     */
+	    switch(cpusubtype & ~CPU_SUBTYPE_MASK){
+		case CPU_SUBTYPE_POWERPC_ALL:
+		    /*
+		     * The CPU_SUBTYPE_POWERPC_ALL is only used by the development
+		     * environment tools when building a generic ALL type binary.
+		     * In the case of a non-exact match we pick the most current
+		     * processor.
+		     */
+		case CPU_SUBTYPE_POWERPC_970:
+		    for(i = 0; i < nfat_archs; i++){
+			if(fat_archs64 != NULL){
+			    fat_cputype = fat_archs64[i].cputype;
+			    fat_cpusubtype = fat_archs64[i].cpusubtype;
+			}
+			else{
+			    fat_cputype = fat_archs[i].cputype;
+			    fat_cpusubtype = fat_archs[i].cpusubtype;
+			}
+			if(fat_cputype != cputype)
+			    continue;
+			if((fat_cpusubtype & ~CPU_SUBTYPE_MASK) ==
+				CPU_SUBTYPE_POWERPC_970)
+			    return(i);
+		    }
+		default:
+		    for(i = 0; i < nfat_archs; i++){
+			if(fat_archs64 != NULL){
+			    fat_cputype = fat_archs64[i].cputype;
+			    fat_cpusubtype = fat_archs64[i].cpusubtype;
+			}
+			else{
+			    fat_cputype = fat_archs[i].cputype;
+			    fat_cpusubtype = fat_archs[i].cpusubtype;
+			}
+			if(fat_cputype != cputype)
+			    continue;
+			if((fat_cpusubtype & ~CPU_SUBTYPE_MASK) ==
+				CPU_SUBTYPE_POWERPC_ALL)
+			    return(i);
+		    }
+	    }
+	    break;
+	case CPU_TYPE_MC88000:
+	    for(i = 0; i < nfat_archs; i++){
+		if(fat_archs64 != NULL){
+		    fat_cputype = fat_archs64[i].cputype;
+		    fat_cpusubtype = fat_archs64[i].cpusubtype;
+		}
+		else{
+		    fat_cputype = fat_archs[i].cputype;
+		    fat_cpusubtype = fat_archs[i].cpusubtype;
+		}
+		if(fat_cputype != cputype)
+		    continue;
+		if((fat_cpusubtype & ~CPU_SUBTYPE_MASK) ==
+			CPU_SUBTYPE_MC88000_ALL)
+		    return(i);
+	    }
+	    break;
+	case CPU_TYPE_I860:
+	    for(i = 0; i < nfat_archs; i++){
+		if(fat_archs64 != NULL){
+		    fat_cputype = fat_archs64[i].cputype;
+		    fat_cpusubtype = fat_archs64[i].cpusubtype;
+		}
+		else{
+		    fat_cputype = fat_archs[i].cputype;
+		    fat_cpusubtype = fat_archs[i].cpusubtype;
+		}
+		if(fat_cputype != cputype)
+		    continue;
+		if((fat_cpusubtype & ~CPU_SUBTYPE_MASK) ==
+			CPU_SUBTYPE_I860_ALL)
+		    return(i);
+	    }
+	    break;
+	case CPU_TYPE_HPPA:
+	    for(i = 0; i < nfat_archs; i++){
+		if(fat_archs64 != NULL){
+		    fat_cputype = fat_archs64[i].cputype;
+		    fat_cpusubtype = fat_archs64[i].cpusubtype;
+		}
+		else{
+		    fat_cputype = fat_archs[i].cputype;
+		    fat_cpusubtype = fat_archs[i].cpusubtype;
+		}
+		if(fat_cputype != cputype)
+		    continue;
+		if((fat_cpusubtype & ~CPU_SUBTYPE_MASK) ==
+			CPU_SUBTYPE_HPPA_ALL)
+		    return(i);
+	    }
+	    break;
+	case CPU_TYPE_SPARC:
+	    for(i = 0; i < nfat_archs; i++){
+		if(fat_archs64 != NULL){
+		    fat_cputype = fat_archs64[i].cputype;
+		    fat_cpusubtype = fat_archs64[i].cpusubtype;
+		}
+		else{
+		    fat_cputype = fat_archs[i].cputype;
+		    fat_cpusubtype = fat_archs[i].cpusubtype;
+		}
+		if(fat_cputype != cputype)
+		    continue;
+		if((fat_cpusubtype & ~CPU_SUBTYPE_MASK) ==
+			CPU_SUBTYPE_SPARC_ALL)
+		    return(i);
+	    }
+	    break;
+	case CPU_TYPE_ARM:
+	case CPU_TYPE_ARM64:
+	    {
+		/* 
+		 * ARM is straightforward, since each architecture is backward
+		 * compatible with previous architectures.  So, we just take the
+		 * highest that is less than our target.
+		 */
+		int fat_match_found = 0;
+		uint32_t best_fat_arch = 0;
+		for(i = 0; i < nfat_archs; i++){
+		    if(fat_archs64 != NULL){
+			fat_cputype = fat_archs64[i].cputype;
+			fat_cpusubtype = fat_archs64[i].cpusubtype;
+		    }
+		    else{
+			fat_cputype = fat_archs[i].cputype;
+			fat_cpusubtype = fat_archs[i].cpusubtype;
+		    }
+		    if(fat_cputype != cputype)
+			continue;
+		    if(fat_cpusubtype > cpusubtype)
+			continue;
+		    if(!fat_match_found){
+			fat_match_found = 1;
+			best_fat_arch = i;
+			continue;
+		    }
+		    if(fat_archs64 != NULL){
+			if(fat_cpusubtype >
+			   fat_archs64[best_fat_arch].cpusubtype)
+			    best_fat_arch = i;
+		    }
+		    else{
+			if(fat_cpusubtype >
+			   fat_archs[best_fat_arch].cpusubtype)
+			    best_fat_arch = i;
+		    }
+		}
+		if(fat_match_found)
+		    return(best_fat_arch);
+		/*
+		 * For CPU_TYPE_ARM64, we will fall back to a CPU_TYPE_ARM
+		 * with the highest subtype.
+		 */
+		if(cputype == CPU_TYPE_ARM64){
+		    int fat_match_found = 0;
+		    uint32_t best_fat_arch = 0;
+		    for(i = 0; i < nfat_archs; i++){
+			if(fat_archs64 != NULL){
+			    fat_cputype = fat_archs64[i].cputype;
+			    fat_cpusubtype = fat_archs64[i].cpusubtype;
+			}
+			else{
+			    fat_cputype = fat_archs[i].cputype;
+			    fat_cpusubtype = fat_archs[i].cpusubtype;
+			}
+			if(fat_cputype != CPU_TYPE_ARM)
+			    continue;
+			if(!fat_match_found){
+			    fat_match_found = 1;
+			    best_fat_arch = i;
+			    continue;
+			}
+			if(fat_archs64 != NULL){
+			    if(fat_cpusubtype >
+			       fat_archs64[best_fat_arch].cpusubtype)
+				best_fat_arch = i;
+			}
+			else{
+			    if(fat_cpusubtype >
+			       fat_archs[best_fat_arch].cpusubtype)
+				best_fat_arch = i;
+			}
+		    }
+		    if(fat_match_found)
+			return(best_fat_arch);
+		}
+	    }
+	    break;
+	default:
+	    return(-1);
+    }
+    return(-1);
+}
+
+/*
  * NXFindBestFatArch() is passed a cputype and cpusubtype and a set of
  * fat_arch structs and selects the best one that matches (if any) and returns
  * a pointer to that fat_arch struct (or NULL).  The fat_arch structs must be
@@ -313,387 +980,39 @@ cpu_subtype_t cpusubtype,
 struct fat_arch *fat_archs,
 uint32_t nfat_archs)
 {
-    uint32_t i;
-    int32_t lowest_family, lowest_model, lowest_index;
+    int32_t i;
 
-	/*
-	 * Look for the first exact match.
-	 */
-	for(i = 0; i < nfat_archs; i++){
-	    if(fat_archs[i].cputype == cputype &&
-	       (fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK) ==
-		(cpusubtype & ~CPU_SUBTYPE_MASK))
-		return(fat_archs + i);
-	}
-
-	/*
-	 * An exact match was not found so find the next best match which is
-	 * cputype dependent.
-	 */
-	switch(cputype){
-	case CPU_TYPE_I386:
-	    switch(cpusubtype & ~CPU_SUBTYPE_MASK){
-	    default:
-		/*
-		 * Intel cpusubtypes after the pentium (same as 586) are handled
-		 * such that they require an exact match or they can use the
-		 * pentium.  If that is not found call into the loop for the
-		 * earilier subtypes.
-		 */
-		for(i = 0; i < nfat_archs; i++){
-		    if(fat_archs[i].cputype != cputype)
-			continue;
-		    if((fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK) ==
-			CPU_SUBTYPE_PENT)
-			return(fat_archs + i);
-		}
-	    case CPU_SUBTYPE_PENT:
-	    case CPU_SUBTYPE_486SX:
-		/*
-		 * Since an exact match as not found look for the i486 else
-		 * break into the loop to look for the i386_ALL.
-		 */
-		for(i = 0; i < nfat_archs; i++){
-		    if(fat_archs[i].cputype != cputype)
-			continue;
-		    if((fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK) ==
-			CPU_SUBTYPE_486)
-			return(fat_archs + i);
-		}
-		break;
-	    case CPU_SUBTYPE_I386_ALL:
-	    /* case CPU_SUBTYPE_I386: same as above */
-	    case CPU_SUBTYPE_486:
-		break;
-	    }
-	    for(i = 0; i < nfat_archs; i++){
-		if(fat_archs[i].cputype != cputype)
-		    continue;
-		if((fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK) ==
-		    CPU_SUBTYPE_I386_ALL)
-		    return(fat_archs + i);
-	    }
-
-	    /*
-	     * A match failed, promote as little as possible.
-	     */
-	    for(i = 0; i < nfat_archs; i++){
-		if(fat_archs[i].cputype != cputype)
-		    continue;
-		if((fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK) ==
-		   CPU_SUBTYPE_486)
-		    return(fat_archs + i);
-	    }
-	    for(i = 0; i < nfat_archs; i++){
-		if(fat_archs[i].cputype != cputype)
-		    continue;
-		if((fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK) ==
-		   CPU_SUBTYPE_486SX)
-		    return(fat_archs + i);
-	    }
-	    for(i = 0; i < nfat_archs; i++){
-		if(fat_archs[i].cputype != cputype)
-		    continue;
-		if((fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK) ==
-		   CPU_SUBTYPE_586)
-		    return(fat_archs + i);
-	    }
-	    /*
-	     * Now look for the lowest family and in that the lowest model.
-	     */
-	    lowest_family = CPU_SUBTYPE_INTEL_FAMILY_MAX + 1;
-	    for(i = 0; i < nfat_archs; i++){
-		if(fat_archs[i].cputype != cputype)
-		    continue;
-		if(CPU_SUBTYPE_INTEL_FAMILY(fat_archs[i].cpusubtype &
-					    ~CPU_SUBTYPE_MASK) < lowest_family)
-		    lowest_family = CPU_SUBTYPE_INTEL_FAMILY(
-				fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK);
-	    }
-	    /* if no intel cputypes found return NULL */
-	    if(lowest_family == CPU_SUBTYPE_INTEL_FAMILY_MAX + 1)
-		return(NULL);
-	    lowest_model = INT_MAX;
-	    lowest_index = -1;
-	    for(i = 0; i < nfat_archs; i++){
-		if(fat_archs[i].cputype != cputype)
-		    continue;
-		if(CPU_SUBTYPE_INTEL_FAMILY(fat_archs[i].cpusubtype &
-			~CPU_SUBTYPE_MASK) == lowest_family){
-		    if(CPU_SUBTYPE_INTEL_MODEL(fat_archs[i].cpusubtype &
-			~CPU_SUBTYPE_MASK) < lowest_model){
-		        lowest_model = CPU_SUBTYPE_INTEL_MODEL(
-					fat_archs[i].cpusubtype &
-					~CPU_SUBTYPE_MASK);
-			lowest_index = i;
-		    }
-		}
-	    }
-	    return(fat_archs + lowest_index);
-	case CPU_TYPE_X86_64:
-	    for(i = 0; i < nfat_archs; i++){
-		if(fat_archs[i].cputype != cputype)
-		    continue;
-		if((fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK) ==
-		   CPU_SUBTYPE_X86_64_ALL)
-		    return(fat_archs + i);
-	    }
-	    break;
-	case CPU_TYPE_MC680x0:
-	    for(i = 0; i < nfat_archs; i++){
-		if(fat_archs[i].cputype != cputype)
-		    continue;
-		if((fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK) ==
-		   CPU_SUBTYPE_MC680x0_ALL)
-		    return(fat_archs + i);
-	    }
-	    /*
-	     * Try to promote if starting from CPU_SUBTYPE_MC680x0_ALL and
-	     * favor the CPU_SUBTYPE_MC68040 over the CPU_SUBTYPE_MC68030_ONLY.
-	     */
-	    if((cpusubtype & ~CPU_SUBTYPE_MASK) == CPU_SUBTYPE_MC680x0_ALL){
-		for(i = 0; i < nfat_archs; i++){
-		    if(fat_archs[i].cputype != cputype)
-			continue;
-		    if((fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK) ==
-		       CPU_SUBTYPE_MC68040)
-			return(fat_archs + i);
-		}
-		for(i = 0; i < nfat_archs; i++){
-		    if(fat_archs[i].cputype != cputype)
-			continue;
-		    if((fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK) ==
-		       CPU_SUBTYPE_MC68030_ONLY)
-			return(fat_archs + i);
-		}
-	    }
-	    break;
-	case CPU_TYPE_POWERPC:
-	    /*
-	     * An exact match as not found.  So for all the PowerPC subtypes
-	     * pick the subtype from the following order starting from a subtype
-	     * that will work (contains 64-bit instructions or altivec if
-	     * needed):
-	     *	970, 7450, 7400, 750, 604e, 604, 603ev, 603e, 603, ALL
-	     * Note the 601 is NOT in the list above.  It is only picked via
-	     * an exact match.  For an unknown subtype pick only the ALL type if
-	     * it exists.
-	     */
-	    switch(cpusubtype & ~CPU_SUBTYPE_MASK){
-	    case CPU_SUBTYPE_POWERPC_ALL:
-		/*
-		 * The CPU_SUBTYPE_POWERPC_ALL is only used by the development
-		 * environment tools when building a generic ALL type binary.
-		 * In the case of a non-exact match we pick the most current
-		 * processor.
-		 */
-	    case CPU_SUBTYPE_POWERPC_970:
-		for(i = 0; i < nfat_archs; i++){
-		    if(fat_archs[i].cputype != cputype)
-			continue;
-		    if((fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK) ==
-			CPU_SUBTYPE_POWERPC_970)
-			return(fat_archs + i);
-		}
-	    case CPU_SUBTYPE_POWERPC_7450:
-	    case CPU_SUBTYPE_POWERPC_7400:
-		for(i = 0; i < nfat_archs; i++){
-		    if(fat_archs[i].cputype != cputype)
-			continue;
-		    if((fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK) ==
-			CPU_SUBTYPE_POWERPC_7450)
-			return(fat_archs + i);
-		}
-		for(i = 0; i < nfat_archs; i++){
-		    if(fat_archs[i].cputype != cputype)
-			continue;
-		    if((fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK) ==
-			CPU_SUBTYPE_POWERPC_7400)
-			return(fat_archs + i);
-		}
-	    case CPU_SUBTYPE_POWERPC_750:
-	    case CPU_SUBTYPE_POWERPC_604e:
-	    case CPU_SUBTYPE_POWERPC_604:
-	    case CPU_SUBTYPE_POWERPC_603ev:
-	    case CPU_SUBTYPE_POWERPC_603e:
-	    case CPU_SUBTYPE_POWERPC_603:
-		for(i = 0; i < nfat_archs; i++){
-		    if(fat_archs[i].cputype != cputype)
-			continue;
-		    if((fat_archs[i].cpusubtype & CPU_SUBTYPE_MASK) ==
-			CPU_SUBTYPE_POWERPC_750)
-			return(fat_archs + i);
-		}
-		for(i = 0; i < nfat_archs; i++){
-		    if(fat_archs[i].cputype != cputype)
-			continue;
-		    if((fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK) ==
-			CPU_SUBTYPE_POWERPC_604e)
-			return(fat_archs + i);
-		}
-		for(i = 0; i < nfat_archs; i++){
-		    if(fat_archs[i].cputype != cputype)
-			continue;
-		    if((fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK) ==
-			CPU_SUBTYPE_POWERPC_604)
-			return(fat_archs + i);
-		}
-		for(i = 0; i < nfat_archs; i++){
-		    if((fat_archs[i].cputype & ~CPU_SUBTYPE_MASK) != cputype)
-			continue;
-		    if((fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK) ==
-			CPU_SUBTYPE_POWERPC_603ev)
-			return(fat_archs + i);
-		}
-		for(i = 0; i < nfat_archs; i++){
-		    if(fat_archs[i].cputype != cputype)
-			continue;
-		    if((fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK) ==
-			CPU_SUBTYPE_POWERPC_603e)
-			return(fat_archs + i);
-		}
-		for(i = 0; i < nfat_archs; i++){
-		    if(fat_archs[i].cputype != cputype)
-			continue;
-		    if((fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK) ==
-			CPU_SUBTYPE_POWERPC_603)
-			return(fat_archs + i);
-		}
-	    default:
-		for(i = 0; i < nfat_archs; i++){
-		    if(fat_archs[i].cputype != cputype)
-			continue;
-		    if((fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK) ==
-			CPU_SUBTYPE_POWERPC_ALL)
-			return(fat_archs + i);
-		}
-	    }
-	    break;
-	case CPU_TYPE_POWERPC64:
-	    /*
-	     * An exact match as not found.  So for all the PowerPC64 subtypes
-	     * pick the subtype from the following order starting from a subtype
-	     * that will work (contains 64-bit instructions or altivec if
-	     * needed):
-	     *	970 (currently only the one 64-bit subtype)
-	     * For an unknown subtype pick only the ALL type if it exists.
-	     */
-	    switch(cpusubtype & ~CPU_SUBTYPE_MASK){
-	    case CPU_SUBTYPE_POWERPC_ALL:
-		/*
-		 * The CPU_SUBTYPE_POWERPC_ALL is only used by the development
-		 * environment tools when building a generic ALL type binary.
-		 * In the case of a non-exact match we pick the most current
-		 * processor.
-		 */
-	    case CPU_SUBTYPE_POWERPC_970:
-		for(i = 0; i < nfat_archs; i++){
-		    if(fat_archs[i].cputype != cputype)
-			continue;
-		    if((fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK) ==
-			CPU_SUBTYPE_POWERPC_970)
-			return(fat_archs + i);
-		}
-	    default:
-		for(i = 0; i < nfat_archs; i++){
-		    if(fat_archs[i].cputype != cputype)
-			continue;
-		    if((fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK) ==
-			CPU_SUBTYPE_POWERPC_ALL)
-			return(fat_archs + i);
-		}
-	    }
-	    break;
-	case CPU_TYPE_MC88000:
-	    for(i = 0; i < nfat_archs; i++){
-		if(fat_archs[i].cputype != cputype)
-		    continue;
-		if((fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK) ==
-		   CPU_SUBTYPE_MC88000_ALL)
-		    return(fat_archs + i);
-	    }
-	    break;
-	case CPU_TYPE_I860:
-	    for(i = 0; i < nfat_archs; i++){
-		if(fat_archs[i].cputype != cputype)
-		    continue;
-		if((fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK) ==
-		   CPU_SUBTYPE_I860_ALL)
-		    return(fat_archs + i);
-	    }
-	    break;
-	case CPU_TYPE_HPPA:
-	    for(i = 0; i < nfat_archs; i++){
-		if(fat_archs[i].cputype != cputype)
-		    continue;
-		if((fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK) ==
-		   CPU_SUBTYPE_HPPA_ALL)
-		    return(fat_archs + i);
-	    }
-	    break;
-	case CPU_TYPE_SPARC:
-	    for(i = 0; i < nfat_archs; i++){
-		if(fat_archs[i].cputype != cputype)
-		    continue;
-		if((fat_archs[i].cpusubtype & ~CPU_SUBTYPE_MASK) ==
-		   CPU_SUBTYPE_SPARC_ALL)
-		    return(fat_archs + i);
-	    }
-	    break;
-	case CPU_TYPE_ARM:
-	case CPU_TYPE_ARM64:
-	    {
-		/* 
-		 * ARM is straightforward, since each architecture is backward
-		 * compatible with previous architectures.  So, we just take the
-		 * highest that is less than our target.
-		 */
-		int fat_match_found = 0;
-		uint32_t best_fat_arch = 0;
-		for(i = 0; i < nfat_archs; i++){
-		    if(fat_archs[i].cputype != cputype)
-			continue;
-		    if(fat_archs[i].cpusubtype > cpusubtype)
-			continue;
-		    if(!fat_match_found){
-			fat_match_found = 1;
-			best_fat_arch = i;
-			continue;
-		    }
-		    if(fat_archs[i].cpusubtype >
-		       fat_archs[best_fat_arch].cpusubtype)
-			best_fat_arch = i;
-		}
-		if(fat_match_found)
-		  return fat_archs + best_fat_arch;
-		/*
-		 * For CPU_TYPE_ARM64, we will fall back to a CPU_TYPE_ARM
-		 * with the highest subtype.
-		 */
-		if(cputype == CPU_TYPE_ARM64){
-		    int fat_match_found = 0;
-		    uint32_t best_fat_arch = 0;
-		    for(i = 0; i < nfat_archs; i++){
-			if(fat_archs[i].cputype != CPU_TYPE_ARM)
-			    continue;
-			if(!fat_match_found){
-			    fat_match_found = 1;
-			    best_fat_arch = i;
-			    continue;
-			}
-			if(fat_archs[i].cpusubtype >
-			   fat_archs[best_fat_arch].cpusubtype)
-			    best_fat_arch = i;
-		    }
-		    if(fat_match_found)
-		      return fat_archs + best_fat_arch;
-		}
-	    }
-	    break;
-	default:
-	    return(NULL);
-	}
+    i = internal_NXFindBestFatArch(cputype, cpusubtype, fat_archs, NULL,
+				   nfat_archs);
+    if(i == -1)
 	return(NULL);
+    return(fat_archs + i);
+}
+
+/* NXFindBestFatArch_64() is passed a cputype and cpusubtype and a set of
+ * fat_arch_64 structs and selects the best one that matches (if any) and
+ * returns a pointer to that fat_arch_64 struct (or NULL).  The fat_arch_64
+ * structs must be in the host byte order and correct such that the fat_archs64
+ * really points to enough memory for nfat_arch structs.  It is possible that
+ * this routine could fail if new cputypes or cpusubtypes are added and an old
+ * version of this routine is used.  But if there is an exact match between the
+ * cputype and cpusubtype and one of the fat_arch_64 structs this routine will
+ * always succeed.
+ */
+struct fat_arch_64 *
+NXFindBestFatArch_64(
+cpu_type_t cputype,
+cpu_subtype_t cpusubtype,
+struct fat_arch_64 *fat_archs64,
+uint32_t nfat_archs)
+{
+    int32_t i;
+
+    i = internal_NXFindBestFatArch(cputype, cpusubtype, NULL,
+	    fat_archs64, nfat_archs);
+    if(i == -1)
+	return(NULL);
+    return(fat_archs64 + i);
 }
 
 /*
