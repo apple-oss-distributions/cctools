@@ -98,7 +98,7 @@ extern void print_loadcmds(
     cpu_type_t cputype,
     uint32_t filetype,
     enum byte_sex load_commands_byte_sex,
-    uint32_t object_size,
+    uint64_t object_size,
     enum bool verbose,
     enum bool very_verbose);
 
@@ -221,7 +221,7 @@ extern void print_segment_command(
     vm_prot_t initprot,
     uint32_t nsects,
     uint32_t flags,
-    uint32_t object_size,
+    uint64_t object_size,
     enum bool verbose);
 
 extern void print_section(

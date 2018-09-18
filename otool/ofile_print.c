@@ -2194,7 +2194,7 @@ uint32_t sizeofcmds,
 cpu_type_t cputype,
 uint32_t filetype,
 enum byte_sex load_commands_byte_sex,
-uint32_t object_size,
+uint64_t object_size,
 enum bool verbose,
 enum bool very_verbose)
 {
@@ -2842,7 +2842,7 @@ vm_prot_t maxprot,
 vm_prot_t initprot,
 uint32_t nsects,
 uint32_t flags,
-uint32_t object_size,
+uint64_t object_size,
 enum bool verbose)
 {
     uint64_t expected_cmdsize;
@@ -3940,7 +3940,7 @@ struct entry_point_command *ep)
 {
 	printf("       cmd LC_MAIN\n");
 	printf("   cmdsize %u", ep->cmdsize);
-	if(ep->cmdsize < sizeof(struct entry_point_command))
+	if(ep->cmdsize != sizeof(struct entry_point_command))
 	    printf(" Incorrect size\n");
 	else
 	    printf("\n");
@@ -3987,7 +3987,7 @@ uint32_t object_size)
 
 	printf("          cmd LC_ENCRYPTION_INFO\n");
 	printf("      cmdsize %u", ec->cmdsize);
-	if(ec->cmdsize < sizeof(struct encryption_info_command))
+	if(ec->cmdsize != sizeof(struct encryption_info_command))
 	    printf(" Incorrect size\n");
 	else
 	    printf("\n");
@@ -4019,7 +4019,7 @@ uint32_t object_size)
 
 	printf("          cmd LC_ENCRYPTION_INFO_64\n");
 	printf("      cmdsize %u", ec->cmdsize);
-	if(ec->cmdsize < sizeof(struct encryption_info_command_64))
+	if(ec->cmdsize != sizeof(struct encryption_info_command_64))
 	    printf(" Incorrect size\n");
 	else
 	    printf("\n");
@@ -4101,7 +4101,7 @@ uint32_t object_size)
 	else
 	    printf("            cmd LC_DYLD_INFO_ONLY\n");
 	printf("        cmdsize %u", dc->cmdsize);
-	if(dc->cmdsize < sizeof(struct dyld_info_command))
+	if(dc->cmdsize != sizeof(struct dyld_info_command))
 	    printf(" Incorrect size\n");
 	else
 	    printf("\n");

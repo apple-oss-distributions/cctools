@@ -1096,10 +1096,16 @@ struct info *info)
 	name = get_symbol_32(offset + offsetof(struct category_t, name),
 			     s->addr - info->database, c.name, s->relocs,
 			     s->nrelocs, info);
-	if(name != NULL)
-	    printf(" %s\n", name);
-	else
-	    printf("\n");
+	if(name != NULL){
+	    printf(" %s", name);
+	}
+	else{
+	    name = get_pointer_32(c.name, NULL, &left, NULL, info->sections,
+				  info->nsections);
+	    if(name != NULL)
+		printf(" %.*s", (int)left, name);
+	}
+	printf("\n");
 	printf("               cls 0x%x\n", c.cls);
 	if(c.cls != 0)
 	    print_class_t(c.cls, info);

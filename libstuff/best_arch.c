@@ -686,7 +686,7 @@ uint32_t nfat_archs)
 	case CPU_TYPE_ARM:
 	    /*
 	     * If it weren't for xscale, we could have a simple
-	     * heirarchy like ppc.  However, xscale has instructions
+	     * hierarchy like ppc.  However, xscale has instructions
 	     * which aren't present on v5 or v6.  Here's the acceptable
 	     * fat slices for each ARM subtype, for most to least
 	     * preferred:

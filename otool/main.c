@@ -883,7 +883,8 @@ enum bool version)
 	    add_execute_list(files[i]);
 
 	if(execute_list(show_objdump_command) == 0)
-	    fatal("internal objdump command failed");
+	    /* Internal objdump command failed. */
+	    exit(EXIT_FAILURE);
 }
 
 #else /* !defined(LLVM_OTOOL) */
@@ -1288,7 +1289,7 @@ void *cookie) /* cookie is not used */
 	     * the section contents of one of these sections in a MH_DYLIB_STUB
 	     * we assume it has been stripped and set the section size to zero.
 	     */
-	    if(mh_filetype == MH_DYLIB_STUB &&
+	    if((mh_filetype == MH_DYLIB_STUB || mh_filetype == MH_DSYM) &&
 	       ((sect_flags & SECTION_TYPE) == S_NON_LAZY_SYMBOL_POINTERS ||
 	        (sect_flags & SECTION_TYPE) == S_LAZY_SYMBOL_POINTERS ||
 		(sect_flags & SECTION_TYPE) == S_LAZY_DYLIB_SYMBOL_POINTERS ||
@@ -1506,7 +1507,8 @@ void *cookie) /* cookie is not used */
 		ofile->object_byte_sex, addr, size, &loh, &nloh);
 	    print_link_opt_hints(loh, nloh);
 	}
-	if(Gflag || (tflag && vflag)){
+	if((Gflag || (tflag && vflag)) &&
+	   (mh_filetype != MH_DYLIB_STUB && mh_filetype != MH_DSYM)){
 	    get_data_in_code_info(ofile->load_commands, mh_ncmds, mh_sizeofcmds,
 		ofile->object_byte_sex, addr, size, &dices, &ndices);
 	    if((intptr_t)dices % sizeof(uint32_t) ||
@@ -2970,6 +2972,8 @@ uint64_t *seg_addr)
 	    return(FALSE);
 
 	if(cmd == LC_SEGMENT){
+	    if(filetype == MH_DSYM && sg.fileoff == 0 && sg.filesize == 0)
+		return(TRUE);
 	    if((s.flags & SECTION_TYPE) == S_ZEROFILL){
 		*sect_pointer = NULL;
 		*sect_size = s.size;
@@ -3012,6 +3016,8 @@ uint64_t *seg_addr)
 	    *sect_flags = s.flags;
 	}
 	else{
+	    if(filetype == MH_DSYM && sg64.fileoff == 0 && sg64.filesize == 0)
+		return(TRUE);
 	    if((s64.flags & SECTION_TYPE) == S_ZEROFILL){
 		*sect_pointer = NULL;
 		*sect_size = s64.size;
@@ -3566,8 +3572,12 @@ uint64_t seg_addr)
 		}
 		llvm_disasm_set_options(arm_dc,
 		    LLVMDisassembler_Option_PrintImmHex);
+		llvm_disasm_set_options(arm_dc,
+		    LLVMDisassembler_Option_PrintLatency);
 		llvm_disasm_set_options(thumb_dc,
 		    LLVMDisassembler_Option_PrintImmHex);
+		llvm_disasm_set_options(thumb_dc,
+		    LLVMDisassembler_Option_PrintLatency);
 		if(eflag){
 		    llvm_disasm_set_options(arm_dc,
 			LLVMDisassembler_Option_UseMarkup);
@@ -3585,6 +3595,8 @@ uint64_t seg_addr)
 		    LLVMDisassembler_Option_PrintImmHex);
 		llvm_disasm_set_options(i386_dc,
 		    LLVMDisassembler_Option_SetInstrComments);
+		llvm_disasm_set_options(i386_dc,
+		    LLVMDisassembler_Option_PrintLatency);
 		if(eflag)
 		    llvm_disasm_set_options(i386_dc,
 			LLVMDisassembler_Option_UseMarkup);
@@ -3599,6 +3611,8 @@ uint64_t seg_addr)
 		    LLVMDisassembler_Option_PrintImmHex);
 		llvm_disasm_set_options(x86_64_dc,
 		    LLVMDisassembler_Option_SetInstrComments);
+		llvm_disasm_set_options(x86_64_dc,
+		    LLVMDisassembler_Option_PrintLatency);
 		if(eflag)
 		    llvm_disasm_set_options(x86_64_dc,
 			LLVMDisassembler_Option_UseMarkup);
@@ -3611,6 +3625,8 @@ uint64_t seg_addr)
 		}
 		llvm_disasm_set_options(arm64_dc,
 		    LLVMDisassembler_Option_PrintImmHex);
+		llvm_disasm_set_options(arm64_dc,
+		    LLVMDisassembler_Option_PrintLatency);
 	    }
 	    if(gflag){
 		ninsts = 100;

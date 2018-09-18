@@ -949,8 +949,15 @@ struct info *info)
 			     s->nrelocs, info, NULL);
 	if(name != NULL)
 	    printf(" %s\n", name);
-	else
-	    printf("\n");
+	else{
+	    name = get_dyld_bind_info_symbolname(s->addr + offset +
+					offsetof(struct class_t, superclass),
+					info->dbi, info->ndbi);
+	    if(name != NULL)
+		printf(" %s\n", name);
+	    else
+		printf("\n");
+	}
 	printf("         cache 0x%llx", c.cache);
 	name = get_symbol_64(offset + offsetof(struct class_t, cache),
 			     s->addr - info->database, c.cache, s->relocs,

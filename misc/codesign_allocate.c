@@ -41,6 +41,8 @@ struct arch_sign {
 struct arch_sign *arch_signs;
 uint32_t narch_signs = 0;
 
+enum bool rflag = FALSE;
+
 /* used by error routines as the name of the program */
 char *progname = NULL;
 
@@ -62,6 +64,11 @@ static struct linkedit_data_command *add_code_sig_load_command(
     struct member *member,
     struct object *object);
 
+static void strip_LC_CODE_SIGNATURE_commands(
+    struct arch *arch,
+    struct member *member,
+    struct object *object);
+
 /* apple_version is created by the libstuff/Makefile */
 extern char apple_version[];
 char *version = apple_version;
@@ -69,7 +76,7 @@ char *version = apple_version;
 /*
  * The codesign_allocate(1) tool has the following usage:
  *
- *	codesign_allocate -i oldfile -a arch size ...  -o newfile
+ *	codesign_allocate -i oldfile [-a arch size ...] | [-r]  -o newfile
  * 
  * Where the oldfile is a Mach-O file that is input for the dynamic linker
  * and it creates or adds an 
@@ -183,13 +190,21 @@ char **envp)
 		    i += 3;
 		}
 	    }
+	    else if(strcmp(argv[i], "-r") == 0){
+		rflag = TRUE;
+	    }
 	    else{
 		error("unknown flag: %s", argv[i]);
 		usage();
 	    }
 	}
-	if(input == NULL || output == NULL || narch_signs == 0)
+	if(input == NULL || output == NULL ||
+	   (narch_signs == 0 && rflag == FALSE))
 	    usage();
+	if(rflag && narch_signs != 0){
+	    error("-r flag can't be specified with -a or -A flags");
+	    usage();
+	}
 
 	breakout(input, &archs, &narchs, FALSE);
 	if(errors)
@@ -222,8 +237,8 @@ void
 usage(
 void)
 {
-	fprintf(stderr, "Usage: %s -i input [-a <arch> <size>]... "
-		"[-A <cputype> <cpusubtype> <size>]... -o output\n",
+	fprintf(stderr, "Usage: %s -i input [[-a <arch> <size>]... "
+		"[-A <cputype> <cpusubtype> <size>]... | -r] -o output\n",
 		progname);
 	exit(EXIT_FAILURE);
 }
@@ -297,9 +312,10 @@ uint32_t narchs)
 }
 
 /*
- * setup_code_signature() does the work to add or update the needed
+ * setup_code_signature() does the work to add or update (or remove) the needed
  * LC_CODE_SIGNATURE load command for the specified broken out ofile if it
- * is of one of the architecures specifed with a -a command line options.
+ * is of one of the architecures specifed with a -a command line options.  Or
+ * removes the LC_CODE_SIGNATURE load command if the -r flag is specified.
  */
 static
 void
@@ -518,6 +534,7 @@ struct object *object)
 	    object->input_sym_info_size += object->code_sig_cmd->datasize;
 	}
 
+
 	/*
 	 * Now see if one of the -a flags matches this object.
 	 */
@@ -536,6 +553,49 @@ struct object *object)
 	       arch_signs[i].arch_flag.cpusubtype == cpusubtype)
 		break;
 	}
+
+	/*
+	 * If the -r flag is specified we remove the code signature and the
+	 * LC_CODE_SIGNATURE load command if any.  We also do this if we have
+	 * an -a flag for this arch and the size is zero.
+	 */
+	if(rflag || (i < narch_signs && arch_signs[i].datasize == 0)){
+	    struct arch_flag arch_flag;
+	    const char *arch_name;
+	    arch_name = get_arch_name_from_types(cputype, cpusubtype);
+	    (void)get_arch_from_flag((char *)arch_name, &arch_flag);
+	    if(i < narch_signs)
+		arch_signs[i].found = TRUE;
+	    /*
+	     * If this has a code signature load command reduce the linkedit by
+	     * the size of that data.  But do not use the old data.
+	     */
+	    if(object->code_sig_cmd != NULL){
+		if(object->seg_linkedit != NULL){
+		    object->seg_linkedit->filesize -=
+			object->code_sig_cmd->datasize;
+		    if(object->seg_linkedit->filesize >
+		       object->seg_linkedit->vmsize)
+			object->seg_linkedit->vmsize =
+			    rnd(object->seg_linkedit->filesize,
+		                get_segalign_from_flag(&arch_flag));
+		}
+		else if(object->seg_linkedit64 != NULL){
+		    object->seg_linkedit64->filesize -=
+			object->code_sig_cmd->datasize;
+		    if(object->seg_linkedit64->filesize >
+		       object->seg_linkedit64->vmsize)
+			object->seg_linkedit64->vmsize =
+			    rnd(object->seg_linkedit64->filesize,
+				get_segalign_from_flag(&arch_flag));
+		}
+	    }
+	    object->output_code_sig_data_size = 0;
+	    object->output_code_sig_data = NULL;
+	    strip_LC_CODE_SIGNATURE_commands(arch, member, object);
+	    return;
+	}
+
 	/*
 	 * If we didn't find a matching -a flag then just use the existing
 	 * code signature if any.
@@ -775,4 +835,122 @@ struct object *object)
             object->mh64->ncmds = ncmds + 1;
         }
 	return(code_sig);
+}
+
+/*
+ * strip_LC_CODE_SIGNATURE_commands() is called when -r is specified to remove
+ * any LC_CODE_SIGNATURE load commands from the object's load commands.
+ */
+static
+void
+strip_LC_CODE_SIGNATURE_commands(
+struct arch *arch,
+struct member *member,
+struct object *object)
+{
+    uint32_t i, ncmds, mh_sizeofcmds, sizeofcmds;
+    struct load_command *lc1, *lc2, *new_load_commands;
+    struct segment_command *sg;
+
+	/*
+	 * See if there is an LC_CODE_SIGNATURE load command and if no command
+	 * just return.
+	 */
+	if(object->code_sig_cmd == NULL)
+	    return;
+
+	/*
+	 * Allocate space for the new load commands and zero it out so any holes
+	 * will be zero bytes.
+	 */
+        if(arch->object->mh != NULL){
+            ncmds = arch->object->mh->ncmds;
+	    mh_sizeofcmds = arch->object->mh->sizeofcmds;
+	}
+	else{
+            ncmds = arch->object->mh64->ncmds;
+	    mh_sizeofcmds = arch->object->mh64->sizeofcmds;
+	}
+	new_load_commands = allocate(mh_sizeofcmds);
+	memset(new_load_commands, '\0', mh_sizeofcmds);
+
+	/*
+	 * Copy all the load commands except the LC_CODE_SIGNATURE load commands
+	 * into the allocated space for the new load commands.
+	 */
+	lc1 = arch->object->load_commands;
+	lc2 = new_load_commands;
+	sizeofcmds = 0;
+	for(i = 0; i < ncmds; i++){
+	    if(lc1->cmd != LC_CODE_SIGNATURE){
+		memcpy(lc2, lc1, lc1->cmdsize);
+		sizeofcmds += lc2->cmdsize;
+		lc2 = (struct load_command *)((char *)lc2 + lc2->cmdsize);
+	    }
+	    lc1 = (struct load_command *)((char *)lc1 + lc1->cmdsize);
+	}
+
+	/*
+	 * Finally copy the updated load commands over the existing load
+	 * commands.
+	 */
+	memcpy(arch->object->load_commands, new_load_commands, sizeofcmds);
+	if(mh_sizeofcmds > sizeofcmds){
+		memset((char *)arch->object->load_commands + sizeofcmds, '\0', 
+			   (mh_sizeofcmds - sizeofcmds));
+	}
+	ncmds -= 1;
+        if(arch->object->mh != NULL) {
+            arch->object->mh->sizeofcmds = sizeofcmds;
+            arch->object->mh->ncmds = ncmds;
+        } else {
+            arch->object->mh64->sizeofcmds = sizeofcmds;
+            arch->object->mh64->ncmds = ncmds;
+        }
+	free(new_load_commands);
+
+	/* reset the pointers into the load commands */
+	object->code_sig_cmd = NULL;
+	lc1 = arch->object->load_commands;
+	for(i = 0; i < ncmds; i++){
+	    switch(lc1->cmd){
+	    case LC_SYMTAB:
+		arch->object->st = (struct symtab_command *)lc1;
+	        break;
+	    case LC_DYSYMTAB:
+		arch->object->dyst = (struct dysymtab_command *)lc1;
+		break;
+	    case LC_TWOLEVEL_HINTS:
+		arch->object->hints_cmd = (struct twolevel_hints_command *)lc1;
+		break;
+	    case LC_PREBIND_CKSUM:
+		arch->object->cs = (struct prebind_cksum_command *)lc1;
+		break;
+	    case LC_SEGMENT:
+		sg = (struct segment_command *)lc1;
+		if(strcmp(sg->segname, SEG_LINKEDIT) == 0)
+		    arch->object->seg_linkedit = sg;
+		break;
+	    case LC_SEGMENT_SPLIT_INFO:
+		object->split_info_cmd = (struct linkedit_data_command *)lc1;
+		break;
+	    case LC_FUNCTION_STARTS:
+		object->func_starts_info_cmd =
+					 (struct linkedit_data_command *)lc1;
+		break;
+	    case LC_DATA_IN_CODE:
+		object->data_in_code_cmd =
+				         (struct linkedit_data_command *)lc1;
+		break;
+	    case LC_DYLIB_CODE_SIGN_DRS:
+		object->code_sign_drs_cmd =
+				         (struct linkedit_data_command *)lc1;
+		break;
+	    case LC_LINKER_OPTIMIZATION_HINT:
+		object->link_opt_hint_cmd =
+				         (struct linkedit_data_command *)lc1;
+		break;
+	    }
+	    lc1 = (struct load_command *)((char *)lc1 + lc1->cmdsize);
+	}
 }
