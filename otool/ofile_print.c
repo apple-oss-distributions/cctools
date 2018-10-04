@@ -664,6 +664,17 @@ cpu_subtype_t cpusubtype)
 	    break;
 	    case CPU_SUBTYPE_ARM64_V8:
 		printf("arm64v8\n");
+	    case CPU_SUBTYPE_ARM64E:
+		printf("arm64e\n");
+	    default:
+		goto print_arch_unknown;
+	    }
+	    break;
+	case CPU_TYPE_ARM64_32:
+	    switch(cpusubtype & ~CPU_SUBTYPE_MASK){
+	    case CPU_SUBTYPE_ARM64_32_V8:
+		printf("arm64_32\n");
+	    break;
 	    default:
 		goto print_arch_unknown;
 	    }
@@ -978,6 +989,20 @@ cpu_subtype_t cpusubtype)
 	    case CPU_SUBTYPE_ARM64_V8:
 		printf("    cputype CPU_TYPE_ARM64\n"
 		       "    cpusubtype CPU_SUBTYPE_ARM64_V8\n");
+	    	break;
+	    case CPU_SUBTYPE_ARM64E:
+		printf("    cputype CPU_TYPE_ARM64\n"
+		       "    cpusubtype CPU_SUBTYPE_ARM64E\n");
+	    	break;
+	    default:
+		goto print_arch_unknown;
+	    }
+	    break;
+	case CPU_TYPE_ARM64_32:
+	    switch(cpusubtype & ~CPU_SUBTYPE_MASK){
+	    case CPU_SUBTYPE_ARM64_32_V8:
+		printf("    cputype CPU_TYPE_ARM64_32\n"
+		       "    cpusubtype CPU_SUBTYPE_ARM64_32_V8\n");
 	    	break;
 	    default:
 		goto print_arch_unknown;
@@ -2016,6 +2041,20 @@ NS32:
 		case CPU_SUBTYPE_ARM64_V8:
 		    printf("         V8");
 		    break;
+		case CPU_SUBTYPE_ARM64E:
+		    printf("          E");
+		    break;
+		default:
+		    printf(" %10d", cpusubtype & ~CPU_SUBTYPE_MASK);
+		    break;
+		}
+		break;
+	    case CPU_TYPE_ARM64_32:
+		printf(" ARM64_32");
+		switch(cpusubtype & ~CPU_SUBTYPE_MASK){
+		case CPU_SUBTYPE_ARM64_32_V8:
+		    printf("        V8");
+		    break;
 		default:
 		    printf(" %10d", cpusubtype & ~CPU_SUBTYPE_MASK);
 		    break;
@@ -2179,6 +2218,10 @@ NS32:
 	    if(f & MH_NLIST_OUTOFSYNC_WITH_DYLDINFO){
 		printf(" NLIST_OUTOFSYNC_WITH_DYLDINFO");
 		f &= ~MH_NLIST_OUTOFSYNC_WITH_DYLDINFO;
+	    }
+	    if(f & MH_SIM_SUPPORT){
+		printf(" SIM_SUPPORT");
+		f &= ~MH_SIM_SUPPORT;
 	    }
 	    if(f != 0 || flags == 0)
 		printf(" 0x%08x", (unsigned int)f);
@@ -3990,6 +4033,18 @@ enum bool verbose)
 		break;
 	    case PLATFORM_BRIDGEOS:
 		printf("BRIDGEOS\n");
+		break;
+	    case PLATFORM_IOSMAC:
+		printf("IOSMAC\n");
+		break;
+	    case PLATFORM_IOSSIMULATOR:
+		printf("IOSSIMULATOR\n");
+		break;
+	    case PLATFORM_TVOSSIMULATOR:
+		printf("TVOSSIMULATOR\n");
+		break;
+	    case PLATFORM_WATCHOSSIMULATOR:
+		printf("WATCHOSSIMULATOR\n");
 		break;
 	    default:
 	        printf("%u\n", bv->platform);
@@ -6427,8 +6482,9 @@ print_x86_debug_state64:
 		}
 	    }
 	}
-	else if(cputype == CPU_TYPE_ARM64){
+	else if(cputype == CPU_TYPE_ARM64 || cputype == CPU_TYPE_ARM64_32){
 	    arm_thread_state64_t cpu;
+	    arm_exception_state64_t except;
 	    while(begin < end){
 		if(end - begin > (ptrdiff_t)sizeof(uint32_t)){
 		    memcpy((char *)&flavor, begin, sizeof(uint32_t));
@@ -6500,6 +6556,31 @@ print_x86_debug_state64:
 			cpu.__x[24], cpu.__x[25], cpu.__x[26], cpu.__x[27],
 			cpu.__x[28], cpu.__fp, cpu.__lr, cpu.__sp, cpu.__pc,
 			cpu.__cpsr);
+		    break;
+		case ARM_EXCEPTION_STATE64:
+		    printf("     flavor ARM_EXCEPTION_STATE64\n");
+		    if(count == ARM_EXCEPTION_STATE64_COUNT)
+			printf("      count ARM_EXCEPTION_STATE64_COUNT\n");
+		    else
+			printf("      count %u (not ARM_EXCEPTION_STATE64_COUNT"
+			       " %u)\n", count, ARM_EXCEPTION_STATE64_COUNT);
+		    left = end - begin;
+		    if(left >= sizeof(arm_exception_state64_t)){
+		        memcpy((char *)&except, begin,
+			       sizeof(arm_exception_state64_t));
+		        begin += sizeof(arm_exception_state64_t);
+		    }
+		    else{
+		        memset((char *)&except, '\0',
+			       sizeof(arm_exception_state64_t));
+		        memcpy((char *)&except, begin, left);
+		        begin += left;
+		    }
+		    if(swapped)
+			swap_arm_exception_state64_t(&except, host_byte_sex);
+		    printf(
+		       "\t   far  0x%016llx esr 0x%08x exception 0x%08x\n",
+			except.__far, except.__esr, except.__exception);
 		    break;
 		default:
 		    printf("     flavor %u (unknown)\n", flavor);
@@ -7210,7 +7291,8 @@ enum bool verbose)
 				reloc.r_type == ARM_RELOC_PAIR)
 			    printf("other_half = 0x%04x\n",
 				   (unsigned int)reloc.r_address);
-			else if(cputype == CPU_TYPE_ARM64 &&
+			else if((cputype == CPU_TYPE_ARM64 ||
+				 cputype == CPU_TYPE_ARM64_32) &&
 				reloc.r_type == ARM64_RELOC_ADDEND)
 			    printf("addend = 0x%06x\n",
 				   (unsigned int)reloc.r_symbolnum);
@@ -7305,7 +7387,9 @@ static char *arm_r_types[] = {
 static char *arm64_r_types[] = {
 	"UNSIGND ", "SUB     ", "BR26    ", "PAGE21  ", "PAGOF12 ",
 	"GOTLDP  ", "GOTLDPOF", "PTRTGOT ", "TLVLDP  ", "TLVLDPOF", 
-	"ADDEND  ", " 11 (?) ", " 12 (?) ", " 13 (?) ", " 14 (?) ", " 15 (?) "
+	"ADDEND  ",
+        "AUTH    ",
+	" 12 (?) ", " 13 (?) ", " 14 (?) ", " 15 (?) "
 };
 
 static
@@ -7354,6 +7438,7 @@ enum bool predicted)
 	    printf("%s", arm_r_types[r_type]);
 	    break;
 	case CPU_TYPE_ARM64:
+	case CPU_TYPE_ARM64_32:
 	    printf("%s", arm64_r_types[r_type]);
 	    break;
 	default:
@@ -8430,9 +8515,11 @@ uint32_t l3)
 void
 print_literal_pointer_section(
 cpu_type_t cputype,
+cpu_subtype_t cpusubtype,
 struct load_command *load_commands,
 uint32_t ncmds,
 uint32_t sizeofcmds,
+uint32_t filetype,
 enum byte_sex object_byte_sex,
 char *object_addr,
 uint32_t object_size,
@@ -8649,6 +8736,23 @@ enum bool print_addresses)
 		memcpy((char *)&lp, sect + i, sizeof(uint64_t));
 		if(swapped)
 		    lp = SWAP_LONG_LONG(lp);
+		/* Clear out the bits for threaded rebase/bind */
+		if(cputype == CPU_TYPE_ARM64 &&
+		   cpusubtype == CPU_SUBTYPE_ARM64E){
+		    if(filetype == MH_OBJECT){
+			if(lp & 0x8000000000000000ULL){
+			    lp = 0xffffffffULL & lp;
+			    if((lp & 0x80000000ULL) != 0)
+				lp |= 0xffffffff00000000ULL;
+			}
+		    }
+		    else{
+			if(lp & 0x8000000000000000ULL)
+			    lp = 0xffffffffULL & lp;
+			else
+			    lp = 0x0007ffffffffffffULL & lp;
+		    }
+		}
 	    }
 	    else{
 		li = (int32_t)*((int32_t *)(sect + i));
@@ -8789,13 +8893,22 @@ uint64_t sect_addr,
 enum byte_sex object_byte_sex,
 struct symbol *sorted_symbols,
 uint32_t nsorted_symbols,
+struct nlist *symbols,
+struct nlist_64 *symbols64,
+uint32_t nsymbols,
+char *strings,
+uint32_t strings_size,
+struct relocation_info *relocs,
+uint32_t nrelocs,
 enum bool verbose)
 {
     uint32_t i, stride, p;
-    uint64_t q;
+    uint64_t q, lp;
     enum byte_sex host_byte_sex;
     enum bool swapped;
     const char *name;
+    struct relocation_info *reloc;
+    uint32_t n_strx;
 
 	host_byte_sex = get_host_byte_sex();
 	swapped = host_byte_sex != object_byte_sex;
@@ -8824,22 +8937,56 @@ enum bool verbose)
 		else
 		     p = SWAP_INT(p);
 	    }
-	    if(cputype & CPU_ARCH_ABI64)
+	    if(cputype & CPU_ARCH_ABI64){
 		printf("0x%016llx", q);
-	    else
+		lp = q;
+	    } else {
 		printf("0x%08x", p);
+		lp = p;
+	    }
 
 	    if(verbose == TRUE){
-		if(cputype & CPU_ARCH_ABI64)
-		    name = guess_symbol(q, sorted_symbols, nsorted_symbols,
-					verbose);
-		else
-		    name = guess_symbol(p, sorted_symbols, nsorted_symbols,
-					verbose);
-		if(name != NULL)
-		    printf(" %s\n", name);
-		else
-		    printf("\n");
+		/*
+		 * If there is an external relocation entry for this pointer then
+		 * print the symbol and any offset.
+		 */
+		reloc = bsearch(&i, relocs, nrelocs,
+				sizeof(struct relocation_info),
+				(int (*)(const void *, const void *))
+				rel_bsearch);
+		if(reloc != NULL && (reloc->r_address & R_SCATTERED) == 0 &&
+		   reloc->r_extern == 1){
+		    if(reloc->r_symbolnum < nsymbols){
+			if(symbols != NULL)
+			    n_strx = symbols[reloc->r_symbolnum].n_un.n_strx;
+			else
+			    n_strx = symbols64[reloc->r_symbolnum].n_un.n_strx;
+			if(n_strx < strings_size){
+			    if(lp != 0)
+				printf(" %s+0x%llx\n", strings + n_strx, lp);
+			    else
+				printf(" %s\n", strings + n_strx);
+			}
+			else{
+			    printf("bad string index for symbol: %u\n",
+				   reloc->r_symbolnum);
+			}
+		    }
+		    else{
+			printf("bad relocation entry\n");
+		    }
+		} else {
+		    if(cputype & CPU_ARCH_ABI64)
+			name = guess_symbol(q, sorted_symbols, nsorted_symbols,
+					    verbose);
+		    else
+			name = guess_symbol(p, sorted_symbols, nsorted_symbols,
+					    verbose);
+		    if(name != NULL)
+			printf(" %s\n", name);
+		    else
+			printf("\n");
+		}
 	    }
 	    else{
 		printf("\n");

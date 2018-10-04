@@ -1822,6 +1822,7 @@ struct ofile *ofile)
 		if(cmd_flags.arch_only_flag.cputype != ofile->mh_cputype)
 		    return;
 		if(cmd_flags.arch_only_flag.cputype == CPU_TYPE_ARM ||
+		   cmd_flags.arch_only_flag.cputype == CPU_TYPE_ARM64_32 ||
 		   cmd_flags.arch_only_flag.cputype == CPU_TYPE_X86_64){
 		    if(cmd_flags.arch_only_flag.cpusubtype !=
 							ofile->mh_cpusubtype)
@@ -1843,6 +1844,8 @@ struct ofile *ofile)
 	    for( ; i < narchs; i++){
 		if(archs[i].arch_flag.cputype == ofile->mh_cputype){
 		    if((archs[i].arch_flag.cputype == CPU_TYPE_ARM ||
+		        archs[i].arch_flag.cputype == CPU_TYPE_ARM64 ||
+		        archs[i].arch_flag.cputype == CPU_TYPE_ARM64_32 ||
 		        archs[i].arch_flag.cputype == CPU_TYPE_X86_64) &&
 		       archs[i].arch_flag.cpusubtype != ofile->mh_cpusubtype)
 			continue;
@@ -1871,6 +1874,7 @@ struct ofile *ofile)
 		if(cmd_flags.arch_only_flag.cputype != ofile->lto_cputype)
 		    return;
 		if(cmd_flags.arch_only_flag.cputype == CPU_TYPE_ARM ||
+		   cmd_flags.arch_only_flag.cputype == CPU_TYPE_ARM64_32 ||
 		   cmd_flags.arch_only_flag.cputype == CPU_TYPE_X86_64){
 		    if(cmd_flags.arch_only_flag.cpusubtype !=
 							ofile->lto_cpusubtype)
@@ -1892,6 +1896,8 @@ struct ofile *ofile)
 	    for( ; i < narchs; i++){
 		if(archs[i].arch_flag.cputype == ofile->lto_cputype){
 		    if((archs[i].arch_flag.cputype == CPU_TYPE_ARM ||
+		        archs[i].arch_flag.cputype == CPU_TYPE_ARM64 ||
+		        archs[i].arch_flag.cputype == CPU_TYPE_ARM64_32 ||
 		        archs[i].arch_flag.cputype == CPU_TYPE_X86_64) &&
 		       archs[i].arch_flag.cpusubtype != ofile->lto_cpusubtype)
 			continue;
@@ -1920,6 +1926,7 @@ struct ofile *ofile)
 	       ofile->mh64 != NULL){
 		if(ofile->mh_cputype == CPU_TYPE_ARM ||
 		   ofile->mh_cputype == CPU_TYPE_ARM64 ||
+		   ofile->mh_cputype == CPU_TYPE_ARM64_32 ||
 		   ofile->mh_cputype == CPU_TYPE_X86_64){
 		    archs[narchs].arch_flag.name = (char *)
 			get_arch_name_from_types(
@@ -1938,6 +1945,7 @@ struct ofile *ofile)
 	    else if(ofile->lto != NULL){
 		if(ofile->lto_cputype == CPU_TYPE_ARM ||
 		   ofile->lto_cputype == CPU_TYPE_ARM64 ||
+		   ofile->lto_cputype == CPU_TYPE_ARM64_32 ||
 		   ofile->lto_cputype == CPU_TYPE_X86_64){
 		    archs[narchs].arch_flag.name = (char *)
 			get_arch_name_from_types(
@@ -2305,6 +2313,7 @@ struct ofile *ofile)
     struct stat stat_buf;
     struct ar_hdr toc_ar_hdr;
     enum bool some_tocs, same_toc, different_offsets;
+    uint32_t toc_mtime;
 
 	if(narchs == 0){
 	    if(cmd_flags.ranlib == TRUE){
@@ -2848,7 +2857,9 @@ update_toc_ar_dates:
 	    return;
 	}
 	if(zero_ar_date == TRUE)
-	    stat_buf.st_mtime = 0;
+	    toc_mtime = 0;
+	else
+	    toc_mtime = stat_buf.st_mtime + 5;
 	/*
          * With the time from the file system the library is on set the ar_date
 	 * using the modification time returned by stat.  Then write this into
@@ -2858,7 +2869,7 @@ update_toc_ar_dates:
 	   (int)sizeof(toc_ar_hdr.ar_name),
 	       SYMDEF,
 	   (int)sizeof(toc_ar_hdr.ar_date),
-	       (long int)stat_buf.st_mtime + 5);
+	       (long int)toc_mtime);
 	for(i = 0; i < narchs; i++){
 	    if(lseek(fd, time_offsets[i], L_SET) == -1){
 		system_error("can't lseek in output file: %s", output);
@@ -3502,7 +3513,6 @@ char *output)
                   add_execute_list(sdk_dylib1o_path);
                   use_dashl_dylib1o = FALSE;
                 }
-                free(sdk_dylib1o_path);
               }
             }
 

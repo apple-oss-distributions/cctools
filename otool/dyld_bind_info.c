@@ -1,9 +1,20 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <mach-o/loader.h>
 #include <stuff/bool.h>
 #include <stuff/allocate.h>
+#include <stuff/bytesex.h>
 #include "dyld_bind_info.h"
+
+/* The entries of the ordinalTable for ThreadedRebaseBind. */
+struct ThreadedBindData {
+    const char* symbolName;
+    int64_t addend;
+    int libraryOrdinal;
+    uint8_t flags;
+    uint8_t type;
+};
 
 const char *
 bindTypeName(
@@ -35,8 +46,10 @@ enum bool *libraryOrdinalSet)
 		return("main-executable");
 	    case BIND_SPECIAL_DYLIB_FLAT_LOOKUP:
 		return("flat-namespace");
+	    case BIND_SPECIAL_DYLIB_WEAK_LOOKUP:
+		return("weak");
         }
-        if(libraryOrdinal < BIND_SPECIAL_DYLIB_FLAT_LOOKUP){
+        if(libraryOrdinal < BIND_SPECIAL_DYLIB_WEAK_LOOKUP){
 	    *libraryOrdinalSet = FALSE;
 	    return("Unknown special ordinal");
 	}
@@ -301,8 +314,12 @@ struct segment_command **segs,
 uint32_t nsegs,
 struct segment_command_64 **segs64,
 uint32_t nsegs64,
+enum bool swapped,
+char *object_addr,
+uint32_t object_size,
 struct dyld_bind_info **dbi, /* output */
 uint64_t *ndbi,
+enum bool *ThreadedRebaseBind,
 enum bool print_errors)
 {
     const uint8_t *p, *opcode_start;
@@ -314,6 +331,7 @@ enum bool print_errors)
     enum bool libraryOrdinalSet;
     int libraryOrdinal;
     int64_t addend;
+    int64_t flags;
     uint32_t count;
     uint32_t skip;
     uint64_t segStartAddr;
@@ -321,13 +339,21 @@ enum bool print_errors)
     const char* typeName;
     const char* weak_import;
     enum bool done = FALSE;
-
     const char *sectName, *error;
 #define MAXERRORCOUNT 20
     uint32_t pass, errorCount;
     uint64_t n;
-
     uint32_t sizeof_pointer;
+    char *pointerLocation;
+    uint64_t offset, ordinalTableCount, ordinalTableIndex, delta;
+    struct ThreadedBindData *ordinalTable;
+    uint16_t ordinal;
+    uint64_t pointerAddress, pointerPageStart;
+
+    *ThreadedRebaseBind = FALSE;
+    ordinalTable = NULL;
+    ordinalTableCount = 0;
+
     if(segs)
 	sizeof_pointer = 4;
     else
@@ -355,6 +381,8 @@ enum bool print_errors)
 		printf("too many bind info errors\n");
 	    *dbi = NULL;
 	    *ndbi = 0;
+	    if(ordinalTable != NULL)
+		free(ordinalTable);
 	    return;
 	}
 	if(pass == 2){
@@ -412,7 +440,7 @@ enum bool print_errors)
 			int8_t signExtended = BIND_OPCODE_MASK | immediate;
 			libraryOrdinal = signExtended;
 			if(pass == 1 && print_errors &&
-                           libraryOrdinal < BIND_SPECIAL_DYLIB_FLAT_LOOKUP){
+                           libraryOrdinal < BIND_SPECIAL_DYLIB_WEAK_LOOKUP){
 			    printf("bad bind info (for BIND_OPCODE_SET_DYLIB_"
 				   "SPECIAL_IMM unknown special ordinal: %d "
 				   "for opcode at: 0x%lx)\n", libraryOrdinal,
@@ -444,7 +472,8 @@ enum bool print_errors)
 		    else {
 			++p;
 		    }
-		    if((immediate & BIND_SYMBOL_FLAGS_WEAK_IMPORT) != 0)
+		    flags = immediate;
+		    if((flags & BIND_SYMBOL_FLAGS_WEAK_IMPORT) != 0)
 			weak_import = " (weak import)";
 		    else
 			weak_import = "";
@@ -509,16 +538,19 @@ enum bool print_errors)
 		    }
 		    break;
 		case BIND_OPCODE_DO_BIND:
-		    error = checkSegAndOffset(segIndex, segOffset, segs, nsegs,
-					      segs64, nsegs64, TRUE);
-		    if(pass == 1 && print_errors && error){
-			printf("bad bind info (for BIND_OPCODE_DO_BIND %s for "
-			       "opcode at: 0x%lx)\n", error,
-			       opcode_start - start);
-			errorCount++;
+		    if(!*ThreadedRebaseBind)
+		    {
+			error = checkSegAndOffset(segIndex, segOffset, segs,
+						  nsegs, segs64, nsegs64, TRUE);
+			if(pass == 1 && print_errors && error){
+			    printf("bad bind info (for BIND_OPCODE_DO_BIND %s "
+				   "for opcode at: 0x%lx)\n", error,
+				   opcode_start - start);
+			    errorCount++;
+			}
+			sectName = sectionName(segIndex, segStartAddr+segOffset,
+					       segs, nsegs, segs64, nsegs64);
 		    }
-		    sectName = sectionName(segIndex, segStartAddr + segOffset,
-					   segs, nsegs, segs64, nsegs64);
 		    if(pass == 1 && print_errors && symbolName == NULL){
 			printf("bad bind info (for BIND_OPCODE_DO_BIND missing "
 			       "preceding BIND_OPCODE_SET_SYMBOL_TRAILING_"
@@ -532,19 +564,50 @@ enum bool print_errors)
 			       "opcode at: 0x%lx)\n", opcode_start - start);
 			errorCount++;
 		    }
-		    if(pass == 2){
-			(*dbi)[n].segname = segName;
-			(*dbi)[n].sectname = sectName;
-			(*dbi)[n].address = segStartAddr+segOffset;
-			(*dbi)[n].bind_type = type;
-			(*dbi)[n].addend = addend;
-			(*dbi)[n].dylibname = fromDylib;
-			(*dbi)[n].symbolname = symbolName ? symbolName :
-					       "Symbol name not set";
-			(*dbi)[n].weak_import = *weak_import != '\0';
+		    if(*ThreadedRebaseBind){
+			/*
+			 * At this point ordinalTableIndex should not equal
+			 * ordinalTableCount or we have seen too many 
+			 * BIND_OPCODE_DO_BIND opcodes and that does not match
+			 * the ordinalTableCount.
+			 */
+			if(ordinalTableIndex >= ordinalTableCount){
+			    if(pass == 1 && print_errors){
+				printf("bad bind info (incorrect ordinal table "
+				       "size (number of BIND_OPCODE_DO_BIND "
+				       "opcodes exceed the count in previous "
+				       "BIND_SUBOPCODE_THREADED_SET_BIND_"
+				       "ORDINAL_TABLE_SIZE_ULEB at BIND_OPCODE_"
+				       "DO_BIND opcode at: 0x%lx)\n",
+				       opcode_start - start);
+				errorCount++;
+			    }
+			}
+			ordinalTable[ordinalTableIndex].symbolName = symbolName;
+			ordinalTable[ordinalTableIndex].addend = addend;
+			ordinalTable[ordinalTableIndex].libraryOrdinal =
+							libraryOrdinal;
+			ordinalTable[ordinalTableIndex].flags = flags;
+			ordinalTable[ordinalTableIndex].type = type;
+			ordinalTableIndex++;
 		    }
-		    n++;
-		    segOffset += sizeof_pointer;
+		    else
+		    {
+			if(pass == 2){
+			    (*dbi)[n].segname = segName;
+			    (*dbi)[n].sectname = sectName;
+			    (*dbi)[n].address = segStartAddr+segOffset;
+			    (*dbi)[n].bind_type = type;
+			    (*dbi)[n].addend = addend;
+			    (*dbi)[n].dylibname = fromDylib;
+			    (*dbi)[n].symbolname = symbolName ? symbolName :
+						   "Symbol name not set";
+			    (*dbi)[n].weak_import = *weak_import != '\0';
+			    (*dbi)[n].pointer_value = 0;
+			}
+			n++;
+			segOffset += sizeof_pointer;
+		    }
 		    break;
 		case BIND_OPCODE_DO_BIND_ADD_ADDR_ULEB:
 		    error = checkSegAndOffset(segIndex, segOffset, segs, nsegs,
@@ -581,6 +644,7 @@ enum bool print_errors)
 			(*dbi)[n].symbolname = symbolName ? symbolName :
 					       "Symbol name not set";
 			(*dbi)[n].weak_import = *weak_import != '\0';
+			(*dbi)[n].pointer_value = 0;
 		    }
 		    n++;
 		    segOffset += read_uleb128(&p, end, &error) + sizeof_pointer;
@@ -639,6 +703,7 @@ enum bool print_errors)
 			(*dbi)[n].symbolname = symbolName ? symbolName :
 					       "Symbol name not set";
 			(*dbi)[n].weak_import = *weak_import != '\0';
+			(*dbi)[n].pointer_value = 0;
 		    }
 		    n++;
 		    segOffset += immediate * sizeof_pointer + sizeof_pointer;
@@ -717,9 +782,199 @@ enum bool print_errors)
 			    (*dbi)[n].symbolname = symbolName ? symbolName :
 					           "Symbol name not set";
 			    (*dbi)[n].weak_import = *weak_import != '\0';
+			    (*dbi)[n].pointer_value = 0;
 			}
 			n++;
 			segOffset += skip + sizeof_pointer;
+		    }
+		    break;
+		case BIND_OPCODE_THREADED:
+		    /* Note the immediate is a sub opcode */
+		    switch(immediate){
+		    case
+		      BIND_SUBOPCODE_THREADED_SET_BIND_ORDINAL_TABLE_SIZE_ULEB:
+			ordinalTableCount = read_uleb128(&p, end, &error);
+			if(pass == 1 && print_errors && error){
+			    printf("bad bind info (for BIND_SUBOPCODE_THREADED"
+				   "_SET_BIND_ORDINAL_TABLE_SIZE_ULEB (count "
+				   "value) %s for opcode at: 0x%lx)\n", error,
+				   opcode_start - start);
+			    errorCount++;
+			}
+			ordinalTable = reallocate(ordinalTable,
+			    sizeof(struct ThreadedBindData) *
+			    ordinalTableCount);
+			ordinalTableIndex = 0;
+			*ThreadedRebaseBind = TRUE;
+			break;
+		    case BIND_SUBOPCODE_THREADED_APPLY:
+			/*
+			 * At this point ordinalTableIndex should equal
+			 * ordinalTableCount or we have a mismatch between
+			 * BIND_OPCODE_DO_BIND and ordinalTableCount.
+			 */
+			if(ordinalTableIndex != ordinalTableCount){
+			    if(pass == 1 && print_errors){
+				printf("bad bind info (incorrect ordinal table "
+				       "size (count of previous BIND_OPCODE_DO_"
+				       "BIND opcodes don't match count in "
+				       "previous BIND_SUBOPCODE_THREADED_SET_"
+				       "BIND_ORDINAL_TABLE_SIZE_ULEB at BIND_"
+				       "SUBOPCODE_THREADED_APPLY opcode at: "
+				       "0x%lx)\n", opcode_start - start);
+				errorCount++;
+			    }
+			}
+			/*
+			 * We check for segOffset + 8 as we need to read a
+			 * 64-bit pointer.
+			 */
+			error = checkSegAndOffset(segIndex, segOffset, segs,
+						  nsegs, segs64, nsegs64,
+						  FALSE);
+			if(pass == 1 && print_errors && error){
+			    printf("bad bind info (for BIND_SUBOPCODE_THREADED_"
+				   "APPLY %s for opcode at: 0x%lx)\n",
+				   error, opcode_start - start);
+			    errorCount++;
+			}
+			sectName = sectionName(segIndex, segStartAddr +
+				       segOffset, segs, nsegs, segs64, nsegs64);
+			/* Check segStartAddr + segOffset is 8-byte aligned. */
+			if(((segStartAddr + segOffset) & 0x3) != 0){
+			    if(pass == 1 && print_errors){
+				printf("bad bind info (when at BIND_SUBOPCODE_"
+				       "THREADED_APPLY for opcode at: "
+				       "0x%lx bad segOffset, not 8-byte "
+				       "aligned)\n", opcode_start - start);
+				errorCount++;
+			    }
+			}
+			/*
+			 * This is a start a new thread of Rebase/Bind pointer
+			 * chain from the previously set segIndex and segOffset.
+			 */
+			offset = segs64[segIndex]->fileoff + segOffset;
+			pointerAddress = segs64[segIndex]->vmaddr + segOffset;
+			pointerPageStart = pointerAddress & ~0x3fff;
+			delta = 0;
+			do{
+			    uint64_t value;
+			    enum bool isRebase;
+			    pointerLocation = object_addr + offset;
+			    value = *(uint64_t *)pointerLocation;
+			    if(swapped)
+				value = SWAP_LONG_LONG(value);
+			    isRebase = (value & (1ULL << 62)) == 0;
+			    if(isRebase){
+				/* not doing anything with Rebase,
+				   only bind so no code here. */
+				;
+			    } else {
+				/* the ordinal is bits are [0..15] */
+				ordinal = value & 0xFFFF;
+				if(ordinal > ordinalTableCount){
+				    if(pass == 1 && print_errors){
+					printf("bad bind info (for BIND_SUB"
+					    "OPCODE_THREADED_APPLY for opcode "
+					    "at: 0x%lx) bad ordinal: %u in "
+					    "pointer at address 0x%llx\n",
+					    opcode_start - start, ordinal,
+					    pointerAddress);
+					errorCount++;
+				    }
+				    break;
+				}
+				flags = ordinalTable[ordinal].flags;
+				if((flags & BIND_SYMBOL_FLAGS_WEAK_IMPORT) != 0)
+				    weak_import = " (weak import)";
+				else
+				    weak_import = "";
+				libraryOrdinal =
+				    ordinalTable[ordinal].libraryOrdinal;
+		    		fromDylib = ordinalName(libraryOrdinal, dylibs,
+						ndylibs, &libraryOrdinalSet);
+				if(pass == 2){
+				    (*dbi)[n].segname = segName;
+				    (*dbi)[n].sectname = sectName;
+				    (*dbi)[n].address = segStartAddr+segOffset;
+				    (*dbi)[n].bind_type =
+					ordinalTable[ordinal].type;
+				    (*dbi)[n].addend =
+					ordinalTable[ordinal].addend;
+				    (*dbi)[n].dylibname = fromDylib;
+				    (*dbi)[n].symbolname = 
+					ordinalTable[ordinal].symbolName;
+				    (*dbi)[n].weak_import =
+					*weak_import != '\0';
+				    (*dbi)[n].pointer_value = value;
+				}
+				n++;
+			    }
+
+			    /*
+			     * Now on to the next pointer in the chain if there
+			     * is one.
+			     */
+			    /* The delta is bits [51..61] */
+			    /* And bit 62 is to tell us if we are a rebase (0)
+			       or bind (1) */
+			    value &= ~(1ULL << 62);
+			    delta = (value & 0x3FF8000000000000) >> 51;
+			    /*
+			     * If the delta is zero there is no next pointer so
+			     * don't check the offset to the next pointer.
+			     */
+			    if(delta == 0)
+				break;
+			    segOffset += delta * 8; /* sizeof(pint_t); */
+			    /*
+			     * Want to check that the segOffset plus 8 is not
+			     * past the end of this file and on the same page
+			     * in this segment so we can get the next pointer
+			     * in this thread.
+			     */
+			    offset = segs64[segIndex]->fileoff + segOffset;
+			    pointerAddress = segs64[segIndex]->vmaddr +
+					     segOffset;
+			    if(offset + 8 > object_size){
+				if(pass == 1 && print_errors){
+				    printf("bad bind info (for BIND_SUBOPCODE_"
+					   "THREADED_APPLY for opcode at: "
+					   "0x%lx) offset to next pointer in "
+					   "the chain after one at address "
+					   "0x%llx is past end of file\n",
+					   opcode_start - start,
+					   pointerAddress);
+				    errorCount++;
+				}
+				break;
+			    }
+			    if(pointerPageStart != (pointerAddress & ~0x3fff)){
+				if(pass == 1 && print_errors){
+				    printf("bad bind info (for BIND_SUBOPCODE_"
+					   "THREADED_APPLY for opcode at: "
+					   "0x%lx) offset to next pointer in "
+					   "the chain after one at address "
+					   "0x%llx is past end of the same "
+					   "page\n", opcode_start - start,
+					   pointerAddress);
+				    errorCount++;
+				}
+				break;
+			    }
+		        }while(delta != 0);
+			break;
+		    default:
+			if(pass == 1 && print_errors){
+			    printf("bad bind sub-obcode of BIND_OPCODE_THREADED"
+				   " (bad sub-opcode value 0x%x for "
+				   "opcode at: 0x%lx)\n", immediate,
+				   opcode_start - start);
+			    errorCount++;
+			}
+			done = TRUE;
+			break;
 		    }
 		    break;
 		default:
@@ -734,6 +989,8 @@ enum bool print_errors)
 	    }
 	}	
     }
+    if(ordinalTable != NULL)
+	free(ordinalTable);
 }
 
 /*
@@ -746,12 +1003,18 @@ struct dyld_bind_info *dbi,
 uint64_t ndbi)
 {
     uint64_t n;
+    uint64_t value;
+    uint16_t diversity;
+    enum bool hasAddressDiversity;
+    uint8_t key;
+    enum bool isAuthenticated;
+    static const char *keyNames[] = { "IA", "IB", "DA", "DB" };
 
 	printf("bind information:\n");
 	printf("segment section          address        type    addend dylib"
 	       "            symbol\n");
 	for(n = 0; n < ndbi; n++){
-	    printf("%-7s %-16.16s 0x%08llX %10s  %5lld %-16s %s%s\n",
+	    printf("%-7s %-16.16s 0x%08llX %10s  %5lld %-16s %s%s",
 		dbi[n].segname,
 		dbi[n].sectname,
 		dbi[n].address,
@@ -760,6 +1023,18 @@ uint64_t ndbi)
 		dbi[n].dylibname,
 		dbi[n].symbolname,
 		dbi[n].weak_import ? " (weak import)" : "");
+	    if(dbi[n].pointer_value != 0)
+		printf(" with value 0x%016llX", dbi[n].pointer_value);
+	    value = dbi[n].pointer_value;
+	    diversity = (uint16_t)(value >> 32);
+	    hasAddressDiversity = (value & (1ULL << 48)) != 0;
+	    key = (value >> 49) & 0x3;
+	    isAuthenticated = (value & (1ULL << 63)) != 0;
+	    if(isAuthenticated){
+		printf(" (JOP: diversity %d, address %s, %s)", diversity,
+		       hasAddressDiversity ? "true" : "false", keyNames[key]);
+	    }
+	    printf("\n");
 	}
 }
 
@@ -772,13 +1047,18 @@ const char *
 get_dyld_bind_info_symbolname(
 uint64_t address,
 struct dyld_bind_info *dbi,
-uint64_t ndbi)
+uint64_t ndbi,
+enum bool ThreadedRebaseBind,
+int64_t *addend)
 {
     uint64_t n;
 
 	for(n = 0; n < ndbi; n++){
-	    if(dbi[n].address == address)
+	    if(dbi[n].address == address){
+		if(ThreadedRebaseBind && addend != NULL)
+		    *addend = dbi[n].addend;
 		return(dbi[n].symbolname);
+	    }
 	}
 	return(NULL);
 }

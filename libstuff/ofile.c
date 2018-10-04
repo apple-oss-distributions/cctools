@@ -3858,6 +3858,7 @@ struct ofile *ofile)
     enum bool swapped;
     struct mach_header *mh;
     struct mach_header_64 *mh64;
+    uint32_t mh_flags;
     struct load_command *load_commands, *lc, l;
     struct segment_command *sg;
     struct segment_command_64 *sg64;
@@ -3883,7 +3884,7 @@ struct ofile *ofile)
 			     *data_in_code, *code_sign_drs, *linkedit_data;
     struct linkedit_data_command *link_opt_hint;
     struct version_min_command *vers;
-    struct build_version_command *bv;
+    struct build_version_command *bv, *bv1, *bv2;
     struct build_tool_version *btv;
     struct prebind_cksum_command *cs;
     struct encryption_info_command *encrypt_info;
@@ -3933,6 +3934,7 @@ struct ofile *ofile)
 	    ncmds = mh->ncmds;
 	    sizeofcmds = mh->sizeofcmds;
 	    cputype = mh->cputype;
+	    mh_flags = mh->flags;
 	    load_command_multiple = 4;
 	    sizeof_nlist = sizeof(struct nlist);
 	    struct_nlist_name = "struct nlist";
@@ -3956,6 +3958,7 @@ struct ofile *ofile)
 	    ncmds = mh64->ncmds;
 	    sizeofcmds = mh64->sizeofcmds;
 	    cputype = mh64->cputype;
+	    mh_flags = mh64->flags;
 	    load_command_multiple = 8;
 	    sizeof_nlist = sizeof(struct nlist_64);
 	    struct_nlist_name = "struct nlist_64";
@@ -3999,6 +4002,8 @@ struct ofile *ofile)
 	dyld_info = NULL;
 	vers = NULL;
 	bv = NULL;
+	bv1 = NULL;
+	bv2 = NULL;
 	big_load_end = 0;
 	for(i = 0, lc = load_commands; i < ncmds; i++){
 	    if(big_load_end + sizeof(struct load_command) > sizeofcmds){
@@ -4769,14 +4774,16 @@ check_linkedit_data_command:
 				 "cmdsize too small) in command %u",i);
 		    goto return_bad;
 		}
-		if(vers != NULL){
+		if(vers != NULL && ((mh_flags & MH_SIM_SUPPORT) == 0 ||
+		   vers->cmd != LC_VERSION_MIN_MACOSX)){
 		    Mach_O_error(ofile, "malformed object (LC_BUILD_VERSION "
 			"and some LC_VERSION_MIN load command also found)");
 		    goto return_bad;
 		}
-		if(bv != NULL){
-		    Mach_O_error(ofile, "malformed object (more than one "
-			"LC_BUILD_VERSION load command)");
+		if(bv1 != NULL && bv2 != NULL &&
+		   (mh_flags & MH_SIM_SUPPORT) == 0){
+		    Mach_O_error(ofile, "malformed object (more than two "
+			"LC_BUILD_VERSION load commands)");
 		}
 		bv = (struct build_version_command *)lc;
 		if(swapped)
@@ -4791,6 +4798,45 @@ check_linkedit_data_command:
 		      ((char *)bv + sizeof(struct build_version_command));
 		if(swapped)
 		    swap_build_tool_version(btv, bv->ntools, host_byte_sex);
+		if(bv1 == NULL) {
+		    bv1 = bv;
+		    if (((mh_flags & MH_SIM_SUPPORT) != 0) &&
+			(bv1->platform != PLATFORM_MACOS &&
+			 bv1->platform != PLATFORM_IOSMAC &&
+			 bv1->platform != PLATFORM_IOSSIMULATOR &&
+			 bv1->platform != PLATFORM_TVOSSIMULATOR &&
+			 bv1->platform != PLATFORM_WATCHOSSIMULATOR))
+			Mach_O_error(ofile, "malformed object (the "
+			    "LC_BUILD_VERSION, command %u, platform value is "
+			    "not allowed when the mach header flag "
+			    "MH_SIM_SUPPORT is set)", i);
+		}
+		else {
+		    bv2 = bv;
+		    if ((bv1->platform != PLATFORM_MACOS &&
+			 bv1->platform != PLATFORM_IOSMAC) ||
+                        ((bv1->platform == PLATFORM_MACOS &&
+			  bv2->platform != PLATFORM_IOSMAC) ||
+			 (bv1->platform == PLATFORM_IOSMAC &&
+			  bv2->platform != PLATFORM_MACOS))) {
+			if ((mh_flags & MH_SIM_SUPPORT) == 0) {
+			    Mach_O_error(ofile, "malformed object (the two "
+				"LC_BUILD_VERSION load commands are not for "
+				"MACOS and IOSMAC)");
+			}
+			else{
+			    if(bv2->platform != PLATFORM_MACOS &&
+			       bv2->platform != PLATFORM_IOSMAC &&
+			       bv2->platform != PLATFORM_IOSSIMULATOR &&
+			       bv2->platform != PLATFORM_TVOSSIMULATOR &&
+			       bv2->platform != PLATFORM_WATCHOSSIMULATOR)
+			    Mach_O_error(ofile, "malformed object (the "
+			        "LC_BUILD_VERSION, command %u, platform value "
+			        "is not allowed when the mach header flag "
+			        "MH_SIM_SUPPORT is set)", i);
+			}
+		    }
+		}
 		break;
 
 	    case LC_ENCRYPTION_INFO:
@@ -6422,7 +6468,7 @@ check_dylinker_command:
 		    }
 		    break;
 		}
-	    	if(cputype == CPU_TYPE_ARM64){
+	    	if(cputype == CPU_TYPE_ARM64 || cputype == CPU_TYPE_ARM64_32){
 		    arm_thread_state64_t *cpu;
 
 		    nflavor = 0;

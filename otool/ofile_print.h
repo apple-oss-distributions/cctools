@@ -405,9 +405,11 @@ extern void print_literal16_section(
 
 extern void print_literal_pointer_section(
     cpu_type_t cputype,
+    cpu_subtype_t cpusubtype,
     struct load_command *lc,
     uint32_t ncmds,
     uint32_t sizeofcmds,
+    uint32_t filetype,
     enum byte_sex object_byte_sex,
     char *addr,
     uint32_t size,
@@ -431,6 +433,13 @@ extern void print_init_term_pointer_section(
     enum byte_sex object_byte_sex,
     struct symbol *sorted_symbols,
     uint32_t nsorted_symbols,
+    struct nlist *symbols,
+    struct nlist_64 *symbols64,
+    uint32_t nsymbols,
+    char *strings,
+    uint32_t strings_size,
+    struct relocation_info *relocs,
+    uint32_t nrelocs,
     enum bool verbose);
 
 extern void print_shlib_init(
@@ -505,6 +514,7 @@ extern enum bool print_objc_segment(
 
 extern void print_objc2_64bit(
     cpu_type_t cputype,
+    cpu_subtype_t cpusubtype,
     struct load_command *load_commands,
     uint32_t ncmds,
     uint32_t sizeofcmds,
@@ -523,6 +533,7 @@ extern void print_objc2_64bit(
     uint32_t nloc_relocs,
     struct dyld_bind_info *dbi,
     uint64_t ndbi,
+    enum bool ThreadedRebaseBind,
     enum bool verbose,
     enum bool Vflag);
 

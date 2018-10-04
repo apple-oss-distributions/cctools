@@ -69,7 +69,7 @@ static uint32_t nflag;	/* save N_SECT global symbols */
 static uint32_t Sflag;	/* -S strip only debugger symbols N_STAB */
 static uint32_t xflag;	/* -x strip non-globals */
 static uint32_t Xflag;	/* -X strip local symbols with 'L' names */
-static uint32_t Tflag;	/* -T strip symbols that start with '__T0' names */
+static uint32_t Tflag;	/* -T strip symbols that start with '_$S' names */
 static uint32_t Nflag;	/* -N strip all nlist symbols and strings */
 static uint32_t cflag;	/* -c strip section contents from dynamic libraries
 			   files to create stub libraries */
@@ -89,6 +89,13 @@ static uint32_t strip_all = 1;
  * This has the same effect as -r and -u.
  */
 static enum bool default_dyld_executable = FALSE;
+
+/*
+ * When the -N flag is used it may not be possible to strip all nlists because
+ * the file is not used by dyld, an MH_KEXT_BUNDLE filetype or has external
+ * relocations in the LC_DYSYMTAB.
+ */
+static enum bool strip_all_nlists = FALSE;
 #endif /* NMEDIT */
 
 /*
@@ -1026,6 +1033,12 @@ struct object *object)
     uint32_t ncmds;
     uint32_t swift_version;
     enum bool nlist_outofsync_with_dyldinfo;
+    uint32_t mh_flags;
+
+	if(object->mh != NULL)
+	    mh_flags = object->mh->flags;
+	else
+	    mh_flags = object->mh64->flags;
 
 	host_byte_sex = get_host_byte_sex();
 	swift_version = 0;
@@ -1288,6 +1301,14 @@ struct object *object)
 	    default_dyld_executable = TRUE;
 	else
 	    default_dyld_executable = FALSE;
+	if(Nflag &&
+           (mh_flags & MH_DYLDLINK) == MH_DYLDLINK &&
+           object->mh_filetype != MH_KEXT_BUNDLE &&
+	   object->dyst != NULL && object->dyst->nextrel == 0)
+	    strip_all_nlists = TRUE;
+	else
+	    strip_all_nlists = FALSE;
+
 #endif /* !defined(NMEDIT) */
 
 #ifndef NMEDIT
@@ -2240,8 +2261,9 @@ struct object *object)
 		    }
 		    if(saves[relocs[i].r_symbolnum] == 0){
 			if(missing_reloc_symbols == 0){
-			    error_arch(arch, member, "symbols referenced by "
-			      "relocation entries that can't be stripped in: ");
+			    error_arch(arch, member, "error: symbols "
+			      "referenced by relocation entries that can't be "
+			      "stripped in: ");
 			    missing_reloc_symbols = 1;
 			}
 			if(object->mh != NULL){
@@ -2491,7 +2513,7 @@ enum byte_sex host_byte_sex)
 #ifndef NMEDIT
 		if(saves[relocs[k].r_symbolnum] == 0){
 		    if(*missing_reloc_symbols == 0){
-			error_arch(arch, member, "symbols referenced by "
+			error_arch(arch, member, "error: symbols referenced by "
 			    "relocation entries that can't be stripped in: ");
 			*missing_reloc_symbols = 1;
 		    }
@@ -2628,12 +2650,15 @@ enum byte_sex host_byte_sex)
     uint32_t n_strx, value;
     uint64_t value64;
     enum bool made_local;
-    uint32_t mh_flags;
+    uint32_t mh_flags, mh_filetype;
 
-	if(object->mh != NULL)
+	if(object->mh != NULL) {
 	    mh_flags = object->mh->flags;
-	else
+	    mh_filetype = object->mh->filetype;
+	} else {
 	    mh_flags = object->mh64->flags;
+	    mh_filetype = object->mh64->filetype;
+	}
 
 	for(k = 0; k < nitems; k++){
 	    made_local = FALSE;
@@ -2700,18 +2725,19 @@ enum byte_sex host_byte_sex)
 			saves[index] - 1;
 		}
 #else /* !defined(NMEDIT) */
-		else if((Nflag && (mh_flags & MH_DYLDLINK) == MH_DYLDLINK) ||
+		else if(strip_all_nlists ||
 			(Tflag && swift_version != 0 &&
 			(mh_flags & MH_DYLDLINK) == MH_DYLDLINK &&
 	                n_strx != 0 &&
-			strncmp(strings + n_strx, "__T0", 4) == 0)){
+			(strncmp(strings + n_strx, "_$S", 3) == 0 ||
+			 strncmp(strings + n_strx, "_$s", 3) == 0))){
 		    object->output_indirect_symtab[reserved1 + k] =
 			    INDIRECT_SYMBOL_LOCAL | INDIRECT_SYMBOL_ABS;
 		    made_local = TRUE;
 		}
 		else{
 		    if(*missing_reloc_symbols == 0){
-			error_arch(arch, member, "symbols referenced by "
+			error_arch(arch, member, "error: symbols referenced by "
 			    "indirect symbol table entries that can't be "
 			    "stripped in: ");
 			*missing_reloc_symbols = 1;
@@ -2793,7 +2819,7 @@ char *dfile)
 /*
  * Hack needed to dig out the swift_version from (flags >> 8) & 0xff to see if
  * non-zero to apply the -T hack for trying to removing only swift symbols that
- * start with "__T0" and not other symbols starting with "__T0".
+ * start with "_$S" and not other symbols starting with "_$S".
  */
 struct objc_image_info {
     uint32_t version;
@@ -2844,7 +2870,7 @@ enum bool *nlist_outofsync_with_dyldinfo)
     struct segment_command_64 *sg64;
     struct section *s, **sections;
     struct section_64 *s64, **sections64;
-    uint32_t ncmds, mh_flags, s_flags, n_strx;
+    uint32_t ncmds, mh_flags, mh_filetype, s_flags, n_strx;
     struct nlist *sym;
     struct undef_map *undef_map;
     struct undef_map64 *undef_map64;
@@ -3007,15 +3033,18 @@ enum bool *nlist_outofsync_with_dyldinfo)
 	    lc = (struct load_command *)((char *)lc + lc->cmdsize);
 	}
 
-	if(object->mh != NULL)
+	if(object->mh != NULL) {
 	    mh_flags = object->mh->flags;
-	else
+	    mh_filetype = object->mh->filetype;
+	} else {
 	    mh_flags = object->mh64->flags;
+	    mh_filetype = object->mh64->filetype;
+	}
 
 	/*
 	 * Get the swift version if any if we are using the -T flag and this is
 	 * an linked image for dyld.  This is a hack to try to lessen the
-	 * chance of stripping a symbol that starts with "__T0" that is not a
+	 * chance of stripping a symbol that starts with "_$S" that is not a
 	 * swift symbol.
 	 */
 	swift_version = 0;
@@ -3105,21 +3134,22 @@ enum bool *nlist_outofsync_with_dyldinfo)
 		}
 	    }
 	    /*
-             * If the -N flag is set strip all symbols in binaries used with the
-	     * dynamic linker set *nlist_outofsync_with_dyldinfo to true.
+             * If we use the -N flag to set strip all symbols in binaries used
+	     * with the dynamic linker set *nlist_outofsync_with_dyldinfo to
+	     * true.
 	     */
-	    if(Nflag && (mh_flags & MH_DYLDLINK) == MH_DYLDLINK){
+	    if(strip_all_nlists) {
 		*nlist_outofsync_with_dyldinfo = TRUE;
 		continue;
 	    }
 	    /*
 	     * If the -T flag is specified then if this is a final linked
-	     * binary never save symbols that start with "__T0" if the 
+	     * binary never save symbols that start with "_$S" if the
 	     * swift version is non-zero.
 	     */
 	    if(Tflag && swift_version != 0 &&
 	       (mh_flags & MH_DYLDLINK) == MH_DYLDLINK &&
-	       n_strx != 0 && strncmp(strings + n_strx, "__T0", 4) == 0){
+	       n_strx != 0 && strncmp(strings + n_strx, "_$S", 3) == 0){
 		/* don't save this symbol */
 		*nlist_outofsync_with_dyldinfo = TRUE;
 		continue;
@@ -3132,6 +3162,7 @@ enum bool *nlist_outofsync_with_dyldinfo)
 		if((object->mh_cputype == CPU_TYPE_X86_64 ||
 		    object->mh_cputype == CPU_TYPE_I386 ||
                     object->mh_cputype == CPU_TYPE_ARM64 ||
+                    object->mh_cputype == CPU_TYPE_ARM64_32 ||
 		    object->mh_cputype == CPU_TYPE_ARM) &&
 		   object->mh_filetype == MH_OBJECT){
 		    if(n_strx != 0)
@@ -3645,7 +3676,7 @@ enum bool *nlist_outofsync_with_dyldinfo)
 	 * table entry and a few bytes in the string table for the complexity it
 	 * would add and what it would save.
 	 */
-	if(!(Nflag && (mh_flags & MH_DYLDLINK) == MH_DYLDLINK) &&
+	if(!strip_all_nlists &&
 	   (new_nlocalsym == 0 && nindirectsyms != 0)){
 	    len = strlen("radr://5614542") + 1;
 	    new_strsize += len;
@@ -4138,7 +4169,7 @@ enum bool *nlist_outofsync_with_dyldinfo)
 	 * or -R options.  If we are stripping nlist with the -N flag we must
 	 * leave the export trie as is.
 	 */
-	if(!Nflag && object->dyld_info != NULL &&
+	if(!strip_all_nlists && object->dyld_info != NULL &&
 	   object->dyld_info->export_size != 0 &&
 	   (default_dyld_executable || sfile != NULL || Rfile != NULL)){
 	    const char *error_string;
@@ -4415,14 +4446,14 @@ struct object *object)
 	 * See if there are any LC_UUID load commands.
 	 */
 	nuuids = 0;
-	lc1 = arch->object->load_commands;
-        if(arch->object->mh != NULL){
-            ncmds = arch->object->mh->ncmds;
-	    mh_sizeofcmds = arch->object->mh->sizeofcmds;
+	lc1 = object->load_commands;
+        if(object->mh != NULL){
+            ncmds = object->mh->ncmds;
+	    mh_sizeofcmds = object->mh->sizeofcmds;
 	}
 	else{
-            ncmds = arch->object->mh64->ncmds;
-	    mh_sizeofcmds = arch->object->mh64->sizeofcmds;
+            ncmds = object->mh64->ncmds;
+	    mh_sizeofcmds = object->mh64->sizeofcmds;
 	}
 	for(i = 0; i < ncmds; i++){
 	    if(lc1->cmd == LC_UUID){
@@ -4445,7 +4476,7 @@ struct object *object)
 	 * Copy all the load commands except the LC_UUID load commands into the
 	 * allocated space for the new load commands.
 	 */
-	lc1 = arch->object->load_commands;
+	lc1 = object->load_commands;
 	lc2 = new_load_commands;
 	sizeofcmds = 0;
 	for(i = 0; i < ncmds; i++){
@@ -4461,41 +4492,41 @@ struct object *object)
 	 * Finally copy the updated load commands over the existing load
 	 * commands.
 	 */
-	memcpy(arch->object->load_commands, new_load_commands, sizeofcmds);
+	memcpy(object->load_commands, new_load_commands, sizeofcmds);
 	if(mh_sizeofcmds > sizeofcmds){
-		memset((char *)arch->object->load_commands + sizeofcmds, '\0', 
+		memset((char *)object->load_commands + sizeofcmds, '\0', 
 			   (mh_sizeofcmds - sizeofcmds));
 	}
 	ncmds -= nuuids;
-        if(arch->object->mh != NULL) {
-            arch->object->mh->sizeofcmds = sizeofcmds;
-            arch->object->mh->ncmds = ncmds;
+        if(object->mh != NULL) {
+            object->mh->sizeofcmds = sizeofcmds;
+            object->mh->ncmds = ncmds;
         } else {
-            arch->object->mh64->sizeofcmds = sizeofcmds;
-            arch->object->mh64->ncmds = ncmds;
+            object->mh64->sizeofcmds = sizeofcmds;
+            object->mh64->ncmds = ncmds;
         }
 	free(new_load_commands);
 
 	/* reset the pointers into the load commands */
-	lc1 = arch->object->load_commands;
+	lc1 = object->load_commands;
 	for(i = 0; i < ncmds; i++){
 	    switch(lc1->cmd){
 	    case LC_SYMTAB:
-		arch->object->st = (struct symtab_command *)lc1;
+		object->st = (struct symtab_command *)lc1;
 	        break;
 	    case LC_DYSYMTAB:
-		arch->object->dyst = (struct dysymtab_command *)lc1;
+		object->dyst = (struct dysymtab_command *)lc1;
 		break;
 	    case LC_TWOLEVEL_HINTS:
-		arch->object->hints_cmd = (struct twolevel_hints_command *)lc1;
+		object->hints_cmd = (struct twolevel_hints_command *)lc1;
 		break;
 	    case LC_PREBIND_CKSUM:
-		arch->object->cs = (struct prebind_cksum_command *)lc1;
+		object->cs = (struct prebind_cksum_command *)lc1;
 		break;
 	    case LC_SEGMENT:
 		sg = (struct segment_command *)lc1;
 		if(strcmp(sg->segname, SEG_LINKEDIT) == 0)
-		    arch->object->seg_linkedit = sg;
+		    object->seg_linkedit = sg;
 		break;
 	    case LC_SEGMENT_SPLIT_INFO:
 		object->split_info_cmd = (struct linkedit_data_command *)lc1;
@@ -4554,13 +4585,13 @@ struct object *object)
 	 * Allocate space for the new load commands as zero it out so any holes
 	 * will be zero bytes.
 	 */
-        if(arch->object->mh != NULL){
-            ncmds = arch->object->mh->ncmds;
-	    mh_sizeofcmds = arch->object->mh->sizeofcmds;
+        if(object->mh != NULL){
+            ncmds = object->mh->ncmds;
+	    mh_sizeofcmds = object->mh->sizeofcmds;
 	}
 	else{
-            ncmds = arch->object->mh64->ncmds;
-	    mh_sizeofcmds = arch->object->mh64->sizeofcmds;
+            ncmds = object->mh64->ncmds;
+	    mh_sizeofcmds = object->mh64->sizeofcmds;
 	}
 	new_load_commands = allocate(mh_sizeofcmds);
 	memset(new_load_commands, '\0', mh_sizeofcmds);
@@ -4569,7 +4600,7 @@ struct object *object)
 	 * Copy all the load commands except the LC_SEGMENT_SPLIT_INFO load
 	 * command into the allocated space for the new load commands.
 	 */
-	lc1 = arch->object->load_commands;
+	lc1 = object->load_commands;
 	lc2 = new_load_commands;
 	sizeofcmds = 0;
 	for(i = 0; i < ncmds; i++){
@@ -4585,42 +4616,42 @@ struct object *object)
 	 * Finally copy the updated load commands over the existing load
 	 * commands.
 	 */
-	memcpy(arch->object->load_commands, new_load_commands, sizeofcmds);
+	memcpy(object->load_commands, new_load_commands, sizeofcmds);
 	if(mh_sizeofcmds > sizeofcmds){
-		memset((char *)arch->object->load_commands + sizeofcmds, '\0', 
+		memset((char *)object->load_commands + sizeofcmds, '\0', 
 			   (mh_sizeofcmds - sizeofcmds));
 	}
 	ncmds -= 1;
-        if(arch->object->mh != NULL) {
-            arch->object->mh->sizeofcmds = sizeofcmds;
-            arch->object->mh->ncmds = ncmds;
+        if(object->mh != NULL) {
+            object->mh->sizeofcmds = sizeofcmds;
+            object->mh->ncmds = ncmds;
         } else {
-            arch->object->mh64->sizeofcmds = sizeofcmds;
-            arch->object->mh64->ncmds = ncmds;
+            object->mh64->sizeofcmds = sizeofcmds;
+            object->mh64->ncmds = ncmds;
         }
 	free(new_load_commands);
 
 	/* reset the pointers into the load commands */
 	object->split_info_cmd = NULL;
-	lc1 = arch->object->load_commands;
+	lc1 = object->load_commands;
 	for(i = 0; i < ncmds; i++){
 	    switch(lc1->cmd){
 	    case LC_SYMTAB:
-		arch->object->st = (struct symtab_command *)lc1;
+		object->st = (struct symtab_command *)lc1;
 	        break;
 	    case LC_DYSYMTAB:
-		arch->object->dyst = (struct dysymtab_command *)lc1;
+		object->dyst = (struct dysymtab_command *)lc1;
 		break;
 	    case LC_TWOLEVEL_HINTS:
-		arch->object->hints_cmd = (struct twolevel_hints_command *)lc1;
+		object->hints_cmd = (struct twolevel_hints_command *)lc1;
 		break;
 	    case LC_PREBIND_CKSUM:
-		arch->object->cs = (struct prebind_cksum_command *)lc1;
+		object->cs = (struct prebind_cksum_command *)lc1;
 		break;
 	    case LC_SEGMENT:
 		sg = (struct segment_command *)lc1;
 		if(strcmp(sg->segname, SEG_LINKEDIT) == 0)
-		    arch->object->seg_linkedit = sg;
+		    object->seg_linkedit = sg;
 		break;
 	    case LC_FUNCTION_STARTS:
 		object->func_starts_info_cmd =
@@ -4676,13 +4707,13 @@ struct object *object)
 	 * Allocate space for the new load commands and zero it out so any holes
 	 * will be zero bytes.
 	 */
-        if(arch->object->mh != NULL){
-            ncmds = arch->object->mh->ncmds;
-	    mh_sizeofcmds = arch->object->mh->sizeofcmds;
+        if(object->mh != NULL){
+            ncmds = object->mh->ncmds;
+	    mh_sizeofcmds = object->mh->sizeofcmds;
 	}
 	else{
-            ncmds = arch->object->mh64->ncmds;
-	    mh_sizeofcmds = arch->object->mh64->sizeofcmds;
+            ncmds = object->mh64->ncmds;
+	    mh_sizeofcmds = object->mh64->sizeofcmds;
 	}
 	new_load_commands = allocate(mh_sizeofcmds);
 	memset(new_load_commands, '\0', mh_sizeofcmds);
@@ -4691,7 +4722,7 @@ struct object *object)
 	 * Copy all the load commands except the LC_CODE_SIGNATURE load commands
 	 * into the allocated space for the new load commands.
 	 */
-	lc1 = arch->object->load_commands;
+	lc1 = object->load_commands;
 	lc2 = new_load_commands;
 	sizeofcmds = 0;
 	for(i = 0; i < ncmds; i++){
@@ -4707,42 +4738,42 @@ struct object *object)
 	 * Finally copy the updated load commands over the existing load
 	 * commands.
 	 */
-	memcpy(arch->object->load_commands, new_load_commands, sizeofcmds);
+	memcpy(object->load_commands, new_load_commands, sizeofcmds);
 	if(mh_sizeofcmds > sizeofcmds){
-		memset((char *)arch->object->load_commands + sizeofcmds, '\0', 
+		memset((char *)object->load_commands + sizeofcmds, '\0', 
 			   (mh_sizeofcmds - sizeofcmds));
 	}
 	ncmds -= 1;
-        if(arch->object->mh != NULL) {
-            arch->object->mh->sizeofcmds = sizeofcmds;
-            arch->object->mh->ncmds = ncmds;
+        if(object->mh != NULL) {
+            object->mh->sizeofcmds = sizeofcmds;
+            object->mh->ncmds = ncmds;
         } else {
-            arch->object->mh64->sizeofcmds = sizeofcmds;
-            arch->object->mh64->ncmds = ncmds;
+            object->mh64->sizeofcmds = sizeofcmds;
+            object->mh64->ncmds = ncmds;
         }
 	free(new_load_commands);
 
 	/* reset the pointers into the load commands */
 	object->code_sig_cmd = NULL;
-	lc1 = arch->object->load_commands;
+	lc1 = object->load_commands;
 	for(i = 0; i < ncmds; i++){
 	    switch(lc1->cmd){
 	    case LC_SYMTAB:
-		arch->object->st = (struct symtab_command *)lc1;
+		object->st = (struct symtab_command *)lc1;
 	        break;
 	    case LC_DYSYMTAB:
-		arch->object->dyst = (struct dysymtab_command *)lc1;
+		object->dyst = (struct dysymtab_command *)lc1;
 		break;
 	    case LC_TWOLEVEL_HINTS:
-		arch->object->hints_cmd = (struct twolevel_hints_command *)lc1;
+		object->hints_cmd = (struct twolevel_hints_command *)lc1;
 		break;
 	    case LC_PREBIND_CKSUM:
-		arch->object->cs = (struct prebind_cksum_command *)lc1;
+		object->cs = (struct prebind_cksum_command *)lc1;
 		break;
 	    case LC_SEGMENT:
 		sg = (struct segment_command *)lc1;
 		if(strcmp(sg->segname, SEG_LINKEDIT) == 0)
-		    arch->object->seg_linkedit = sg;
+		    object->seg_linkedit = sg;
 		break;
 	    case LC_SEGMENT_SPLIT_INFO:
 		object->split_info_cmd = (struct linkedit_data_command *)lc1;

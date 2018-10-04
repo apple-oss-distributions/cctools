@@ -513,19 +513,19 @@ struct flags *flags)
 {
     static char buf[BUFSIZ];
     register char *cp;
-    register int c, cc;
+    register int c, cc, i;
 
-	cp = buf, cc = 0;
-	for (; cnt != 0; cnt--) {
+    cp = buf, cc = 0;
+	for (i = 0; i < cnt; ++i) {
 		c = getc(stdin);
-		if (c == '\n' || dirt(c) || cnt == 0) {
+		if (c == '\n' || dirt(c) || (i + 1) == cnt) {
 			if (cp > buf && cp[-1] == '\n')
 				--cp;
 			*cp++ = 0;
 			if (cp > &buf[flags->minimum_length]) {
 				if (flags->print_offsets == TRUE){
 					printf(flags->offset_format,
-					       ftell(stdin) - cc - 1);
+					       i - cc);
 					printf(" ");
 				}
 				printf("%s\n", buf);

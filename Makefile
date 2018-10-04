@@ -53,9 +53,11 @@ all clean: $(DSTROOT)
 			SYMROOT=$(SYMROOT)/$$i $@) || exit 1 ;		\
 	      done;							\
 	    SED_RC_CFLAGS=`echo "$(RC_CFLAGS)" | sed 's/-arch ppc64//'  \
- 		| sed 's/-arch x86_64//' | sed 's/-arch armv5//'	\
- 		| sed 's/-arch arm64//' | sed 's/-arch x86_64h//'	\
-		| sed 's/-arch armv6//' | sed 's/-arch armv7[f,k,s]*//g'`; \
+		| sed 's/-arch x86_64h//' | sed 's/-arch x86_64//'	\
+		| sed 's/-arch armv5//' | sed 's/-arch armv6//'		\
+		| sed 's/-arch armv7[f,k,s]*//g'			\
+		| sed 's/-arch arm64_32//' | sed 's/-arch arm64e//'	\
+		| sed 's/-arch arm64//'`;				\
 	    EMPTY=`echo "$$SED_RC_CFLAGS" | sed 's/ //g'		\
 		| sed 's/-pipe//'`;					\
 	    if [ "$$EMPTY"x != "x" ];					\
@@ -86,9 +88,11 @@ all clean: $(DSTROOT)
 			RAW_DSTROOT="$(RAW_DSTROOT)" $@) || exit 1 ; 	\
 	      done;							\
 	    SED_RC_CFLAGS=`echo "$(RC_CFLAGS)" | sed 's/-arch ppc64//'  \
- 		| sed 's/-arch x86_64//' | sed 's/-arch armv5//'	\
- 		| sed 's/-arch arm64//' | sed 's/-arch x86_64h//'	\
-		| sed 's/-arch armv6//' | sed 's/-arch armv7[f,k,s]*//g'`; \
+		| sed 's/-arch x86_64h//' | sed 's/-arch x86_64//'	\
+		| sed 's/-arch armv5//' | sed 's/-arch armv6//'		\
+		| sed 's/-arch armv7[f,k,s]*//g'			\
+		| sed 's/-arch arm64_32//' | sed 's/-arch arm64e//'	\
+		| sed 's/-arch arm64//'`;				\
 	    EMPTY=`echo "$$SED_RC_CFLAGS" | sed 's/ //g'		\
 		| sed 's/-pipe//'`;					\
 	    if [ "$$EMPTY"x != "x" ];					\
@@ -108,8 +112,9 @@ all clean: $(DSTROOT)
 install:
 	@if [ $(SRCROOT) ];						\
 	then								\
-	    projName=`basename $(SRCROOT) | 				\
-		sed 's/-[-0-9.]*//' | sed 's/\.cvs//'`;			\
+	    projName=`basename $(SRCROOT) | sed 's/Branch.*//' |        \
+		sed 's/_PONDEROSA//' | sed 's/_Fall2018//' |		\
+		sed 's/-[-0-9.]*//' | sed 's/\.cvs//'`; 		\
 	    if [ "$$projName" = cctools ];				\
 	    then							\
 		target=install_tools;					\
@@ -165,9 +170,11 @@ install_tools: installhdrs
 			SYMROOT=$(SYMROOT)/$$i install) || exit 1;	\
 	      done;							\
 	    SED_RC_CFLAGS=`echo "$(RC_CFLAGS)" | sed 's/-arch ppc64//'  \
- 		| sed 's/-arch x86_64//' | sed 's/-arch armv5//'	\
- 		| sed 's/-arch arm64//' | sed 's/-arch x86_64h//'	\
-		| sed 's/-arch armv6//' | sed 's/-arch armv7[f,k,s]*//g'`; \
+		| sed 's/-arch x86_64h//' | sed 's/-arch x86_64//'	\
+		| sed 's/-arch armv5//' | sed 's/-arch armv6//'		\
+		| sed 's/-arch armv7[f,k,s]*//g'			\
+		| sed 's/-arch arm64_32//' | sed 's/-arch arm64e//'	\
+		| sed 's/-arch arm64//'`;				\
 	    EMPTY=`echo "$$SED_RC_CFLAGS" | sed 's/ //g'		\
 		| sed 's/-pipe//'`;					\
 	    if [ "$$EMPTY"x != "x" ];					\
@@ -200,9 +207,11 @@ install_tools: installhdrs
 			install) || exit 1;				\
 	      done;							\
 	    SED_RC_CFLAGS=`echo "$(RC_CFLAGS)" | sed 's/-arch ppc64//'  \
- 		| sed 's/-arch x86_64//' | sed 's/-arch armv5//'	\
- 		| sed 's/-arch arm64//' | sed 's/-arch x86_64h//'	\
-		| sed 's/-arch armv6//' | sed 's/-arch armv7[f,k,s]*//g'`; \
+		| sed 's/-arch x86_64h//' | sed 's/-arch x86_64//'	\
+		| sed 's/-arch armv5//' | sed 's/-arch armv6//'		\
+		| sed 's/-arch armv7[f,k,s]*//g'			\
+		| sed 's/-arch arm64_32//' | sed 's/-arch arm64e//'	\
+		| sed 's/-arch arm64//'`;				\
 	    EMPTY=`echo "$$SED_RC_CFLAGS" | sed 's/ //g'		\
 		| sed 's/-pipe//'`;					\
 	    if [ "$$EMPTY"x != "x" ];					\
@@ -239,6 +248,8 @@ lib_ofiles lib_ofiles_install: installhdrs
 	then								\
 	    CWD=`pwd`; cd "$(DSTROOT)"; DSTROOT=`pwd`; cd "$$CWD";	\
 	    SED_RC_CFLAGS=`echo "$(RC_CFLAGS)" | sed 's/-arch ppc64//'  \
+		| sed 's/-arch arm64_32//'				\
+		| sed 's/-arch arm64e//'				\
 		| sed 's/-arch arm64//'					\
 		| sed 's/-arch x86_64h//'				\
  		| sed 's/-arch x86_64//'`;				\
@@ -301,6 +312,8 @@ lib_ofiles lib_ofiles_install: installhdrs
 	else								\
 	    CWD=`pwd`; cd "$(DSTROOT)"; DSTROOT=`pwd`; cd "$$CWD";	\
 	    SED_RC_CFLAGS=`echo "$(RC_CFLAGS)" | sed 's/-arch ppc64//'  \
+		| sed 's/-arch arm64_32//'				\
+		| sed 's/-arch arm64e//'				\
 		| sed 's/-arch arm64//'					\
 		| sed 's/-arch x86_64h//'				\
  		| sed 's/-arch x86_64//'`;				\
@@ -430,9 +443,11 @@ installhdrs: $(DSTROOT)
 	@if [ $(SRCROOT) ];						\
 	then								\
 	    projName=`basename $(SRCROOT) | sed 's/-[0-9.]*//'`;	\
-	    if [ "$$projName" = cctools -a $(RC_OS) = macos ] &&	\
-	       [ "$(RC_ProjectName)" != "cctools_ofiles_Sim" ] &&	\
-	       [ "$(RC_FORCEHDRS)" != "YES" ];				\
+	    rcName=`echo $(RC_ProjectName) | 				\
+		sed 's/\(cctools_ofiles\).*/\1/'`;			\
+	    if [ "$$projName" = cctools -a $(RC_OS) = macos ] &&        \
+	       [ "$$rcName" != "cctools_ofiles" ] &&                    \
+	       [ "$(RC_FORCEHDRS)" != "YES" ];                          \
 	    then							\
 	    	echo === cctools does not install headers for macos ===;\
 	    else							\
@@ -442,6 +457,26 @@ installhdrs: $(DSTROOT)
 	else								\
 	    (cd include; $(MAKE) DSTROOT=$(DSTROOT) RC_OS=$(RC_OS) 	\
 		install) || exit 1;					\
+	fi
+
+installapi: $(DSTROOT)
+	@if [ $(SRCROOT) ];						\
+	then								\
+	    projName=`basename $(SRCROOT) | sed 's/-[0-9.]*//'`;	\
+	    rcName=`echo $(RC_ProjectName) | 				\
+		sed 's/\(cctools_ofiles\).*/\1/'`;			\
+	    if [ "$$projName" = cctools -a $(RC_OS) = macos ] &&        \
+	       [ "$$rcName" != "cctools_ofiles" ] &&                    \
+	       [ "$(RC_FORCEHDRS)" != "YES" ];                          \
+	    then							\
+	    	echo === cctools does not installapi for macos ===;\
+	    else							\
+		(cd include; $(MAKE) DSTROOT=$(DSTROOT)			\
+			RC_OS="$(RC_OS)" installapi) || exit 1;		\
+	    fi;								\
+	else								\
+	    (cd include; $(MAKE) DSTROOT=$(DSTROOT) RC_OS=$(RC_OS) 	\
+		installapi) || exit 1;					\
 	fi
 
 $(DSTROOT):

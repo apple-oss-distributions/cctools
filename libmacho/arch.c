@@ -79,6 +79,10 @@ static const NXArchInfo ArchInfoTable[] = {
 	 "ARM"},
     {"arm64",  CPU_TYPE_ARM64,   CPU_SUBTYPE_ARM64_ALL,	   NX_LittleEndian,
 	 "ARM64"},
+    {"arm64_32",CPU_TYPE_ARM64_32,CPU_SUBTYPE_ARM64_32_V8, NX_LittleEndian,
+	 "ARM64_32"},
+    {"arm64e",  CPU_TYPE_ARM64,  CPU_SUBTYPE_ARM64E,       NX_LittleEndian,
+	 "ARM64E"},
     {"any",    CPU_TYPE_ANY,     CPU_SUBTYPE_MULTIPLE,     NX_UnknownByteOrder,
 	 "Architecture Independent"},
     {"veo",    CPU_TYPE_VEO,	 CPU_SUBTYPE_VEO_ALL,  	   NX_BigEndian,
@@ -181,6 +185,74 @@ NXGetAllArchInfos(void)
 	return(ArchInfoTable);
 }
 
+#ifdef HOST_PREFERRED_USER_ARCH
+
+/*
+ * internal_NXGetHostUserCPU() returns the preferred userspace cputype and
+ * cpusubtype of the local host. it returns 0 on success, or -1 on error.
+ */
+
+static
+int32_t
+internal_NXGetHostUserCPU(
+cpu_type_t* out_cputype,
+cpu_subtype_t* out_cpusubtype)
+{
+    struct host_preferred_user_arch hi;
+    kern_return_t ret;
+    unsigned int count;
+    mach_port_t my_mach_host_self;
+
+    count = HOST_PREFERRED_USER_ARCH_COUNT;
+    my_mach_host_self = mach_host_self();
+    ret = host_info(my_mach_host_self, HOST_PREFERRED_USER_ARCH,
+                    (host_info_t)&hi, &count);
+    mach_port_deallocate(mach_task_self(), my_mach_host_self);
+    if(ret != KERN_SUCCESS)
+        return(-1);
+
+    if (out_cputype != NULL)
+        *out_cputype = hi.cpu_type;
+    if (out_cpusubtype != NULL)
+        *out_cpusubtype = hi.cpu_subtype;
+
+    return(0);
+}
+
+#endif /* defined(HOST_PREFERRED_USER_ARCH) */
+
+/*
+ * internal_NXGetHostBasicCPU() returns the basic kernelspace cputype and
+ * cpusubtype of the local host. it returns 0 on success, or -1 on error.
+ */
+
+static
+kern_return_t
+internal_NXGetHostBasicCPU(
+cpu_type_t* out_cputype,
+cpu_subtype_t* out_cpusubtype)
+{
+    struct host_basic_info hi;
+    kern_return_t ret;
+    unsigned int count;
+    mach_port_t my_mach_host_self;
+
+    count = HOST_BASIC_INFO_COUNT;
+    my_mach_host_self = mach_host_self();
+    ret = host_info(my_mach_host_self, HOST_BASIC_INFO, (host_info_t)&hi,
+                    &count);
+    mach_port_deallocate(mach_task_self(), my_mach_host_self);
+    if(ret != KERN_SUCCESS)
+        return(-1);
+
+    if (out_cputype != NULL)
+        *out_cputype = hi.cpu_type;
+    if (out_cpusubtype != NULL)
+        *out_cpusubtype = hi.cpu_subtype;
+
+    return(0);
+}
+
 /*
  * NXGetLocalArchInfo() returns the NXArchInfo matching the cputype and
  * cpusubtype of the local host.  NULL is returned if there is no matching
@@ -190,29 +262,36 @@ const
 NXArchInfo *
 NXGetLocalArchInfo(void)
 {
-    struct host_basic_info hbi;
-    kern_return_t ret;
-    unsigned int count;
-    mach_port_t my_mach_host_self;
+    cpu_type_t cputype;
+    cpu_subtype_t cpusubtype;
+    int32_t ret;
 
-	count = HOST_BASIC_INFO_COUNT;
-	my_mach_host_self = mach_host_self();
-	ret = host_info(my_mach_host_self, HOST_BASIC_INFO, (host_info_t)&hbi,
-			&count);
-	mach_port_deallocate(mach_task_self(), my_mach_host_self);
-	if(ret != KERN_SUCCESS)
-	    return(NULL);
+    /*
+     * Attempt to get the preferred user arch values. If the
+     * call is not available, or if the call fails, fall back
+     * to the basic arch value. (Radar 40802057)
+     */
+    ret = -1;
 
-	/*
-	 * There is a "bug" in the kernel for compatiblity that on
-	 * an 030 machine host_info() returns cpusubtype
-	 * CPU_SUBTYPE_MC680x0_ALL and not CPU_SUBTYPE_MC68030_ONLY.
-	 */
-	if(hbi.cpu_type == CPU_TYPE_MC680x0 &&
-	   hbi.cpu_subtype == CPU_SUBTYPE_MC680x0_ALL)
-	    hbi.cpu_subtype = CPU_SUBTYPE_MC68030_ONLY;
+#ifdef HOST_PREFERRED_USER_ARCH
+    ret = internal_NXGetHostUserCPU(&cputype, &cpusubtype);
+#endif
 
-	return(NXGetArchInfoFromCpuType(hbi.cpu_type, hbi.cpu_subtype));
+    if (ret != 0)
+        ret = internal_NXGetHostBasicCPU(&cputype, &cpusubtype);
+
+    if(ret != 0)
+        return(NULL);
+
+    /*
+     * There is a "bug" in the kernel for compatiblity that on
+     * an 030 machine host_info() returns cpusubtype
+     * CPU_SUBTYPE_MC680x0_ALL and not CPU_SUBTYPE_MC68030_ONLY.
+     */
+    if(cputype == CPU_TYPE_MC680x0 && cpusubtype == CPU_SUBTYPE_MC680x0_ALL)
+        cpusubtype = CPU_SUBTYPE_MC68030_ONLY;
+
+    return(NXGetArchInfoFromCpuType(cputype, cpusubtype));
 }
 
 /*
@@ -332,6 +411,7 @@ const NXArchInfo *x)
  * match between the cputype and cpusubtype and one of the structs this routine
  * will always succeed.
  */
+static
 int32_t
 internal_NXFindBestFatArch(
 cpu_type_t cputype,
@@ -901,6 +981,9 @@ uint32_t nfat_archs)
 		    return(i);
 	    }
 	    break;
+	case CPU_TYPE_ARM64_32:
+	    /* Only exact match is allowed for CPU_TYPE_ARM64_32. */
+	    return(-1);
 	case CPU_TYPE_ARM:
 	case CPU_TYPE_ARM64:
 	    {
@@ -1072,6 +1155,11 @@ cpu_subtype_t cpusubtype2)
 	if(cputype == CPU_TYPE_X86_64)
 	    return(CPU_SUBTYPE_X86_64_ALL);
 
+	/*
+	 * The same cpusubtypes for any cputype returns that cpusubtype. For
+	 * some cputypes like CPU_TYPE_ARM64_32 there is no combining of
+	 * cpusubtypes so there is no code for those cputypes below.
+	 */
 	if((cpusubtype1 & ~CPU_SUBTYPE_MASK) ==
 	   (cpusubtype2 & ~CPU_SUBTYPE_MASK))
 	    return(cpusubtype1);

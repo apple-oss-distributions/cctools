@@ -1236,6 +1236,14 @@ struct info *info)
 		printf(" Swift 1.0");
 	    else if(swift_version == 2)
 		printf(" Swift 1.1");
+	    else if(swift_version == 3)
+		printf(" Swift 2.0");
+	    else if(swift_version == 4)
+		printf(" Swift 3.0");
+	    else if(swift_version == 5)
+		printf(" Swift 4.0");
+	    else if(swift_version == 6)
+		printf(" Swift 4.1");
 	    else
 		printf(" unknown future Swift version (%d)", swift_version);
 	}

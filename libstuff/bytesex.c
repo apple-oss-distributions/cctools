@@ -2385,6 +2385,16 @@ enum byte_sex target_byte_sex)
 	cpu->__cpsr = SWAP_INT(cpu->__cpsr);
 }
 
+void
+swap_arm_exception_state64_t(
+arm_exception_state64_t *except,
+enum byte_sex target_byte_sex)
+{
+	except->__far = SWAP_LONG_LONG(except->__far);
+	except->__esr = SWAP_INT(except->__esr);
+	except->__exception = SWAP_INT(except->__exception);
+}
+
 __private_extern__
 void
 swap_ident_command(

@@ -264,12 +264,27 @@ no_throttle:
 	}
 	if(seen_archive == TRUE){
 #ifndef __OPENSTEP__
-	    timep.actime = toc_time - 5;
-	    timep.modtime = toc_time - 5;
+	    /*
+	     * The environment variable ZERO_AR_DATE is used here and other
+	     * places that write archives to allow testing and comparing
+	     * things for exact binary equality.
+	     */
+	    if(getenv("ZERO_AR_DATE") == NULL){
+		timep.actime = toc_time - 5;
+		timep.modtime = toc_time - 5;
+	    }else{
+		timep.actime = time(0);
+		timep.modtime = time(0);
+	    }
 	    if(utime(output, &timep) == -1)
 #else
-	    timep[0] = toc_time - 5;
-	    timep[1] = toc_time - 5;
+	    if(getenv("ZERO_AR_DATE") == NULL){
+		timep[0] = toc_time - 5;
+		timep[1] = toc_time - 5;
+	    }else{
+		timep[0] = time(0);
+		timep[1] = time(0);
+            }
 	    if(utime(output, timep) == -1)
 #endif
 	    {

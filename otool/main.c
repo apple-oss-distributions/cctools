@@ -268,7 +268,8 @@ static void setup_dyld_bind_info(
     char *object_addr,
     uint32_t object_size,
     struct dyld_bind_info **dbi, /* output */
-    uint64_t *ndbi);
+    uint64_t *ndbi,
+    enum bool *ThreadedRebaseBind);
 
 static void print_text_by_symbols(
     cpu_type_t cputype,
@@ -292,6 +293,7 @@ static void print_text_by_symbols(
     uint32_t nloc_relocs,
     struct dyld_bind_info *dbi,
     uint64_t ndbi,
+    enum bool ThreadedRebaseBind,
     uint32_t *indirect_symbols,
     uint32_t nindirect_symbols,
     struct load_command *load_commands,
@@ -328,6 +330,7 @@ static void print_text(
     uint32_t nloc_relocs,
     struct dyld_bind_info *dbi,
     uint64_t ndbi,
+    enum bool ThreadedRebaseBind,
     uint32_t *indirect_symbols,
     uint32_t nindirect_symbols,
     struct load_command *load_commands,
@@ -955,6 +958,7 @@ void *cookie) /* cookie is not used */
     uint32_t nloh;
     struct dyld_bind_info *dbi;
     uint64_t ndbi;
+    enum bool ThreadedRebaseBind;
     uint64_t big_size;
 
 	sorted_symbols = NULL;
@@ -1322,8 +1326,8 @@ void *cookie) /* cookie is not used */
 	    get_symbol_table_info(ofile->load_commands, mh_ncmds, mh_sizeofcmds,
 		mh_cputype, ofile->object_byte_sex, addr, size, &symbols,
 		&symbols64, &nsymbols, &strings, &strings_size);
-	if(vflag && (rflag || Tflag || Mflag || Rflag || Iflag || Hflag || tflag
-	   || iflag || oflag ||
+	if((vflag && (rflag || Tflag || Mflag || Rflag || Iflag || Hflag ||
+		      tflag || iflag || oflag ||
 	   (sect_flags & SECTION_TYPE) == S_LITERAL_POINTERS ||
 	   (sect_flags & SECTION_TYPE) == S_MOD_INIT_FUNC_POINTERS ||
 	   (sect_flags & SECTION_TYPE) == S_MOD_TERM_FUNC_POINTERS ||
@@ -1331,7 +1335,8 @@ void *cookie) /* cookie is not used */
 		S_ATTR_PURE_INSTRUCTIONS ||
 	   (sect_flags & S_ATTR_SOME_INSTRUCTIONS) ==
 		S_ATTR_SOME_INSTRUCTIONS ||
-	   segname != NULL)){
+	   segname != NULL)) ||
+	   (oflag && (mh_cputype & CPU_ARCH_ABI64) != 0)){
 	    get_symbol_table_info(ofile->load_commands, mh_ncmds, mh_sizeofcmds,
 	        mh_cputype, ofile->object_byte_sex, addr, size, &symbols, 
 		&symbols64, &nsymbols, &strings, &strings_size);
@@ -1559,7 +1564,7 @@ void *cookie) /* cookie is not used */
 	if(print_bind_info){
 	    setup_dyld_bind_info(ofile->load_commands, mh_ncmds, mh_sizeofcmds,
 		ofile->object_byte_sex, ofile->object_addr, ofile->object_size,
-		&dbi, &ndbi);
+		&dbi, &ndbi, &ThreadedRebaseBind);
 	    print_dyld_bind_info(dbi, ndbi);
 	}
 
@@ -1631,7 +1636,7 @@ void *cookie) /* cookie is not used */
 		setup_dyld_bind_info(ofile->load_commands, mh_ncmds,
 				     mh_sizeofcmds, ofile->object_byte_sex,
 				     ofile->object_addr, ofile->object_size,
-				     &dbi, &ndbi);
+				     &dbi, &ndbi, &ThreadedRebaseBind);
 	    }
 	    if(Xflag == FALSE){
 		if(tflag)
@@ -1645,9 +1650,9 @@ void *cookie) /* cookie is not used */
 		       sect_size, sect_addr, sect_flags, sorted_symbols,
 		       nsorted_symbols, symbols, symbols64, nsymbols, strings,
 		       strings_size, relocs, nrelocs, ext_relocs, next_relocs,
-		       loc_relocs, nloc_relocs, dbi, ndbi, indirect_symbols,
-		       nindirect_symbols, ofile->load_commands, mh_ncmds,
-		       mh_sizeofcmds, vflag, Vflag, mh_cpusubtype,
+		       loc_relocs, nloc_relocs, dbi, ndbi, ThreadedRebaseBind,
+		       indirect_symbols, nindirect_symbols, ofile->load_commands,
+		       mh_ncmds, mh_sizeofcmds, vflag, Vflag, mh_cpusubtype,
 		       ofile->object_addr, ofile->object_size, dices, ndices,
 		       seg_addr);
 	    else
@@ -1655,9 +1660,9 @@ void *cookie) /* cookie is not used */
 		       sect_addr, sect_flags, sorted_symbols,
 		       nsorted_symbols, symbols, symbols64, nsymbols, strings,
 		       strings_size, relocs, nrelocs, ext_relocs, next_relocs,
-		       loc_relocs, nloc_relocs, dbi, ndbi, indirect_symbols,
-		       nindirect_symbols, ofile->load_commands, mh_ncmds,
-		       mh_sizeofcmds, vflag, Vflag, mh_cpusubtype,
+		       loc_relocs, nloc_relocs, dbi, ndbi, ThreadedRebaseBind,
+		       indirect_symbols, nindirect_symbols, ofile->load_commands,
+		       mh_ncmds, mh_sizeofcmds, vflag, Vflag, mh_cpusubtype,
 		       ofile->object_addr, ofile->object_size, dices, ndices,
                        seg_addr);
 
@@ -1824,10 +1829,10 @@ void *cookie) /* cookie is not used */
 					         get_host_byte_sex());
 			qsort(relocs, nrelocs, sizeof(struct relocation_info),
 			      (int (*)(const void *, const void *))rel_compare);
-			print_literal_pointer_section(mh_cputype,
+			print_literal_pointer_section(mh_cputype, mh_cpusubtype,
 				ofile->load_commands, mh_ncmds, mh_sizeofcmds,
-				ofile->object_byte_sex, addr, size, sect,
-				sect_size, sect_addr, symbols, symbols64,
+				mh_filetype, ofile->object_byte_sex, addr, size,
+				sect, sect_size, sect_addr, symbols, symbols64,
 				nsymbols, strings, strings_size, relocs,
 				nrelocs, Xflag == TRUE ? FALSE : TRUE);
 			free(relocs);
@@ -1836,9 +1841,22 @@ void *cookie) /* cookie is not used */
 
 		    case S_MOD_INIT_FUNC_POINTERS:
 		    case S_MOD_TERM_FUNC_POINTERS:
+			/* create aligned, sorted relocations entries */
+			nrelocs = sect_nrelocs;
+			relocs = allocate(nrelocs *
+					  sizeof(struct relocation_info));
+			memcpy(relocs, sect_relocs, nrelocs *
+			       sizeof(struct relocation_info));
+			if(ofile->object_byte_sex != get_host_byte_sex())
+			    swap_relocation_info(relocs, nrelocs,
+					         get_host_byte_sex());
+			qsort(relocs, nrelocs, sizeof(struct relocation_info),
+			      (int (*)(const void *, const void *))rel_compare);
 			print_init_term_pointer_section(mh_cputype, sect,
 			    sect_size, sect_addr, ofile->object_byte_sex,
-			    sorted_symbols, nsorted_symbols, Vflag);
+			    sorted_symbols, nsorted_symbols, symbols, symbols64,
+			    nsymbols, strings, strings_size, relocs, nrelocs,
+			    Vflag);
 			break;
 
 		    default:
@@ -1900,13 +1918,14 @@ void *cookie) /* cookie is not used */
 		setup_dyld_bind_info(ofile->load_commands, mh_ncmds,
 				     mh_sizeofcmds, ofile->object_byte_sex,
 				     ofile->object_addr, ofile->object_size,
-				     &dbi, &ndbi);
-		print_objc2_64bit(mh_cputype, ofile->load_commands, mh_ncmds,
-			    mh_sizeofcmds, ofile->object_byte_sex,
-			    ofile->object_addr, ofile->object_size, symbols64,
-			    nsymbols, strings, strings_size, sorted_symbols,
-			    nsorted_symbols, ext_relocs, next_relocs,
-			    loc_relocs, nloc_relocs, dbi, ndbi, vflag, Vflag);
+				     &dbi, &ndbi, &ThreadedRebaseBind);
+		print_objc2_64bit(mh_cputype, mh_cpusubtype,
+			    ofile->load_commands, mh_ncmds, mh_sizeofcmds,
+			    ofile->object_byte_sex, ofile->object_addr,
+			    ofile->object_size, symbols64, nsymbols, strings,
+			    strings_size, sorted_symbols, nsorted_symbols,
+			    ext_relocs, next_relocs, loc_relocs, nloc_relocs,
+			    dbi, ndbi, ThreadedRebaseBind, vflag, Vflag);
 	    }
 	    else if(mh_cputype == CPU_TYPE_ARM){
 		get_linked_reloc_info(ofile->load_commands, mh_ncmds,
@@ -3161,7 +3180,8 @@ enum byte_sex load_commands_byte_sex,
 char *object_addr,
 uint32_t object_size,
 struct dyld_bind_info **dbi, /* output */
-uint64_t *ndbi)
+uint64_t *ndbi, 
+enum bool *ThreadedRebaseBind)
 {
     enum byte_sex host_byte_sex;
     enum bool swapped, found_bind;
@@ -3187,6 +3207,7 @@ uint64_t *ndbi)
 	found_bind = FALSE;
 	*dbi = NULL;
 	*ndbi = 0;
+	*ThreadedRebaseBind = FALSE;
 
 	host_byte_sex = get_host_byte_sex();
 	swapped = host_byte_sex != load_commands_byte_sex;
@@ -3398,7 +3419,8 @@ uint64_t *ndbi)
 	start = (uint8_t *)(object_addr + dyld_info.bind_off);
 	end = start + dyld_info.bind_size;
 	get_dyld_bind_info(start, end, dylibs, ndylibs, segs, nsegs,
-			   segs64, nsegs64, dbi, ndbi, print_bind_info);
+			   segs64, nsegs64, swapped, object_addr, object_size,
+			   dbi, ndbi, ThreadedRebaseBind, print_bind_info);
 
 	if(dylibs != NULL)
 	    free(dylibs);
@@ -3438,6 +3460,7 @@ struct relocation_info *loc_relocs,
 uint32_t nloc_relocs,
 struct dyld_bind_info *dbi,
 uint64_t ndbi,
+enum bool ThreadedRebaseBind,
 uint32_t *indirect_symbols,
 uint32_t nindirect_symbols,
 struct load_command *load_commands,
@@ -3469,10 +3492,10 @@ uint64_t seg_addr)
 		       symbol_size, symbol_addr, sect_flags, sorted_symbols,
 		       nsorted_symbols, symbols, symbols64, nsymbols, strings,
 		       strings_size, relocs, nrelocs, ext_relocs, next_relocs,
-		       loc_relocs, nloc_relocs, dbi, ndbi, indirect_symbols,
-		       nindirect_symbols, load_commands, ncmds, sizeofcmds,
-		       disassemble, verbose, cpusubtype, object_addr,
-                       object_size, dices, ndices, seg_addr);
+		       loc_relocs, nloc_relocs, dbi, ndbi, ThreadedRebaseBind,
+		       indirect_symbols, nindirect_symbols, load_commands,
+		       ncmds, sizeofcmds, disassemble, verbose, cpusubtype,
+		       object_addr, object_size, dices, ndices, seg_addr);
 	}
 }
 
@@ -3500,6 +3523,7 @@ struct relocation_info *loc_relocs,
 uint32_t nloc_relocs,
 struct dyld_bind_info *dbi,
 uint64_t ndbi,
+enum bool ThreadedRebaseBind,
 uint32_t *indirect_symbols,
 uint32_t nindirect_symbols,
 struct load_command *load_commands,
@@ -3639,7 +3663,7 @@ uint64_t seg_addr)
 		    llvm_disasm_set_options(x86_64_dc,
 			LLVMDisassembler_Option_UseMarkup);
 	    }
-	    if(cputype == CPU_TYPE_ARM64){
+	    if(cputype == CPU_TYPE_ARM64 || cputype == CPU_TYPE_ARM64_32){
 		arm64_dc = create_arm64_llvm_disassembler(cpusubtype);
 		if(arm64_dc == NULL){
 		    printf("can't create arm64 llvm disassembler\n");
@@ -3682,7 +3706,8 @@ uint64_t seg_addr)
 			    printf("%08x", (uint32_t)cur_addr);
 			if((qflag == FALSE ||
 			    (cputype == CPU_TYPE_POWERPC)) &&
-			    cputype != CPU_TYPE_ARM64)
+			    (cputype != CPU_TYPE_ARM64 &&
+                             cputype != CPU_TYPE_ARM64_32))
 			    printf("\t");
 		    }
 		}
@@ -3759,15 +3784,15 @@ uint64_t seg_addr)
 				sizeofcmds, cpusubtype, verbose, arm_dc,
 				thumb_dc, object_addr, object_size, dices,
 				ndices, seg_addr, &(insts[n]), NULL, 0);
-		else if(cputype == CPU_TYPE_ARM64)
+		else if(cputype == CPU_TYPE_ARM64 || cputype == CPU_TYPE_ARM64_32)
 		    j = arm64_disassemble(sect, size - i, cur_addr, addr,
 				object_byte_sex, relocs, nrelocs, ext_relocs,
 				next_relocs, loc_relocs, nloc_relocs, dbi, ndbi,
-				symbols64, nsymbols, sorted_symbols,
-				nsorted_symbols, strings, strings_size,
-				indirect_symbols, nindirect_symbols,
-				load_commands, ncmds, sizeofcmds, object_addr,
-				object_size, verbose, arm64_dc);
+				ThreadedRebaseBind, symbols, symbols64, nsymbols,
+				sorted_symbols, nsorted_symbols, strings,
+				strings_size, indirect_symbols, nindirect_symbols,
+				cputype, load_commands, ncmds, sizeofcmds,
+				object_addr, object_size, verbose, arm64_dc);
 		
 		else{
 		    printf("Can't disassemble unknown cputype %d\n", cputype);

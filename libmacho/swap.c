@@ -408,6 +408,44 @@ enum NXByteOrder target_byte_sex)
 }
 
 void
+swap_twolevel_hint(
+struct twolevel_hint *hints,
+uint32_t nhints,
+enum NXByteOrder target_byte_sex)
+{
+    struct swapped_twolevel_hint {
+	union {
+	    struct {
+		uint32_t
+		    itoc:24,
+		    isub_image:8;
+	    } fields;
+	    uint32_t word;
+	} u;
+    } shint;
+
+    uint32_t i;
+    enum NXByteOrder host_byte_sex;
+
+	host_byte_sex = NXHostByteOrder();
+
+	for(i = 0; i < nhints; i++){
+	    if(target_byte_sex == host_byte_sex){
+		memcpy(&shint, hints + i, sizeof(struct swapped_twolevel_hint));
+		shint.u.word = OSSwapInt32(shint.u.word);
+		hints[i].itoc = shint.u.fields.itoc;
+		hints[i].isub_image = shint.u.fields.isub_image;
+	    }
+	    else{
+		shint.u.fields.isub_image = hints[i].isub_image;
+		shint.u.fields.itoc = hints[i].itoc;
+		shint.u.word = OSSwapInt32(shint.u.word);
+		memcpy(hints + i, &shint, sizeof(struct swapped_twolevel_hint));
+	    }
+	}
+}
+
+void
 swap_prebind_cksum_command(
 struct prebind_cksum_command *cksum_cmd,
 enum NXByteOrder target_byte_sex)

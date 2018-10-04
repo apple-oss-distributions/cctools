@@ -39,6 +39,10 @@ CFLAGS = $(OFLAG) -g -Wall $(LEGACY) \
 	 -I$(SRCROOT) -I$(SRCROOT)/../include -I$(OFILE_DIR) $(SDK)
 PG = -pg
 
+ifeq "$(RC_MACOS)" "YES"
+  DYNAMICLIB_FLAGS = -Wl,-iosmac_version_min,12.0
+endif
+
 MKDIRS = /bin/mkdir -p
 SRCROOT = .
 SYMROOT = .
@@ -296,7 +300,7 @@ libmacho.a libmacho_pg.a libmacho_static.a libmacho_kld.a: $(OBJS)
 	$(LIBTOOL) -static -o $(SYMROOT)/$@ $(OBJS)
 
 libmacho.dylib libmacho_profile.dylib libmacho_debug.dylib: $(OBJS)
-	$(CC) $(CFLAGS) $(RC_CFLAGS) -dynamiclib  \
+	$(CC) $(CFLAGS) $(RC_CFLAGS) $(DYNAMICLIB_FLAGS) -dynamiclib  \
 		-o $(SYMROOT)/$@ $(OBJS) \
 		-install_name $(INSTALL_NAME) \
 		-compatibility_version 1 \

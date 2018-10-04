@@ -215,6 +215,12 @@ struct mach_header_64 {
    					   symbol table do not include all the symbols
 					   listed in the dyld info. */
 
+#define	MH_SIM_SUPPORT 0x08000000	/* Allow LC_MIN_VERSION_MACOS and
+					   LC_BUILD_VERSION load commands with
+					   the platforms macOS, iOSMac,
+					   iOSSimulator, tvOSSimulator and
+					   watchOSSimulator. */
+
 /*
  * The load commands directly follow the mach_header.  The total size of all
  * of the commands is given by the sizeofcmds field in the mach_header.  All
@@ -1246,6 +1252,10 @@ struct build_tool_version {
 #define PLATFORM_TVOS 3
 #define PLATFORM_WATCHOS 4
 #define PLATFORM_BRIDGEOS 5
+#define PLATFORM_IOSMAC 6
+#define PLATFORM_IOSSIMULATOR 7
+#define PLATFORM_TVOSSIMULATOR 8
+#define PLATFORM_WATCHOSSIMULATOR 9
 
 /* Known values for the tool field above. */
 #define TOOL_CLANG 1
@@ -1393,6 +1403,7 @@ struct dyld_info_command {
 #define BIND_SPECIAL_DYLIB_SELF					 0
 #define BIND_SPECIAL_DYLIB_MAIN_EXECUTABLE			-1
 #define BIND_SPECIAL_DYLIB_FLAT_LOOKUP				-2
+#define BIND_SPECIAL_DYLIB_WEAK_LOOKUP				-3
 
 #define BIND_SYMBOL_FLAGS_WEAK_IMPORT				0x1
 #define BIND_SYMBOL_FLAGS_NON_WEAK_DEFINITION			0x8
@@ -1412,6 +1423,9 @@ struct dyld_info_command {
 #define BIND_OPCODE_DO_BIND_ADD_ADDR_ULEB			0xA0
 #define BIND_OPCODE_DO_BIND_ADD_ADDR_IMM_SCALED			0xB0
 #define BIND_OPCODE_DO_BIND_ULEB_TIMES_SKIPPING_ULEB		0xC0
+#define	BIND_OPCODE_THREADED					0xD0
+#define	BIND_SUBOPCODE_THREADED_SET_BIND_ORDINAL_TABLE_SIZE_ULEB 0x00
+#define	BIND_SUBOPCODE_THREADED_APPLY				 0x01
 
 
 /*
