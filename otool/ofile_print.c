@@ -2231,8 +2231,11 @@ enum bool very_verbose)
     struct linker_option_command lo;
     struct dyld_info_command dyld_info;
     struct version_min_command vd;
+    struct build_version_command bv;
+    struct build_tool_version btv;
     struct entry_point_command ep;
     struct source_version_command sv;
+    struct note_command nc;
     uint64_t big_load_end;
 
 	host_byte_sex = get_host_byte_sex();
@@ -2642,6 +2645,36 @@ enum bool very_verbose)
 		print_version_min_command(&vd);
 		break;
 
+	    case LC_BUILD_VERSION:
+		memset((char *)&bv, '\0', sizeof(struct build_version_command));
+		size = left < sizeof(struct build_version_command) ?
+		       left : sizeof(struct build_version_command);
+		memcpy((char *)&bv, (char *)lc, size);
+		if(swapped)
+		    swap_build_version_command(&bv, host_byte_sex);
+		print_build_version_command(&bv, verbose);
+		p = (char *)lc + sizeof(struct build_version_command);
+		for(j = 0 ; j < bv.ntools ; j++){
+		    if(p + sizeof(struct build_tool_version) >
+		       (char *)load_commands + sizeofcmds){
+			printf("build_tool_version structure command extends "
+			       "past end of load commands\n");
+		    }
+		    left = sizeofcmds - (p - (char *)load_commands);
+		    memset((char *)&s, '\0', sizeof(struct build_tool_version));
+		    size = left < sizeof(struct build_tool_version) ?
+			   left : sizeof(struct build_tool_version);
+		    memcpy((char *)&btv, p, size);
+		    if(swapped)
+			swap_build_tool_version(&btv, 1, host_byte_sex);
+		    print_build_tool_version(btv.tool, btv.version, verbose);
+		    if(p + sizeof(struct build_tool_version) >
+		       (char *)load_commands + sizeofcmds)
+			return;
+		    p += size;
+		}
+		break;
+
 	    case LC_SOURCE_VERSION:
 		memset((char *)&sv, '\0',sizeof(struct source_version_command));
 		size = left < sizeof(struct source_version_command) ?
@@ -2650,6 +2683,16 @@ enum bool very_verbose)
 		if(swapped)
 		    swap_source_version_command(&sv, host_byte_sex);
 		print_source_version_command(&sv);
+		break;
+
+	    case LC_NOTE:
+		memset((char *)&nc, '\0',sizeof(struct note_command));
+		size = left < sizeof(struct note_command) ?
+		       left : sizeof(struct note_command);
+		memcpy((char *)&nc, (char *)lc, size);
+		if(swapped)
+		    swap_note_command(&nc, host_byte_sex);
+		print_note_command(&nc, object_size);
 		break;
 
 	    case LC_MAIN:
@@ -3900,6 +3943,104 @@ struct version_min_command *vd)
 }
 
 /*
+ * print a build_version_command.  The build_version_command structure
+ * specified must be aligned correctly and in the host byte sex.
+ */
+void
+print_build_version_command(
+struct build_version_command *bv,
+enum bool verbose)
+{
+	if(bv->cmd == LC_BUILD_VERSION)
+	    printf("      cmd LC_BUILD_VERSION\n");
+	else
+	    printf("      cmd %u (?)\n", bv->cmd);
+	printf("  cmdsize %u", bv->cmdsize);
+	if(bv->cmdsize != sizeof(struct build_version_command) +
+			  bv->ntools * sizeof(struct build_tool_version))
+	    printf(" Incorrect size\n");
+	else
+	    printf("\n");
+	if(verbose){
+	    printf(" platform ");
+	    switch(bv->platform){
+	    case PLATFORM_MACOS:
+		printf("MACOS\n");
+		break;
+	    case PLATFORM_IOS:
+		printf("IOS\n");
+		break;
+	    case PLATFORM_TVOS:
+		printf("TVOS\n");
+		break;
+	    case PLATFORM_WATCHOS:
+		printf("WATCHOS\n");
+		break;
+	    case PLATFORM_BRIDGEOS:
+		printf("BRIDGEOS\n");
+		break;
+	    default:
+	        printf("%u\n", bv->platform);
+		break;
+	    }
+	}
+	else{
+	    printf(" platform %u\n", bv->platform);
+	}
+	if((bv->minos & 0xff) == 0)
+	    printf("    minos %u.%u\n",
+	       bv->minos >> 16,
+	       (bv->minos >> 8) & 0xff);
+	else
+	    printf("    minos %u.%u.%u\n",
+	       bv->minos >> 16,
+	       (bv->minos >> 8) & 0xff,
+	       bv->minos & 0xff);
+	if(bv->sdk == 0)
+	    printf("      sdk n/a\n");
+	else{
+	    if((bv->sdk & 0xff) == 0)
+		printf("      sdk %u.%u\n",
+		   bv->sdk >> 16,
+		   (bv->sdk >> 8) & 0xff);
+	    else
+		printf("      sdk %u.%u.%u\n",
+		   bv->sdk >> 16,
+		   (bv->sdk >> 8) & 0xff,
+		   bv->sdk & 0xff);
+	}
+	printf("   ntools %u\n", bv->ntools);
+}
+
+void
+print_build_tool_version(
+uint32_t tool,
+uint32_t version,
+enum bool verbose)
+{
+    if(verbose){
+        printf("     tool ");
+	switch(tool){
+	case TOOL_CLANG:
+	    printf("CLANG\n");
+	    break;
+	case TOOL_SWIFT:
+	    printf("SWIFT\n");
+	    break;
+	case TOOL_LD:
+	    printf("LD\n");
+	    break;
+	default:
+	    printf("%u\n", tool);
+	    break;
+	}
+    }
+    else
+        printf("     tool %u\n", tool);
+    printf("  version %u\n", version);
+}
+
+/*
  * print a source_version_command.  The source_version_command structure
  * specified must be aligned correctly and in the host byte sex.
  */
@@ -3928,6 +4069,38 @@ struct source_version_command *sv)
 	    printf("  version %llu.%llu.%llu\n", a, b, c);
 	else
 	    printf("  version %llu.%llu\n", a, b);
+}
+
+/*
+ * print a note_command. The note_command structure specified must aligned and
+ * in the host byte sex.
+ */
+void
+print_note_command(
+struct note_command *nc,
+uint64_t object_size)
+{
+    uint64_t big_size;
+
+	printf("       cmd LC_NOTE\n");
+	printf("   cmdsize %u", nc->cmdsize);
+	if(nc->cmdsize != sizeof(struct note_command))
+	    printf(" Incorrect size\n");
+	else
+	    printf("\n");
+	printf("data_owner %.16s\n", nc->data_owner);
+	printf("    offset %llu", nc->offset);
+	if(nc->offset > object_size)
+	    printf(" (past end of file)\n");
+	else
+	    printf("\n");
+	printf("      size %llu", nc->size);
+	big_size = nc->offset;
+	big_size += nc->size;
+	if(big_size > object_size)
+	    printf(" (past end of file)\n");
+	else
+	    printf("\n");
 }
 
 /*

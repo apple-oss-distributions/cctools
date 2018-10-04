@@ -845,8 +845,10 @@ enum bool version)
 	    add_execute_list("-no-symbolic-operands");
 	if((!jflag && (tflag || segname != NULL)) || no_show_raw_insn)
 	    add_execute_list("-no-show-raw-insn");
-	if(Xflag)
+	if(Xflag){
 	    add_execute_list("-no-leading-addr");
+	    add_execute_list("-no-leading-headers");
+	}
 
 	if(all_archs){
 	    add_execute_list("-arch");

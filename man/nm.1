@@ -1,8 +1,24 @@
-.TH NM 1 "May 27, 2015" "Apple, Inc."
+.TH NM 1 "February 10, 2017" "Apple, Inc."
 .SH NAME
 nm \- display name list (symbol table)
 .SH SYNOPSIS
-.B nm
+.B llvm-nm
+[
+.B \-agnoprumxjlPA
+] [
+.B \-
+] [
+.BI \-t " format"
+] [[
+.BI \-arch " arch_flag
+]...] [
+.IR file " ... ]"
+[
+.B \-s 
+.I segname sectname
+]
+
+.B nm-classic
 [
 .B \-agnoprumxjlfPA
 [
@@ -18,6 +34,20 @@ nm \- display name list (symbol table)
 ]...] [
 .IR file " ... ]"
 .SH DESCRIPTION
+As of Xcode 8.0 the default
+.IR nm (1)
+tool is 
+.IR llvm-nm (1).
+They for the most part have the same options except for
+.B \-f
+and
+.B \-s
+which the differences are noted below.  More help on options for
+.IR llvm-nm (1)
+is provided when running it with the
+.B \-\-help
+option.
+
 .I Nm
 displays the name list (symbol table) of each object
 .I file
@@ -138,6 +168,9 @@ Just display the symbol names (no value or type).
 .BI \-s " segname sectname"
 List only those symbols in the section
 .I (segname,sectname).
+For
+.IR llvm-nm (1)
+this option must be last on the command line, and after the files.
 .TP
 .B \-l
 List a pseudo symbol
@@ -164,9 +197,17 @@ if the file contains it;
 otherwise, symbols for all architectures in the file
 are displayed.
 .TP
+.B \-f " format"
+For
+.IR llvm-nm (1)
+this specifies the output format.  Where format can be bsd, sysv, posix or
+darwin.
+.TP
 .B \-f
-Display the symbol table of a dynamic library flat (as one file not separate
-modules).
+For
+.IR nm-classic (1)
+this displays the symbol table of a dynamic library flat (as one file not separate modules).  This is obsolete and not supported with
+.IR llvm-nm(1).
 .TP
 .B \-A
 Write the pathname or library name of an object on each line.

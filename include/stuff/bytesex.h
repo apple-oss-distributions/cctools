@@ -377,6 +377,19 @@ __private_extern__ void swap_source_version_command(
     struct source_version_command *sv,
     enum byte_sex target_byte_sex);
 
+__private_extern__ void swap_note_command(
+    struct note_command *nc,
+    enum byte_sex target_byte_sex);
+
+__private_extern__ void swap_build_version_command(
+    struct build_version_command *bv,
+    enum byte_sex target_byte_sex);
+
+__private_extern__ void swap_build_tool_version(
+    struct build_tool_version *bt,
+    uint32_t ntools,
+    enum byte_sex target_byte_sex);
+
 __private_extern__ void swap_nlist(
     struct nlist *symbols,
     uint32_t nsymbols,

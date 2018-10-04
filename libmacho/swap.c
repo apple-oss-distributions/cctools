@@ -448,6 +448,33 @@ enum NXByteOrder target_byte_sex)
 }
 
 void
+swap_build_version_command(
+struct build_version_command *bv,
+enum NXByteOrder target_byte_sex)
+{
+	bv->cmd = OSSwapInt32(bv->cmd);
+	bv->cmdsize = OSSwapInt32(bv->cmdsize);
+	bv->platform = OSSwapInt32(bv->platform);
+	bv->minos = OSSwapInt32(bv->minos);
+	bv->sdk = OSSwapInt32(bv->sdk);
+	bv->ntools = OSSwapInt32(bv->ntools);
+}
+
+void
+swap_build_tool_version(
+struct build_tool_version *btv,
+uint32_t ntools,
+enum NXByteOrder target_byte_sex)
+{
+    uint32_t i;
+
+	for(i = 0; i < ntools; i++){
+	    btv[i].tool = OSSwapInt32(btv[i].tool);
+	    btv[i].version = OSSwapInt32(btv[i].version);
+	}
+}
+
+void
 swap_rpath_command(
 struct rpath_command *rpath_cmd,
 enum NXByteOrder target_byte_sex)
@@ -530,6 +557,17 @@ enum NXByteOrder target_byte_sex)
 	sv->cmd = OSSwapInt32(sv->cmd);
 	sv->cmdsize = OSSwapInt32(sv->cmdsize);
 	sv->version = OSSwapInt64(sv->version);
+}
+
+void
+swap_note_command(
+struct note_command *nc,
+enum NXByteOrder target_byte_sex)
+{
+	nc->cmd = OSSwapInt32(nc->cmd);
+	nc->cmdsize = OSSwapInt32(nc->cmdsize);
+	nc->offset = OSSwapInt64(nc->offset);
+	nc->size = OSSwapInt64(nc->size);
 }
 
 void

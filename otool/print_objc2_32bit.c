@@ -477,6 +477,9 @@ enum bool verbose)
 	if(s == NULL)
 	    s = get_section_32(info.sections, info.nsections,
 				"__DATA_CONST", "__objc_classlist");
+	if(s == NULL)
+	    s = get_section_32(info.sections, info.nsections,
+				"__DATA_DIRTY", "__objc_classlist");
 	walk_pointer_list("class", s, &info, print_class_t);
 
 	s = get_section_32(info.sections, info.nsections,
@@ -487,6 +490,9 @@ enum bool verbose)
 	if(s == NULL)
 	    s = get_section_32(info.sections, info.nsections,
 				"__DATA_CONST", "__objc_classrefs");
+	if(s == NULL)
+	    s = get_section_32(info.sections, info.nsections,
+				"__DATA_DIRTY", "__objc_classrefs");
 	walk_pointer_list("class refs", s, &info, NULL);
 
 	s = get_section_32(info.sections, info.nsections,
@@ -497,6 +503,9 @@ enum bool verbose)
 	if(s == NULL)
 	    s = get_section_32(info.sections, info.nsections,
 				"__DATA_CONST", "__objc_superrefs");
+	if(s == NULL)
+	    s = get_section_32(info.sections, info.nsections,
+				"__DATA_DIRTY", "__objc_superrefs");
 	walk_pointer_list("super refs", s, &info, NULL);
 
 	s = get_section_32(info.sections, info.nsections,
@@ -507,6 +516,9 @@ enum bool verbose)
 	if(s == NULL)
 	    s = get_section_32(info.sections, info.nsections,
 				"__DATA_CONST", "__objc_catlist");
+	if(s == NULL)
+	    s = get_section_32(info.sections, info.nsections,
+				"__DATA_DIRTY", "__objc_catlist");
 	walk_pointer_list("category", s, &info, print_category_t);
 
 	s = get_section_32(info.sections, info.nsections,
@@ -517,6 +529,9 @@ enum bool verbose)
 	if(s == NULL)
 	    s = get_section_32(info.sections, info.nsections,
 				"__DATA_CONST", "__objc_protolist");
+	if(s == NULL)
+	    s = get_section_32(info.sections, info.nsections,
+				"__DATA_DIRTY", "__objc_protolist");
 	walk_pointer_list("protocol", s, &info, NULL);
 
 	s = get_section_32(info.sections, info.nsections,
@@ -527,6 +542,9 @@ enum bool verbose)
 	if(s == NULL)
 	    s = get_section_32(info.sections, info.nsections,
 				"__DATA_CONST", "__objc_msgrefs");
+	if(s == NULL)
+	    s = get_section_32(info.sections, info.nsections,
+				"__DATA_DIRTY", "__objc_msgrefs");
 	print_message_refs(s, &info);
 
 	s = get_section_32(info.sections, info.nsections,
@@ -537,6 +555,9 @@ enum bool verbose)
 	if(s == NULL)
 	    s = get_section_32(info.sections, info.nsections,
 				"__DATA_CONST", "__objc_imageinfo");
+	if(s == NULL)
+	    s = get_section_32(info.sections, info.nsections,
+				"__DATA_DIRTY", "__objc_imageinfo");
 	print_image_info(s, &info);
 }
 

@@ -3873,6 +3873,8 @@ struct ofile *ofile)
 			     *data_in_code, *code_sign_drs, *linkedit_data;
     struct linkedit_data_command *link_opt_hint;
     struct version_min_command *vers;
+    struct build_version_command *bv;
+    struct build_tool_version *btv;
     struct prebind_cksum_command *cs;
     struct encryption_info_command *encrypt_info;
     struct encryption_info_command_64 *encrypt_info64;
@@ -3882,6 +3884,7 @@ struct ofile *ofile)
     struct rpath_command *rpath;
     struct entry_point_command *ep;
     struct source_version_command *sv;
+    struct note_command *nc;
     uint32_t flavor, count, nflavor;
     char *p, *state;
     uint32_t sizeof_nlist, sizeof_dylib_module;
@@ -3985,6 +3988,7 @@ struct ofile *ofile)
 	encrypt_info = NULL;
 	dyld_info = NULL;
 	vers = NULL;
+	bv = NULL;
 	big_load_end = 0;
 	for(i = 0, lc = load_commands; i < ncmds; i++){
 	    if(big_load_end + sizeof(struct load_command) > sizeofcmds){
@@ -4747,6 +4751,36 @@ check_linkedit_data_command:
 			"WATCHOS command %u has too small cmdsize field)", i);
 		    goto return_bad;
 		}
+		break;
+
+	    case LC_BUILD_VERSION:
+		if(l.cmdsize < sizeof(struct build_version_command)){
+		    Mach_O_error(ofile, "malformed object (LC_BUILD_VERSION"
+				 "cmdsize too small) in command %u",i);
+		    goto return_bad;
+		}
+		if(vers != NULL){
+		    Mach_O_error(ofile, "malformed object (LC_BUILD_VERSION "
+			"and some LC_VERSION_MIN load command also found)");
+		    goto return_bad;
+		}
+		if(bv != NULL){
+		    Mach_O_error(ofile, "malformed object (more than one "
+			"LC_BUILD_VERSION load command)");
+		}
+		bv = (struct build_version_command *)lc;
+		if(swapped)
+		    swap_build_version_command(bv, host_byte_sex);
+		if(bv->cmdsize < sizeof(struct build_version_command) +
+				bv->ntools * sizeof(struct build_tool_version)){
+		    Mach_O_error(ofile, "malformed object (LC_BUILD_VERSION"
+			"command %u has too small cmdsize field)", i);
+		    goto return_bad;
+		}
+		btv = (struct build_tool_version *)
+		      ((char *)bv + sizeof(struct build_version_command));
+		if(swapped)
+		    swap_build_tool_version(btv, bv->ntools, host_byte_sex);
 		break;
 
 	    case LC_ENCRYPTION_INFO:
@@ -6518,6 +6552,31 @@ check_dylinker_command:
 		    Mach_O_error(ofile, "truncated or malformed object (path."
 			"offset field of LC_RPATH command %u extends past the "
 			"end of the file)", i);
+		    goto return_bad;
+		}
+		break;
+	    case LC_NOTE:
+		if(l.cmdsize != sizeof(struct note_command)){
+		    Mach_O_error(ofile, "malformed object (LC_NOTE: cmdsize "
+			         "incorrect) in command %u", i);
+		    goto return_bad;
+		}
+		nc = (struct note_command *)lc;
+		if(swapped)
+		    swap_note_command(nc, host_byte_sex);
+		if(nc->offset > size){
+		    Mach_O_error(ofile, "truncated or malformed object ("
+				 "LC_NOTE command %u offset field "
+				 "extends past the end of the file)", i);
+		    goto return_bad;
+		}
+		big_size = nc->offset;
+		big_size += nc->size;
+		if(big_size > size){
+		    Mach_O_error(ofile, "truncated or malformed object ("
+				 "LC_NOTE command %u offset field "
+				 "plus size field extends past the end of "
+				 "the file)", i);
 		    goto return_bad;
 		}
 		break;

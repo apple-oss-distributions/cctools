@@ -326,8 +326,21 @@ extern void print_linkedit_data_command(
 extern void print_version_min_command(
     struct version_min_command *vd);
 
+extern void print_build_version_command(
+    struct build_version_command *bv,
+    enum bool verbose);
+
+extern void print_build_tool_version(
+    uint32_t tool,
+    uint32_t version,
+    enum bool verbose);
+
 extern void print_source_version_command(
     struct source_version_command *sv);
+
+extern void print_note_command(
+    struct note_command *nc,
+    uint64_t object_size);
 
 extern void print_entry_point_command(
     struct entry_point_command *ep);
