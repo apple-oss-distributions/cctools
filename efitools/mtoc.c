@@ -58,6 +58,9 @@ static enum bool swapped;
 /* the size of the pecoff output file */
 static uint32_t output_size = 0;
 
+static uint32_t majorVersion = 0;
+static uint32_t minorVersion = 0;
+
 /*
  * The headers, and elements of them in the pecoff output file.
  */
@@ -383,6 +386,18 @@ char **envp)
 		section_alignment = file_alignment;
 		i++;
 	    }
+	    else if(strcmp(argv[i], "-version") == 0){
+		if(i + 1 >= argc){
+		    warning("no argument specified for -version option");
+		    usage();
+		}
+		if (sscanf(argv[i+1], "%u.%u", &majorVersion,
+			   &minorVersion) != 2){
+		    warning("invalid argument specified for -version option");
+		    usage();
+		}
+		i++;
+	    }
 	    else if(input == NULL)
 		input = argv[i];
 	    else if(output == NULL)
@@ -438,7 +453,8 @@ usage(
 void)
 {
 	fprintf(stderr, "Usage: %s [-subsystem type] "
-		"[-section_alignment hexvalue] [-align hexvalue] [-d debug_filename] "
+		"[-section_alignment hexvalue] [-align hexvalue] "
+		"[-version major.minor] [-ddebug_filename] "
 		"[-u debug_guid] input_Mach-O output_pecoff\n", progname);
 	exit(EXIT_FAILURE);
 }
@@ -1422,8 +1438,8 @@ struct ofile *ofile)
 	    aouthdr.FileAlignment = file_alignment;
 	    aouthdr.MajorOperatingSystemVersion = 0;
 	    aouthdr.MinorOperatingSystemVersion = 0;
-	    aouthdr.MajorImageVersion = 0;
-	    aouthdr.MinorImageVersion = 0;
+	    aouthdr.MajorImageVersion = majorVersion;
+	    aouthdr.MinorImageVersion = minorVersion;
 	    aouthdr.MajorSubsystemVersion = 0;
 	    aouthdr.MinorSubsystemVersion = 0;
 	    aouthdr.Win32VersionValue = 0;
@@ -1496,8 +1512,8 @@ struct ofile *ofile)
 	    aouthdr64.FileAlignment = file_alignment;
 	    aouthdr64.MajorOperatingSystemVersion = 0;
 	    aouthdr64.MinorOperatingSystemVersion = 0;
-	    aouthdr64.MajorImageVersion = 0;
-	    aouthdr64.MinorImageVersion = 0;
+	    aouthdr64.MajorImageVersion = majorVersion;
+	    aouthdr64.MinorImageVersion = minorVersion;
 	    aouthdr64.MajorSubsystemVersion = 0;
 	    aouthdr64.MinorSubsystemVersion = 0;
 	    aouthdr64.Win32VersionValue = 0;

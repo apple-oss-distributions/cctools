@@ -455,3 +455,6 @@ SRCROOT:
 		echo Must define $@; \
 		exit 1; \
 	fi
+
+noop:
+	mkdir -p $(DSTROOT)/AppleInternal

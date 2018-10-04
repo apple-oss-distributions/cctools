@@ -356,6 +356,8 @@ dt_install:
 			  $(DSTROOT)$(USRBINDIR)/install_name_tool
 	install -c -s -m 555 $(SYMROOT)/codesign_allocate.NEW \
 			  $(DSTROOT)$(USRBINDIR)/codesign_allocate
+	(cd $(DSTROOT)$(USRBINDIR); rm -f codesign_allocate-p; \
+		ln -s codesign_allocate codesign_allocate-p)
 	$(MKDIRS) $(RAW_DSTROOT)/usr/libexec/DeveloperTools
 	cp $(DSTROOT)$(USRBINDIR)/codesign_allocate \
 		$(RAW_DSTROOT)/usr/libexec/DeveloperTools

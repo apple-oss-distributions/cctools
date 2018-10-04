@@ -136,7 +136,15 @@ uint32_t *throttle)
     kern_return_t r;
    
 	seen_archive = FALSE;
-	toc_time = time(0);
+	/*
+	 * The environment variable ZERO_AR_DATE is used here and other
+	 * places that write archives to allow testing and comparing
+	 * things for exact binary equality.
+	 */
+	if(getenv("ZERO_AR_DATE") == NULL)
+	    toc_time = time(0);
+	else
+	    toc_time = 0;
 
 	writeout_to_mem(archs, narchs, output, (void **)&file, &file_size, 
                         sort_toc, commons_in_toc, force_64bit_toc,
@@ -339,7 +347,15 @@ enum bool *seen_archive)
 	 * modification time of the output file to be set to.
 	 */
 	*seen_archive = FALSE;
-	toc_time = time(0);
+	/*
+	 * The environment variable ZERO_AR_DATE is used here and other
+	 * places that write archives to allow testing and comparing
+	 * things for exact binary equality.
+	 */
+	if(getenv("ZERO_AR_DATE") == NULL)
+	    toc_time = time(0);
+	else
+	    toc_time = 0;
 
 	fat_arch = NULL; /* here to quite compiler maybe warning message */
 	fat_arch64 = NULL;
@@ -940,6 +956,8 @@ struct object *object)
 	    memcpy(p + *size, object->output_strings,
 		   object->output_strings_size);
 	    *size += object->output_strings_size;
+	    memset(p + *size, '\0', object->output_strings_size_pad);
+	    *size += object->output_strings_size_pad;
 	    if(object->output_code_sig_data_size != 0){
 		*size = rnd(*size, 16);
 		if(object->output_code_sig_data != NULL)
@@ -982,6 +1000,8 @@ struct object *object)
 	    memcpy(p + *size, object->output_strings,
 		   object->output_strings_size);
 	    *size += object->output_strings_size;
+	    memset(p + *size, '\0', object->output_strings_size_pad);
+	    *size += object->output_strings_size_pad;
 	    if(object->output_code_sig_data_size != 0){
 		*size = rnd(*size, 16);
 		if(object->output_code_sig_data != NULL)

@@ -731,15 +731,35 @@ void)
 	fprintf(stderr, "\t-d print the data section\n");
 	fprintf(stderr, "\t-o print the Objective-C segment\n");
 	fprintf(stderr, "\t-r print the relocation entries\n");
-	fprintf(stderr, "\t-S print the table of contents of a library\n");
+	fprintf(stderr, "\t-S print the table of contents of a library");
+#ifdef LLVM_OTOOL
+        fprintf(stderr, " (obsolete)");
+#endif /* LLVM_OTOOL */
+        fprintf(stderr, "\n");
 	fprintf(stderr, "\t-T print the table of contents of a dynamic "
-		"shared library\n");
+		"shared library");
+#ifdef LLVM_OTOOL
+        fprintf(stderr, " (obsolete)");
+#endif /* LLVM_OTOOL */
+        fprintf(stderr, "\n");
 	fprintf(stderr, "\t-M print the module table of a dynamic shared "
-		"library\n");
+		"library");
+#ifdef LLVM_OTOOL
+        fprintf(stderr, " (obsolete)");
+#endif /* LLVM_OTOOL */
+        fprintf(stderr, "\n");
 	fprintf(stderr, "\t-R print the reference table of a dynamic shared "
-		"library\n");
+		"library");
+#ifdef LLVM_OTOOL
+        fprintf(stderr, " (obsolete)");
+#endif /* LLVM_OTOOL */
+        fprintf(stderr, "\n");
 	fprintf(stderr, "\t-I print the indirect symbol table\n");
-	fprintf(stderr, "\t-H print the two-level hints table\n");
+	fprintf(stderr, "\t-H print the two-level hints table");
+#ifdef LLVM_OTOOL
+        fprintf(stderr, " (obsolete)");
+#endif /* LLVM_OTOOL */
+        fprintf(stderr, "\n");
 	fprintf(stderr, "\t-G print the data in code table\n");
 	fprintf(stderr, "\t-v print verbosely (symbolically) when possible\n");
 	fprintf(stderr, "\t-V print disassembled operands symbolically\n");
@@ -3378,7 +3398,7 @@ uint64_t *ndbi)
 	start = (uint8_t *)(object_addr + dyld_info.bind_off);
 	end = start + dyld_info.bind_size;
 	get_dyld_bind_info(start, end, dylibs, ndylibs, segs, nsegs,
-			   segs64, nsegs64, dbi, ndbi);
+			   segs64, nsegs64, dbi, ndbi, print_bind_info);
 
 	if(dylibs != NULL)
 	    free(dylibs);

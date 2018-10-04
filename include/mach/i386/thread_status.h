@@ -115,9 +115,6 @@
 #define x86_AVX_STATE32			16
 #define x86_AVX_STATE64			(x86_AVX_STATE32 + 1)
 #define x86_AVX_STATE			(x86_AVX_STATE32 + 2)
-#define x86_AVX512_STATE32		19
-#define x86_AVX512_STATE64		(x86_AVX512_STATE32 + 1)
-#define x86_AVX512_STATE		(x86_AVX512_STATE32 + 2)
 
 
 /*
@@ -132,6 +129,7 @@
  * platform. The macro must be manually updated to include all of the valid
  * exception flavors as defined above.
  */
+
 #define VALID_THREAD_STATE_FLAVOR(x)       \
 	 ((x == x86_THREAD_STATE32)	|| \
 	  (x == x86_FLOAT_STATE32)	|| \
@@ -152,6 +150,7 @@
 	  (x == x86_AVX512_STATE64)	|| \
 	  (x == x86_AVX512_STATE)	|| \
 	  (x == THREAD_STATE_NONE))
+
 
 struct x86_state_hdr {
 	uint32_t	flavor;

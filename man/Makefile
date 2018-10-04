@@ -31,7 +31,7 @@ INSTALL_FILES = Makefile $(OS_MAN1) $(COMMON_MAN1) $(MAN3) $(MAN5) $(MANL) \
 		$(MANL3) $(DYLD_MAN1) $(DYLD_MAN3) $(DYLD_MANL3) $(EFI1) notes
 
 MANDIR = /usr/share/man
-LOCMANDIR = /usr/local/man
+LOCMANDIR = /usr/local/share/man
 EFIMANDIR = /usr/local/efi/share/man
 DSTDIRS_MAN1 = $(DSTROOT)$(MANDIR)/man1
 DSTDIRS = $(DSTROOT)$(MANDIR)/man3 \

@@ -1,4 +1,4 @@
-.TH CODESIGN_ALLOCATE 1 "June 9, 2016" "Apple, Inc."
+.TH CODESIGN_ALLOCATE 1 "April 17, 2017" "Apple, Inc."
 .SH NAME
 codesign_allocate \-  add code signing data to a Mach-O file
 .SH SYNOPSIS
@@ -45,3 +45,9 @@ or
 option with a
 .I size
 of zero.
+.TP
+.BI \-p
+page align the code signature data by padding string table and changing its
+size.  This is not the default as
+.IR codesign (1)
+currently can't use this option.

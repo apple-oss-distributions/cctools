@@ -2144,17 +2144,25 @@ NS32:
 		printf(" ALLOW_STACK_EXECUTION");
 		f &= ~MH_ALLOW_STACK_EXECUTION;
 	    }
-	    if(f & MH_DEAD_STRIPPABLE_DYLIB){
-		printf(" DEAD_STRIPPABLE_DYLIB");
-		f &= ~MH_DEAD_STRIPPABLE_DYLIB;
+	    if(f & MH_ROOT_SAFE){
+		printf(" ROOT_SAFE");
+		f &= ~MH_ROOT_SAFE;
+	    }
+	    if(f & MH_SETUID_SAFE){
+		printf(" SETUID_SAFE");
+		f &= ~MH_SETUID_SAFE;
+	    }
+	    if(f & MH_NO_REEXPORTED_DYLIBS){
+		printf(" NO_REEXPORTED_DYLIBS");
+		f &= ~MH_NO_REEXPORTED_DYLIBS;
 	    }
 	    if(f & MH_PIE){
 		printf(" PIE");
 		f &= ~MH_PIE;
 	    }
-	    if(f & MH_NO_REEXPORTED_DYLIBS){
-		printf(" NO_REEXPORTED_DYLIBS");
-		f &= ~MH_NO_REEXPORTED_DYLIBS;
+	    if(f & MH_DEAD_STRIPPABLE_DYLIB){
+		printf(" DEAD_STRIPPABLE_DYLIB");
+		f &= ~MH_DEAD_STRIPPABLE_DYLIB;
 	    }
 	    if(f & MH_HAS_TLV_DESCRIPTORS){
 		printf(" MH_HAS_TLV_DESCRIPTORS");
@@ -2167,6 +2175,10 @@ NS32:
 	    if(f & MH_APP_EXTENSION_SAFE){
 		printf(" APP_EXTENSION_SAFE");
 		f &= ~MH_APP_EXTENSION_SAFE;
+	    }
+	    if(f & MH_NLIST_OUTOFSYNC_WITH_DYLDINFO){
+		printf(" NLIST_OUTOFSYNC_WITH_DYLDINFO");
+		f &= ~MH_NLIST_OUTOFSYNC_WITH_DYLDINFO;
 	    }
 	    if(f != 0 || flags == 0)
 		printf(" 0x%08x", (unsigned int)f);

@@ -2419,7 +2419,14 @@ struct ofile *ofile)
 	     */
 	    if(strncmp(ofile->toc_ar_hdr->ar_name, AR_EFMT1,
 		       sizeof(AR_EFMT1) - 1) == 0){
-	       if(archs[0].toc_long_name != TRUE)
+	       /*
+	        * Also if it has a long name and the sizes of the long name
+	        * are not the same or the names are not the same don't update
+	        * it in place.
+	        */
+	       if(archs[0].toc_long_name != TRUE ||
+		  ofile->toc_name_size != archs[0].toc_name_size ||
+		  strcmp(ofile->toc_name, archs[0].toc_name) != 0)
 		goto fail_to_update_toc_in_place;
 	    }
 	    else{

@@ -1,4 +1,4 @@
-.TH NM 1 "February 10, 2017" "Apple, Inc."
+.TH NM 1 "May 23, 2017" "Apple, Inc."
 .SH NAME
 nm \- display name list (symbol table)
 .SH SYNOPSIS
@@ -49,9 +49,17 @@ is provided when running it with the
 option.
 
 .I Nm
-displays the name list (symbol table) of each object
+displays the name list (symbol table of nlist structures) of each object
 .I file
-in the argument list.  If an argument is an archive, a listing for each object
+in the argument list.  In some cases, as with an object that has had
+.IR strip (1)
+with its
+.B \-T
+option used on the object, that can be different than the dyld information.
+For that information use
+.IR dyldinfo (1).
+
+If an argument is an archive, a listing for each object
 file in the archive will be produced.  
 .I File
 can be of the form libx.a(x.o), in which case only symbols from that member of the
@@ -236,7 +244,7 @@ section if present instead of the object's symbol table.  This is the default
 if the object has no symbol table and there is an (\_\^\_LLVM,\_\^\_bundle)
 section.
 .SH SEE ALSO
-ar(1), ar(5), Mach-O(5), stab(5), nlist(3)
+ar(1), ar(5), Mach-O(5), stab(5), nlist(3), dyldinfo(1)
 .SH BUGS
 Displaying Mach-O symbols with
 .B \-m

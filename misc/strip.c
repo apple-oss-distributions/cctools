@@ -69,7 +69,8 @@ static uint32_t nflag;	/* save N_SECT global symbols */
 static uint32_t Sflag;	/* -S strip only debugger symbols N_STAB */
 static uint32_t xflag;	/* -x strip non-globals */
 static uint32_t Xflag;	/* -X strip local symbols with 'L' names */
-static uint32_t Tflag;	/* -T strip symbols that start with '__T' names */
+static uint32_t Tflag;	/* -T strip symbols that start with '__T0' names */
+static uint32_t Nflag;	/* -N strip all nlist symbols and strings */
 static uint32_t cflag;	/* -c strip section contents from dynamic libraries
 			   files to create stub libraries */
 static uint32_t no_uuid;/* -no_uuid strip LC_UUID load commands */
@@ -234,6 +235,7 @@ static void check_indirect_symtab(
     uint32_t nsyms,
     char *strings,
     int32_t *missing_reloc_symbols,
+    uint32_t swift_version,
     enum byte_sex host_byte_sex);
 
 #ifndef NMEDIT
@@ -247,7 +249,9 @@ static enum bool strip_symtab(
     struct dylib_module_64 *mods64,
     uint32_t nmodtab,
     struct dylib_reference *refs,
-    uint32_t nextrefsyms);
+    uint32_t nextrefsyms,
+    uint32_t *p_swift_version,
+    enum bool *nlist_outofsync_with_dyldinfo);
 
 #ifdef TRIE_SUPPORT
 static int prune(
@@ -488,6 +492,9 @@ char *envp[])
 			    Tflag = 1;
 			    strip_all = 0;
 			    break;
+			case 'N':
+			    Nflag = 1;
+			    break;
 			case 'x':
 			    xflag = 1;
 			    strip_all = 0;
@@ -536,6 +543,13 @@ char *envp[])
 	    else
 		files_specified++;
 	}
+	/*
+	 * This allows testing of stripping all nlists and string tables.
+	 */
+#ifndef NMEDIT
+	if(getenv("STRIP_NLISTS") != NULL)
+	    Nflag = 1;
+#endif /* !defined(NMEDIT) */
 	if(args_left == 0)
 	    files_specified += argc - (i + 1);
 	
@@ -1010,8 +1024,12 @@ struct object *object)
     uint32_t k;
 #endif
     uint32_t ncmds;
+    uint32_t swift_version;
+    enum bool nlist_outofsync_with_dyldinfo;
 
 	host_byte_sex = get_host_byte_sex();
+	swift_version = 0;
+	nlist_outofsync_with_dyldinfo = FALSE;
 
 	/* Don't do anything to stub dylibs which have no load commands. */
 	if(object->mh_filetype == MH_DYLIB_STUB){
@@ -1286,7 +1304,8 @@ struct object *object)
 		return;
 #else /* !defined(NMEDIT) */
 	    if(strip_symtab(arch, member, object, tocs, ntoc, mods, mods64,
-			    nmodtab, refs, nextrefsyms) == FALSE)
+			    nmodtab, refs, nextrefsyms, &swift_version,
+			    &nlist_outofsync_with_dyldinfo) == FALSE)
 		return;
 	    if(no_uuid == TRUE)
 		strip_LC_UUID_commands(arch, member, object);
@@ -1820,7 +1839,11 @@ struct object *object)
 			offset += object->st->nsyms * sizeof(struct nlist_64);
 		}
 		else
-		    object->st->symoff = 0;
+		    /*
+		     * This should be set to zero when nsyms is zero, but dyld
+		     * will think it is malformed.  See rdar://34465083
+		     */
+		    object->st->symoff = offset;
 
 		if(object->hints_cmd != NULL){
 		    if(object->hints_cmd->nhints != 0){
@@ -1943,7 +1966,12 @@ struct object *object)
 		    offset += object->st->strsize;
 		}
 		else
-		    object->st->stroff = 0;
+		    /*
+		     * This should be set to zero when strsize is zero, but some
+		     * tools will think it is malformed, like machocheck.  See
+		     * rdar://34729011
+		     */
+		    object->st->stroff = offset;
 
 		if(object->code_sig_cmd != NULL){
 		    offset = rnd(offset, 16);
@@ -2288,7 +2316,7 @@ struct object *object)
 			check_indirect_symtab(arch, member, object, nitems,
 			    s->reserved1, section_type, contents, symbols,
 			    symbols64, nsyms, strings, &missing_reloc_symbols,
-			    host_byte_sex);
+			    swift_version, host_byte_sex);
 			s++;
 		    }
 		}
@@ -2314,7 +2342,7 @@ struct object *object)
 			check_indirect_symtab(arch, member, object, nitems,
 			    s64->reserved1, section_type, contents, symbols,
 			    symbols64, nsyms, strings, &missing_reloc_symbols,
-			    host_byte_sex);
+			    swift_version, host_byte_sex);
 			s64++;
 		    }
 		}
@@ -2337,6 +2365,13 @@ struct object *object)
 	  )
 	    warning_arch(arch, member, "changes being made to the file will "
 		"invalidate the code signature in: ");
+
+	if(nlist_outofsync_with_dyldinfo == TRUE){
+	    if(object->mh != NULL)
+		object->mh->flags |= MH_NLIST_OUTOFSYNC_WITH_DYLDINFO;
+	    else
+		object->mh64->flags |= MH_NLIST_OUTOFSYNC_WITH_DYLDINFO;
+	}
 }
 
 /*
@@ -2585,6 +2620,7 @@ struct nlist_64 *symbols64,
 uint32_t nsyms,
 char *strings,
 int32_t *missing_reloc_symbols,
+uint32_t swift_version,
 enum byte_sex host_byte_sex)
 {
     uint32_t k, index;
@@ -2664,9 +2700,11 @@ enum byte_sex host_byte_sex)
 			saves[index] - 1;
 		}
 #else /* !defined(NMEDIT) */
-		else if(Tflag && (mh_flags & MH_DYLDLINK) == MH_DYLDLINK &&
+		else if((Nflag && (mh_flags & MH_DYLDLINK) == MH_DYLDLINK) ||
+			(Tflag && swift_version != 0 &&
+			(mh_flags & MH_DYLDLINK) == MH_DYLDLINK &&
 	                n_strx != 0 &&
-			strncmp(strings + n_strx, "__T", 3) == 0){
+			strncmp(strings + n_strx, "__T0", 4) == 0)){
 		    object->output_indirect_symtab[reserved1 + k] =
 			    INDIRECT_SYMBOL_LOCAL | INDIRECT_SYMBOL_ABS;
 		    made_local = TRUE;
@@ -2753,6 +2791,26 @@ char *dfile)
 }
 
 /*
+ * Hack needed to dig out the swift_version from (flags >> 8) & 0xff to see if
+ * non-zero to apply the -T hack for trying to removing only swift symbols that
+ * start with "__T0" and not other symbols starting with "__T0".
+ */
+struct objc_image_info {
+    uint32_t version;
+    uint32_t flags;
+};
+
+static
+void
+swap_objc_image_info(
+struct objc_image_info *o,
+enum byte_sex target_byte_sex)
+{
+        o->version = SWAP_INT(o->version);
+        o->flags = SWAP_INT(o->flags);
+}
+
+/*
  * Strip the symbol table to the level specified by the command line arguments.
  * The new symbol table is built and new_symbols is left pointing to it.  The
  * number of new symbols is left in new_nsyms, the new string table is built
@@ -2771,7 +2829,9 @@ struct dylib_module *mods,
 struct dylib_module_64 *mods64,
 uint32_t nmodtab,
 struct dylib_reference *refs,
-uint32_t nextrefsyms)
+uint32_t nextrefsyms,
+uint32_t *p_swift_version,
+enum bool *nlist_outofsync_with_dyldinfo)
 {
     uint32_t i, j, k, n, inew_syms, save_debug, missing_syms;
     uint32_t missing_symbols;
@@ -2794,7 +2854,11 @@ uint32_t nextrefsyms)
     uint32_t module_name, iextdefsym, nextdefsym, ilocalsym, nlocalsym;
     uint32_t irefsym, nrefsym;
     enum bool has_dwarf, hack_5614542;
+    uint32_t swift_version;
+    char *p_objc_image_info;
+    struct objc_image_info o;
 
+	*nlist_outofsync_with_dyldinfo = FALSE;
 	save_debug = 0;
 	if(saves != NULL)
 	    free(saves);
@@ -2943,10 +3007,58 @@ uint32_t nextrefsyms)
 	    lc = (struct load_command *)((char *)lc + lc->cmdsize);
 	}
 
+	if(object->mh != NULL)
+	    mh_flags = object->mh->flags;
+	else
+	    mh_flags = object->mh64->flags;
+
+	/*
+	 * Get the swift version if any if we are using the -T flag and this is
+	 * an linked image for dyld.  This is a hack to try to lessen the
+	 * chance of stripping a symbol that starts with "__T0" that is not a
+	 * swift symbol.
+	 */
+	swift_version = 0;
+	if(Tflag && (mh_flags & MH_DYLDLINK) == MH_DYLDLINK){
+	    p_objc_image_info = NULL;
+	    for(i = 0; i < nsects; i++){
+		if(object->mh != NULL){
+		    if((strcmp(sections[i]->segname, "__DATA") == 0 ||
+		        strcmp(sections[i]->segname, "__DATA_CONST") == 0 ||
+		        strcmp(sections[i]->segname, "__DATA_DIRTY") == 0) &&
+		       strncmp(sections[i]->sectname, "__objc_imageinfo", 16)
+									== 0 &&
+		       sections[i]->size >= sizeof(struct objc_image_info)) {
+			p_objc_image_info = object->object_addr +
+					    sections[i]->offset;
+			break;
+		    }
+		}
+		else{
+		    if((strcmp(sections64[i]->segname, "__DATA") == 0 ||
+		        strcmp(sections64[i]->segname, "__DATA_CONST") == 0 ||
+		        strcmp(sections64[i]->segname, "__DATA_DIRTY") == 0) &&
+		       strncmp(sections64[i]->sectname, "__objc_imageinfo", 16)
+									== 0 &&
+		       sections64[i]->size >= sizeof(struct objc_image_info)) {
+			p_objc_image_info = object->object_addr +
+					    sections64[i]->offset;
+			break;
+		    }
+		}
+	    }
+	    if(p_objc_image_info != NULL){
+		memcpy(&o, p_objc_image_info, sizeof(struct objc_image_info));
+		if(object->object_byte_sex != get_host_byte_sex())
+		    swap_objc_image_info(&o, get_host_byte_sex());
+		swift_version = (o.flags >> 8) & 0xff;
+	    }
+	}
+	*p_swift_version = swift_version;
+
 	for(i = 0; i < nsyms; i++){
 	    s_flags = 0;
 	    if(object->mh != NULL){
-		mh_flags = object->mh->flags;
 		n_strx = symbols[i].n_un.n_strx;
 		n_type = symbols[i].n_type;
 		n_sect = symbols[i].n_sect;
@@ -2962,7 +3074,6 @@ uint32_t nextrefsyms)
 		n_value = symbols[i].n_value;
 	    }
 	    else{
-		mh_flags = object->mh64->flags;
 		n_strx = symbols64[i].n_un.n_strx;
 		n_type = symbols64[i].n_type;
 		n_sect = symbols64[i].n_sect;
@@ -2994,12 +3105,23 @@ uint32_t nextrefsyms)
 		}
 	    }
 	    /*
-	     * If the -T flag is specified then if this is a final linked
-	     * binary never save symbols that start with "__T".
+             * If the -N flag is set strip all symbols in binaries used with the
+	     * dynamic linker set *nlist_outofsync_with_dyldinfo to true.
 	     */
-	    if(Tflag && (mh_flags & MH_DYLDLINK) == MH_DYLDLINK &&
-	       n_strx != 0 && strncmp(strings + n_strx, "__T", 3) == 0){
+	    if(Nflag && (mh_flags & MH_DYLDLINK) == MH_DYLDLINK){
+		*nlist_outofsync_with_dyldinfo = TRUE;
+		continue;
+	    }
+	    /*
+	     * If the -T flag is specified then if this is a final linked
+	     * binary never save symbols that start with "__T0" if the 
+	     * swift version is non-zero.
+	     */
+	    if(Tflag && swift_version != 0 &&
+	       (mh_flags & MH_DYLDLINK) == MH_DYLDLINK &&
+	       n_strx != 0 && strncmp(strings + n_strx, "__T0", 4) == 0){
 		/* don't save this symbol */
+		*nlist_outofsync_with_dyldinfo = TRUE;
 		continue;
 	    }
 	    if((n_type & N_EXT) == 0){ /* local symbol */
@@ -3523,7 +3645,8 @@ uint32_t nextrefsyms)
 	 * table entry and a few bytes in the string table for the complexity it
 	 * would add and what it would save.
 	 */
-	if(new_nlocalsym == 0 && nindirectsyms != 0){
+	if(!(Nflag && (mh_flags & MH_DYLDLINK) == MH_DYLDLINK) &&
+	   (new_nlocalsym == 0 && nindirectsyms != 0)){
 	    len = strlen("radr://5614542") + 1;
 	    new_strsize += len;
 	    new_nlocalsym++;
@@ -4012,9 +4135,10 @@ uint32_t nextrefsyms)
 	 * Update the export trie if it has one but only call the the
 	 * prune_trie() routine when we are removing global symbols as is
 	 * done with default stripping of a dyld executable or with the -s
-	 * or -R options.
+	 * or -R options.  If we are stripping nlist with the -N flag we must
+	 * leave the export trie as is.
 	 */
-	if(object->dyld_info != NULL &&
+	if(!Nflag && object->dyld_info != NULL &&
 	   object->dyld_info->export_size != 0 &&
 	   (default_dyld_executable || sfile != NULL || Rfile != NULL)){
 	    const char *error_string;

@@ -11,12 +11,12 @@ llvm-otool \- the temporary command line shim for otool to objdump command line 
 .SH DESCRIPTION
 The temporary command line shim
 .I llvm-otool
-takes all the same options as the command
+takes all the same options as the original
 .IR otool (1)
-and executes an equivalent
+command and executes an equivalent
 .IR objdump (1)
 command.  Its use is to ease the change over
-of the use of
+of the original use of
 .IR otool (1)
 which will be obsoleted, to the llvm based open source
 .IR objdump (1)
@@ -24,6 +24,12 @@ command with the similar functionality.  It is a temporary tool that will
 removed when the
 .IR otool (1)
 command line tool is removed.
+
+The original
+.IR otool (1)
+can now be found as
+.IR otool-classic (1)
+and typically will be run by using "xcrun otool-classic".
 .TP
 .B \-show-objdump-command
 Print the
@@ -375,3 +381,5 @@ syntax as that is the default.  And the
 .I archive(member)
 syntax is not supported as file arguments with
 .IR objdump (1).
+.SH "SEE ALSO"
+otool-classic(1)

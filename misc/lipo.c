@@ -1044,7 +1044,7 @@ create_fat(void)
 	 * We are ordering the ARM64 slice so it gets written last of the
 	 * fat_arch structs, so write it out here as it was skipped above.
 	 */
-	if(arm64_arch){
+	if(arm64_arch && (extract_family_flag != TRUE || nthin_files != 1)){
 	    if(fat64_flag == TRUE){
 		fat_arch64.cputype = arm64_arch->cputype;
 		fat_arch64.cpusubtype = arm64_arch->cpusubtype;
@@ -1078,7 +1078,7 @@ create_fat(void)
 	 * We are ordering the x86_64h slice so it gets written last too of the
 	 * fat_arch structs, so write it out here as it was skipped above.
 	 */
-	if(x86_64h_arch){
+	if(x86_64h_arch && (extract_family_flag != TRUE || nthin_files != 1)){
 	    if(fat64_flag == TRUE){
 		fat_arch64.cputype = x86_64h_arch->cputype;
 		fat_arch64.cpusubtype = x86_64h_arch->cpusubtype;

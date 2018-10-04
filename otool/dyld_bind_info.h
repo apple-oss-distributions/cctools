@@ -22,7 +22,8 @@ extern void get_dyld_bind_info(
     struct segment_command_64 **segs64,
     uint32_t nsegs64,
     struct dyld_bind_info **dbi, /* outputs */
-    uint64_t *ndbi);
+    uint64_t *ndbi,
+    enum bool print_errors);
 
 extern void print_dyld_bind_info(
     struct dyld_bind_info *dbi,

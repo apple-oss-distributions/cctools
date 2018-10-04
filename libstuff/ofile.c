@@ -2221,6 +2221,11 @@ struct ofile *ofile)
 	ofile->mh = NULL;
 	ofile->mh64 = NULL;
 	ofile->load_commands = NULL;
+#ifdef LTO_SUPPORT
+	ofile->lto = NULL;
+	ofile->lto_cputype = 0;
+	ofile->lto_cpusubtype = 0;
+#endif /* LTO_SUPPORT */
 
 	host_byte_sex = get_host_byte_sex();
 
@@ -2403,6 +2408,11 @@ struct ofile *ofile)
 	ofile->mh = NULL;
 	ofile->mh64 = NULL;
 	ofile->load_commands = NULL;
+#ifdef LTO_SUPPORT
+	ofile->lto = NULL;
+	ofile->lto_cputype = 0;
+	ofile->lto_cpusubtype = 0;
+#endif /* LTO_SUPPORT */
 
 	/*
 	 * Get the address and size of the archive.

@@ -1865,7 +1865,7 @@ struct value_diff *value_diffs)
 		    else{
 			printf(" (indirect for ");
 			printf(ta_xfmt, symbols[i].nl.n_value);
-			printf(" %s)\n", symbols[i].indr_name);
+			printf(" %s)\n", symbols[i].nl.n_value + strings);
 		    }
 		}
 		else

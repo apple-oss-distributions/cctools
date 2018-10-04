@@ -1,4 +1,4 @@
-.TH STRIP 1 "February 25, 2016" "Apple, Inc."
+.TH STRIP 1 "September 14, 2017" "Apple, Inc."
 .SH NAME
 strip \- remove symbols
 .SH SYNOPSIS
@@ -215,7 +215,14 @@ and other compilers).
 Remove the local symbols whose names begin with `L'.
 .TP
 .B \-T
-Remove the symbols whose names begin with `\_\^\_T'.
+The intent of this flag is to remove Swift symbols.  It removes the
+symbols whose names begin with `\_\^\_T0' only when it finds an
+an \_\^\_objc_imageinfo section with and it has a non-zero swift version.
+The future the implementation of this flag may change to match the intent.
+.TP
+.B \-N
+In binaries that use the dynamic linker remove all nlist symbols and the string
+table.  Setting the environment variable STRIP_NLISTS has the same effect.
 .TP 
 .B \-x
 Remove all local symbols (saving only global symbols).
