@@ -627,6 +627,7 @@ _STRUCT_X86_AVX_STATE64
 	_STRUCT_XMM_REG		__fpu_ymmh15;		/* YMMH 15  */
 };
 
+#endif /* not __OPEN_SOURCE__ */
 
 #else /* !__DARWIN_UNIX03 */
 #define	_STRUCT_X86_FLOAT_STATE64	struct x86_float_state64
@@ -799,4 +800,3 @@ _STRUCT_X86_DEBUG_STATE64
 };
 #endif /* !__DARWIN_UNIX03 */
 
-#endif /* _MACH_I386__STRUCTS_H_ */

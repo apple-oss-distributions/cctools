@@ -5,7 +5,7 @@ RC_OS = macos
 RC_CFLAGS =
 
 INSTALLSRC_SUBDIRS = $(COMMON_SUBDIRS) $(SUBDIRS_32) ar include efitools \
-		     libmacho
+		     libmacho tests
 COMMON_SUBDIRS = libstuff as gprof misc man cbtlibs otool
 APPLE_SUBDIRS = ar
 SUBDIRS_32 = ld
@@ -442,7 +442,9 @@ fromGASsrc:
 installhdrs: $(DSTROOT)
 	@if [ $(SRCROOT) ];						\
 	then								\
-	    projName=`basename $(SRCROOT) | sed 's/-[0-9.]*//'`;	\
+	    projName=`basename $(SRCROOT) | sed 's/Branch.*//' |        \
+		sed 's/_PONDEROSA//' | sed 's/_Fall2018//' |		\
+		sed 's/-[-0-9.]*//' | sed 's/\.cvs//'`; 		\
 	    rcName=`echo $(RC_ProjectName) | 				\
 		sed 's/\(cctools_ofiles\).*/\1/'`;			\
 	    if [ "$$projName" = cctools -a $(RC_OS) = macos ] &&        \
@@ -462,7 +464,9 @@ installhdrs: $(DSTROOT)
 installapi: $(DSTROOT)
 	@if [ $(SRCROOT) ];						\
 	then								\
-	    projName=`basename $(SRCROOT) | sed 's/-[0-9.]*//'`;	\
+	    projName=`basename $(SRCROOT) | sed 's/Branch.*//' |        \
+		sed 's/_PONDEROSA//' | sed 's/_Fall2018//' |		\
+		sed 's/-[-0-9.]*//' | sed 's/\.cvs//'`; 		\
 	    rcName=`echo $(RC_ProjectName) | 				\
 		sed 's/\(cctools_ofiles\).*/\1/'`;			\
 	    if [ "$$projName" = cctools -a $(RC_OS) = macos ] &&        \

@@ -3881,7 +3881,8 @@ struct ofile *ofile)
     struct routines_command_64 *rc64;
     struct twolevel_hints_command *hints;
     struct linkedit_data_command *code_sig, *split_info, *func_starts,
-			     *data_in_code, *code_sign_drs, *linkedit_data;
+			     *data_in_code, *code_sign_drs, *linkedit_data,
+			     *exports_trie, *chained_fixups;
     struct linkedit_data_command *link_opt_hint;
     struct version_min_command *vers;
     struct build_version_command *bv, *bv1, *bv2;
@@ -3995,6 +3996,8 @@ struct ofile *ofile)
 	data_in_code = NULL;
 	code_sign_drs = NULL;
 	link_opt_hint = NULL;
+	exports_trie = NULL;
+	chained_fixups = NULL;
 	split_info = NULL;
 	cs = NULL;
 	uuid = NULL;
@@ -4609,7 +4612,7 @@ struct ofile *ofile)
 
 	    case LC_DATA_IN_CODE:
 		cmd_name = "LC_DATA_IN_CODE";
-		element_name = "date in code info";
+		element_name = "data in code info";
 		if(data_in_code != NULL){
 		    Mach_O_error(ofile, "malformed object (more than one "
 			"%s command)", cmd_name);
@@ -4639,6 +4642,28 @@ struct ofile *ofile)
 		}
 		link_opt_hint = (struct linkedit_data_command *)lc;
 		goto check_linkedit_data_command;
+
+        case LC_DYLD_EXPORTS_TRIE:
+        cmd_name = "LC_DYLD_EXPORTS_TRIE";
+        element_name = "exports trie";
+        if(exports_trie != NULL){
+            Mach_O_error(ofile, "malformed object (more than one "
+            "%s command)", cmd_name);
+            goto return_bad;
+        }
+        exports_trie = (struct linkedit_data_command *)lc;
+        goto check_linkedit_data_command;
+
+        case LC_DYLD_CHAINED_FIXUPS:
+        cmd_name = "LC_DYLD_CHAINED_FIXUPS";
+        element_name = "chained fixups";
+        if(chained_fixups != NULL){
+            Mach_O_error(ofile, "malformed object (more than one "
+            "%s command)", cmd_name);
+            goto return_bad;
+        }
+        chained_fixups = (struct linkedit_data_command *)lc;
+        goto check_linkedit_data_command;
 
 check_linkedit_data_command:
 		if(l.cmdsize < sizeof(struct linkedit_data_command)){
@@ -4697,6 +4722,15 @@ check_linkedit_data_command:
 			"MACOSX command %u has too small cmdsize field)", i);
 		    goto return_bad;
 		}
+                if (bv1 != NULL) {
+                    if (bv1->platform == PLATFORM_MACOS) {
+                        Mach_O_error(ofile, "malformed object (the "
+                                     "LC_VERSION_MIN_MACOSX command %u "
+                                     "is not allowed when an LC_BUILD_VERSION "
+                                     "command for MACOS is present)", i);
+                        goto return_bad;
+                    }
+                }
 		break;
 
 	    case LC_VERSION_MIN_IPHONEOS:
@@ -4712,6 +4746,12 @@ check_linkedit_data_command:
 			"load command)");
 		    goto return_bad;
 		}
+                if (bv1) {
+                    Mach_O_error(ofile, "malformed object "
+                                 "(LC_VERSION_MIN_IPHONEOS and some "
+                                 "LC_BUILD_VERSION load command also found)");
+                    goto return_bad;
+                }
 		vers = (struct version_min_command *)lc;
 		if(swapped)
 		    swap_version_min_command(vers, host_byte_sex);
@@ -4735,6 +4775,12 @@ check_linkedit_data_command:
 			"load command)");
 		    goto return_bad;
 		}
+                if (bv1) {
+                    Mach_O_error(ofile, "malformed object "
+                                 "(LC_VERSION_MIN_TVOS and some "
+                                 "LC_BUILD_VERSION load command also found)");
+                    goto return_bad;
+                }
 		vers = (struct version_min_command *)lc;
 		if(swapped)
 		    swap_version_min_command(vers, host_byte_sex);
@@ -4758,6 +4804,12 @@ check_linkedit_data_command:
 			"command)");
 		    goto return_bad;
 		}
+                if (bv1) {
+                    Mach_O_error(ofile, "malformed object "
+                                 "(LC_VERSION_MIN_WATCHOS and some "
+                                 "LC_BUILD_VERSION load command also found)");
+                    goto return_bad;
+                }
 		vers = (struct version_min_command *)lc;
 		if(swapped)
 		    swap_version_min_command(vers, host_byte_sex);
@@ -4769,13 +4821,13 @@ check_linkedit_data_command:
 		break;
 
 	    case LC_BUILD_VERSION:
+                /* check load command size */
 		if(l.cmdsize < sizeof(struct build_version_command)){
 		    Mach_O_error(ofile, "malformed object (LC_BUILD_VERSION"
 				 "cmdsize too small) in command %u",i);
 		    goto return_bad;
 		}
-		if(vers != NULL && ((mh_flags & MH_SIM_SUPPORT) == 0 ||
-		   vers->cmd != LC_VERSION_MIN_MACOSX)){
+		if(vers != NULL && (vers->cmd != LC_VERSION_MIN_MACOSX)){
 		    Mach_O_error(ofile, "malformed object (LC_BUILD_VERSION "
 			"and some LC_VERSION_MIN load command also found)");
 		    goto return_bad;
@@ -4798,6 +4850,16 @@ check_linkedit_data_command:
 		      ((char *)bv + sizeof(struct build_version_command));
 		if(swapped)
 		    swap_build_tool_version(btv, bv->ntools, host_byte_sex);
+                if (vers != NULL) {
+                    if (vers->cmd == LC_VERSION_MIN_MACOSX &&
+                        bv->platform != PLATFORM_IOSMAC) {
+                        Mach_O_error(ofile, "malformed object "
+                                     "(LC_VERSION_MIN_MACOSX is set but the "
+                                     "LC_BUILD_VERSION load command is not for "
+                                     "IOSMAC)");
+                        goto return_bad;
+                    }
+                }
 		if(bv1 == NULL) {
 		    bv1 = bv;
 		    if (((mh_flags & MH_SIM_SUPPORT) != 0) &&

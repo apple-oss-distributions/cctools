@@ -178,6 +178,10 @@ static void check_for_overlapping_segments(
 static void check_for_lazy_pointer_relocs_too_far(void);
 static void print_load_map(void);
 static void print_load_map_for_objects(struct merged_section *ms);
+static uint32_t get_stack_size_from_flag(const struct arch_flag *flag);
+static vm_prot_t get_segprot_from_flag(const struct arch_flag *flag);
+static int get_stack_direction_from_flag(const struct arch_flag *flag);
+
 #endif /* !defined(RLD) */
 
 /*
@@ -2553,3 +2557,66 @@ print_thread_info(void)
 	    print("\n");
 }
 #endif /* DEBUG */
+
+#ifndef RLD
+
+/*
+ * get_stack_size_from_flag() returns the default size of the userstack.  This
+ * should be in the header file <bsd/XXX/vmparam.h> as MAXSSIZ. Since some
+ * architectures have come and gone and come back, you can't include all of
+ * these headers in one source and some of the constants covered the whole
+ * address space the common value of 64meg was chosen.
+ */
+static
+uint32_t
+get_stack_size_from_flag(
+			 const struct arch_flag *flag)
+{
+#ifdef __MWERKS__
+    const struct arch_flag *dummy;
+    dummy = flag;
+#endif
+    
+    return(64*1024*1024);
+}
+
+/*
+ * get_segprot_from_flag() returns the default segment protection.
+ */
+static
+vm_prot_t
+get_segprot_from_flag(
+		      const struct arch_flag *flag)
+{
+    if(flag->cputype == CPU_TYPE_I386)
+	return(VM_PROT_READ | VM_PROT_WRITE);
+    else
+	return(VM_PROT_READ | VM_PROT_WRITE | VM_PROT_EXECUTE);
+}
+
+/*
+ * get_stack_direction_from_flag() returns the direction the stack grows as
+ * either positive (+1) or negative (-1) of the architecture for the
+ * specified cputype and cpusubtype if known.  If unknown it returns 0.
+ */
+static
+int
+get_stack_direction_from_flag(
+			      const struct arch_flag *flag)
+{
+    if(flag->cputype == CPU_TYPE_MC680x0 ||
+       flag->cputype == CPU_TYPE_MC88000 ||
+       flag->cputype == CPU_TYPE_POWERPC ||
+       flag->cputype == CPU_TYPE_I386 ||
+       flag->cputype == CPU_TYPE_SPARC ||
+       flag->cputype == CPU_TYPE_I860 ||
+       flag->cputype == CPU_TYPE_VEO ||
+       flag->cputype == CPU_TYPE_ARM)
+	return(-1);
+    else if(flag->cputype == CPU_TYPE_HPPA)
+	return(+1);
+    else
+	return(0);
+}
+
+#endif /* !defined(RLD) */

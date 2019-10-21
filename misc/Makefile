@@ -359,7 +359,9 @@ dt_install:
 			  $(DSTROOT)$(USRBINDIR)/codesign_allocate
 	(cd $(DSTROOT)$(USRBINDIR); rm -f codesign_allocate-p; \
 		ln -s codesign_allocate codesign_allocate-p)
-	if [ "$(RC_MACOS)" != "" -o "$(RC_XCODE)" != "" ];                    \
+	rcName=`echo $(RC_ProjectName)`; 				      \
+	if [ "$(RC_MACOS)" != "" -o "$(RC_XCODE)" != "" ] &&		      \
+	   [ "$$rcName" != "cctools_Fall2018" ];			      \
 	then                                                                  \
 	    $(MKDIRS) $(RAW_DSTROOT)/usr/libexec/DeveloperTools;              \
 	    rm -f $(RAW_DSTROOT)/usr/libexec/DeveloperTools/codesign_allocate;\
