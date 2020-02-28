@@ -269,10 +269,10 @@ uint32_t narchs)
 		    archs[i].members[j].offset = offset;
 		    size = 0;
 		    if(archs[i].members[j].member_long_name == TRUE){
-			size = rnd(archs[i].members[j].member_name_size,
+			size = rnd32(archs[i].members[j].member_name_size,
 				     sizeof(int64_t));
-			size = rnd(archs[i].members[j].member_name_size, 8) +
-			       (rnd(sizeof(struct ar_hdr), 8) -
+			size = rnd32(archs[i].members[j].member_name_size, 8) +
+			       (rnd32(sizeof(struct ar_hdr), 8) -
 				sizeof(struct ar_hdr));
 			archs[i].toc_long_name = TRUE;
 		    }
@@ -373,7 +373,7 @@ struct object *object)
 	 */
 	if(object->seg_bitcode != NULL || object->seg_bitcode64 != NULL){
 	    section_ordinal = 1;
-	    first_bitcode_section_ordinal = 0;
+	    first_bitcode_section_ordinal = last_bitcode_section_ordinal = 0;
 	    lc = object->load_commands;
 	    for(i = 0; i < mh_ncmds && first_bitcode_section_ordinal == 0; i++){
 		if(lc->cmd == LC_SEGMENT){
@@ -513,13 +513,15 @@ struct object *object)
 	 * If we are removing the bitcode segment and leaving just a marker
 	 * calculate a minimum sized segment contents with all zeros which
 	 * usually will be the segment alignment.
+	 *
+	 * In practice we will assume 16K alignment (arm) unless the arch
+	 * flag specifies otherwise.
 	 */
+	segalign = 0x4000; /* 16K */
 	if(mflag){
 	    arch_flag = get_arch_family_from_cputype(object->mh_cputype);
 	    if(arch_flag != NULL)
 		segalign = get_segalign_from_flag(arch_flag);
-	    else
-		segalign = 0x4000; /* 16K */
 	}
 
 	/*
@@ -599,8 +601,9 @@ struct object *object)
 		object->seg_linkedit64->fileoff -=
 		    object->seg_bitcode64->filesize;
 	    }
-	    object->input_sym_info_size = object->seg_linkedit64->filesize;
-	    start_offset = object->seg_linkedit64->fileoff;
+	    object->input_sym_info_size =
+		(uint32_t)object->seg_linkedit64->filesize;
+	    start_offset = (uint32_t)object->seg_linkedit64->fileoff;
 
 	    /*
 	     * If we have bitcode and are replacing it with just a marker
@@ -612,7 +615,8 @@ struct object *object)
 		if(object->seg_bitcode64->filesize >= segalign)
 		    bitcode_marker_size = segalign;
 		else
-		    bitcode_marker_size = object->seg_bitcode64->filesize;
+		    bitcode_marker_size =
+			(uint32_t)object->seg_bitcode64->filesize;
 		object->output_new_content = allocate(bitcode_marker_size);
 		memset(object->output_new_content, '\0', bitcode_marker_size);
 		object->output_new_content_size = bitcode_marker_size;
@@ -621,7 +625,7 @@ struct object *object)
 		object->seg_bitcode64->fileoff = start_offset;
 		/* Note we are leaving the vmsize unchanged */
 
-		sect_offset = object->seg_bitcode64->fileoff;
+		sect_offset = (uint32_t)object->seg_bitcode64->fileoff;
 		s64 = (struct section_64 *)((char *)object->seg_bitcode64 +
 				           sizeof(struct segment_command_64));
 		if(object->seg_bitcode64->nsects > 0){
@@ -720,6 +724,24 @@ struct object *object)
 		object->dyld_info->export_off = offset;
 		offset += object->dyld_info->export_size;
 	    }
+	}
+    
+	if (object->dyld_chained_fixups != NULL) {
+	    object->output_dyld_chained_fixups_data =
+		object->object_addr + object->dyld_chained_fixups->dataoff;
+	    object->output_dyld_chained_fixups_data_size =
+		object->dyld_chained_fixups->datasize;
+	    object->dyld_chained_fixups->dataoff = offset;
+	    offset += object->dyld_chained_fixups->datasize;
+	}
+    
+	if (object->dyld_exports_trie != NULL) {
+	    object->output_dyld_exports_trie_data =
+		object->object_addr + object->dyld_exports_trie->dataoff;
+	    object->output_dyld_exports_trie_data_size =
+		object->dyld_exports_trie->datasize;
+	    object->dyld_exports_trie->dataoff = offset;
+	    offset += object->dyld_exports_trie->datasize;
 	}
 
 	/* Local relocation entries are next in the output. */
@@ -956,7 +978,7 @@ struct object *object)
 		    object->code_sig_cmd->dataoff;
 		object->output_code_sig_data_size = 
 		    object->code_sig_cmd->datasize;
-		offset = rnd(offset, 16);
+		offset = rnd32(offset, 16);
 		object->code_sig_cmd->dataoff = offset;
 		offset += object->code_sig_cmd->datasize;
 	    }
@@ -1137,8 +1159,8 @@ struct object *object)
 	    if(plist64 != NULL) {
 		object->output_new_content = object->object_addr +
 					     object->seg_bitcode64->fileoff;
-		object->output_new_content_size =
-		    object->seg_bitcode64->filesize + plist64->size;
+		object->output_new_content_size = (uint32_t)
+		    (object->seg_bitcode64->filesize + plist64->size);
 		object->output_new_content =
 		    allocate(object->output_new_content_size);
 		memcpy(object->output_new_content,
@@ -1156,11 +1178,11 @@ struct object *object)
 		object->output_new_content = object->object_addr +
 					     object->seg_bitcode64->fileoff;
 		object->output_new_content_size =
-		    object->seg_bitcode64->filesize;
+		    (uint32_t)object->seg_bitcode64->filesize;
 	    }
 
 	    object->seg_bitcode64->fileoff = start_offset;
-	    sect_offset = object->seg_bitcode64->fileoff;
+	    sect_offset = (uint32_t)object->seg_bitcode64->fileoff;
 	    s64 = (struct section_64 *)((char *)object->seg_bitcode64 +
 				        sizeof(struct segment_command_64));
 	    for(i = 0; i < object->seg_bitcode64->nsects; i++){
@@ -1170,7 +1192,8 @@ struct object *object)
 	    }
 	    start_offset += object->seg_bitcode64->filesize;
 
-	    object->input_sym_info_size = object->seg_linkedit64->filesize;
+	    object->input_sym_info_size =
+		(uint32_t)object->seg_linkedit64->filesize;
 	    object->seg_linkedit64->fileoff = start_offset;
 	}
 
@@ -1199,6 +1222,20 @@ struct object *object)
 	    object->dyld_info->lazy_bind_size = 0;
 	    object->dyld_info->export_off = 0;
 	    object->dyld_info->export_size = 0;
+	}
+    
+	if(object->dyld_chained_fixups != NULL){
+	    object->output_dyld_chained_fixups_data = NULL;
+	    object->output_dyld_chained_fixups_data_size = 0;
+	    object->dyld_chained_fixups->dataoff = 0;
+	    object->dyld_chained_fixups->datasize = 0;
+	}
+    
+	if(object->dyld_exports_trie != NULL){
+	    object->output_dyld_exports_trie_data = NULL;
+	    object->output_dyld_exports_trie_data_size = 0;
+	    object->dyld_exports_trie->dataoff = 0;
+	    object->dyld_exports_trie->datasize = 0;
 	}
 
 	/* Local relocation entries are next in the output. */
@@ -1670,7 +1707,8 @@ struct object *object)
 		object->code_sig_cmd = (struct linkedit_data_command *)lc;
 		break;
 	    case LC_DYLD_CHAINED_FIXUPS:
-		object->dyld_chained_fixups = (struct linkedit_data_command *)lc;
+		object->dyld_chained_fixups =
+					 (struct linkedit_data_command *)lc;
 		break;
 	    case LC_DYLD_EXPORTS_TRIE:
 		object->dyld_exports_trie = (struct linkedit_data_command *)lc;
@@ -1926,6 +1964,14 @@ struct object *object)
 	if(object->dyld_info != NULL)
 	    fatal_arch(arch, member, "malformed MH_OBJECT should not contain a "
 		       "dyld info");
+
+	if(object->dyld_chained_fixups != NULL)
+	    fatal_arch(arch, member, "malformed MH_OBJECT should not contain "
+		       "dyld chained fixups");
+
+	if(object->dyld_exports_trie != NULL)
+	    fatal_arch(arch, member, "malformed MH_OBJECT should not contain a "
+		       "dyld exports trie");
 
 	/* Local relocation entries off the dynamic symbol table would next in
 	   the output, but there are not in .o files */

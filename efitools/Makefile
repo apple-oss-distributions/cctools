@@ -23,11 +23,11 @@ SYMROOT = .
 EFIBINDIR = /usr/local/efi/bin
 LOCBINDIR = /usr/local/bin
 
-CFILES = makerelocs.c mtoc.c
+CFILES = makerelocs.c mtoc.c mtor.c
 
 INSTALL_FILES = $(CFILES) Makefile notes
 
-PROGS = makerelocs.NEW mtoc.NEW
+PROGS = makerelocs.NEW mtoc.NEW mtor.NEW
 
 all:	$(OFILE_DIR) $(SYMROOT) $(PROGS)
 
@@ -50,10 +50,19 @@ mtoc.NEW: mtoc.o
 		$(OFILE_DIR)/mtoc.private.o
 	$(DSYMUTIL) $(SYMROOT)/mtoc.NEW
 
+mtor.NEW: mtor.o
+	$(CC) $(RC_CFLAGS) -nostdlib -r \
+		-o $(OBJROOT)/mtor.private.o \
+		$(OFILE_DIR)/mtor.o $(LIBSTUFF)
+	$(CC) $(RC_CFLAGS) $(SDK) -o $(SYMROOT)/mtor.NEW \
+		$(OFILE_DIR)/mtor.private.o
+	$(DSYMUTIL) $(SYMROOT)/mtor.NEW
+	
 clean: shlib_clean
 	-rm -f \
 	$(SYMROOT)/makerelocs.NEW \
-	$(SYMROOT)/mtoc.NEW
+	$(SYMROOT)/mtoc.NEW \
+	$(SYMROOT)/mtor.NEW
 	-rm -r -f *dSYM
 
 shlib_clean:
@@ -61,7 +70,9 @@ shlib_clean:
 	$(OFILE_DIR)/makerelocs.o \
 	$(OFILE_DIR)/makerelocs.private.o \
 	$(OFILE_DIR)/mtoc.o \
-	$(OFILE_DIR)/mtoc.private.o
+	$(OFILE_DIR)/mtoc.private.o \
+	$(OFILE_DIR)/mtor.o \
+	$(OFILE_DIR)/mtor.private.o
 	-rm -f make.out
 
 install: all install
@@ -76,6 +87,10 @@ install:
 		$(DSTROOT)$(EFIBINDIR)/mtoc
 	install -c -s -m 555 $(SYMROOT)/mtoc.NEW \
 		$(DSTROOT)$(LOCBINDIR)/mtoc
+	install -c -s -m 555 $(SYMROOT)/mtor.NEW \
+		$(DSTROOT)$(EFIBINDIR)/mtor
+	install -c -s -m 555 $(SYMROOT)/mtor.NEW \
+		$(DSTROOT)$(LOCBINDIR)/mtor
 
 installsrc:
 	$(MKDIRS) $(SRCROOT)

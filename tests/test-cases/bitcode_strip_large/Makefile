@@ -22,7 +22,7 @@ all:
 		-Wl,-sectcreate,__ZERO,__zero2,$(TMPDIR)/zeroes \
 		-Wl,-sectcreate,__ZERO,__zero3,$(TMPDIR)/zeroes \
 		-fembed-bitcode-marker 				\
-		-o $(TMPDIR)/hello hello.c
+		-o $(TMPDIR)/hello ${TESTROOT}/src/hello.c
 
 	# strip
 	$(PASS_IFF) $(BITCODE_STRIP) -m -o $(TMPDIR)/hello.bs \

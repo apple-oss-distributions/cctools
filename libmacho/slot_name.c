@@ -49,10 +49,8 @@
  *     Convert the specified cpu_type/cpu_subtype pair to their
  *     human readable form.
  */
-void slot_name(cpu_type, cpu_subtype, cpu_name, cpu_subname)
-        cpu_type_t     cpu_type;
-        cpu_subtype_t  cpu_subtype;
-        char           **cpu_name, **cpu_subname;
+void slot_name(cpu_type_t cpu_type, cpu_subtype_t cpu_subtype, char **cpu_name,
+char **cpu_subname)
 {
         register char  *name = "Unknown CPU";
         register char  *subname = "";

@@ -51,7 +51,7 @@ extern long rld_write_symfile(
 link edits and loads the files specified by the NULL-terminated array
 .I object_filenames
 into the program that called it.  Alternatively, it can be used to load into another program.
-An object name can be an archive, in which case only those members defining 
+An object name can be an archive, in which case only those members defining
 undefined symbols will be loaded.
 .PP
 If the program is to allow the loaded
@@ -84,7 +84,7 @@ must go through all the symbols of the program, so if the program has been
 compiled for debugging (for example), it can take orders of magnitude longer.
 .PP
 Since the objects loaded with
-.I rld_load 
+.I rld_load
 can only use symbols that appear in the executable program,
 if the program uses a library and wants to make all the symbols in that
 library available to the loaded objects, it must force all of the library
@@ -99,15 +99,15 @@ Thus this approach may be desirable only for the shared libraries, where the lib
 This can be done easily for shared libraries by having the
 executable program reference the shared library reference symbol for each of
 the shared libraries it uses.  The shared library reference symbol is named
-after the base name of the target library (its name up to the first '.').  
+after the base name of the target library (its name up to the first '.').
 For example, the target
-shared library 
-.I /usr/shlib/libsys_s.B.shlib 
+shared library
+.I /usr/shlib/libsys_s.B.shlib
 has the shared library reference symbol
 .I libsys_s.
-This name intentionally doesn't start with an underscore, '_', 
-in order to be out of the normal name space for C external symbols.  
-So to reference the symbol in this example, 
+This name intentionally doesn't start with an underscore, '_',
+in order to be out of the normal name space for C external symbols.
+So to reference the symbol in this example,
 .IR ld (1)
 would be invoked with the flag
 .BI \-u " libsys_s"
@@ -125,7 +125,7 @@ loaded will only be successful if there are no link edit errors (undefined
 symbols, etc.).  If an error occurs, the set of object files is unloaded
 automatically.  If errors occur, and the value specified for
 .I stream
-isn't NULL, error messages are printed on that stream.  
+isn't NULL, error messages are printed on that stream.
 If the link editing and loading is successful,
 the address of the header of what was loaded is returned
 through the pointer
@@ -148,25 +148,25 @@ parameter isn't needed.  However, if some other program is
 using rld to load into the program being
 debugged, or if the specified objects
 don't contain full paths, the debugger can't do this automatically.
-The 
+The
 .I rld_load
-function returns 1 for success and 0 for failure.  If a fatal system error 
-(out of memory, etc.) occurs, all future calls to 
-.I rld_load 
+function returns 1 for success and 0 for failure.  If a fatal system error
+(out of memory, etc.) occurs, all future calls to
+.I rld_load
 and the other routines described here will fail.
 .PP
 .I rld_load_from_memory()
 is similar to
 .IR rld_load() ,
-but works on memory rather than a file.  The argument 
-.I object_name 
+but works on memory rather than a file.  The argument
+.I object_name
 is the name associated with the memory and is used for messages.
 (It must not be NULL.) The
-arguments 
-.I object_addr 
-and 
-.I object_size 
-are the memory address and size of the object file.  
+arguments
+.I object_addr
+and
+.I object_size
+are the memory address and size of the object file.
 .I rld_load_from_memory()
 only allows one thin object file (not an archive or ``universal'' file) to be
 loaded.
@@ -203,11 +203,11 @@ that stream.  (For this routine, only internal errors can result.)
 clears out all allocated data structures used by these routines.  If the
 parameter
 .I deallocate_sets
-is non-zero, the function also unloads all object sets that were loaded.  
+is non-zero, the function also unloads all object sets that were loaded.
 If
 .I deallocate_sets
 is zero the object sets aren't unloaded, and the program can continue to use
-the code and data loaded.  However, further calls to the routines 
+the code and data loaded.  However, further calls to the routines
 described here will no longer know
 about the symbols in those sets.  If object sets aren't to be allowed access
 to each other's symbols, an
@@ -218,7 +218,7 @@ allows the objects sets to be loaded without fear of global symbol
 names' clashing.
 .I rld_unload_all
 returns 1 if it is successful and 0 otherwise.  If any errors occur
-and 
+and
 .I stream
 isn't zero, the error messages are printed on that stream.
 .PP
@@ -228,19 +228,19 @@ specifies a base file, whose symbol table is taken as the
 basis for subsequent
 .I rld_load's.
 The base file may be a ``universal'' file, and
-must contain an architecture that would execute on the host; 
-otherwise, it is an error.  
+must contain an architecture that would execute on the host;
+otherwise, it is an error.
 If the file is a universal file, the ``best'' architecture (as defined by
-what the kernel 
-.IR exec (2) 
+what the kernel
+.IR exec (2)
 would select) is used as the base file.
 .I rld_load_basefile
-must be invoked before any call to 
+must be invoked before any call to
 .I rld_load.
 Alternatively, it can be called after
 .IR rld_unload_all ,
 which unloads the base file.  This call is intended to be used when a program
-is dynamically loading object sets into a program other than itself, where 
+is dynamically loading object sets into a program other than itself, where
 .I base_filename
 contains the symbol table of the target program.  The routine
 .IR rld_address_func ,
@@ -262,7 +262,7 @@ calculation of
 The function
 specified by
 .I func
-should return the address where the output is to be link edited.  
+should return the address where the output is to be link edited.
 .I rld_address_func
 is
 intended to be used when a program is dynamically loading object sets into a
@@ -287,7 +287,7 @@ the
 .IR rld (3)
 package will function as if the
 .IR ld (1)
-.B \-force_cpusubtype_ALL 
+.B \-force_cpusubtype_ALL
 option were specified.
 As of the NEXTSTEP 3.0 release, the
 .IR rld (3)
@@ -295,7 +295,7 @@ package doesn't do the same checking as
 .IR exec (2)
 does with regard to the handling of the CPU subtype.  In the case of the
 m68k architecture,
-if an object file with the 68040 CPU subtype 
+if an object file with the 68040 CPU subtype
 is used with the
 .IR rld (3)
 package on a 68030 machine, no error is generated.  This ``bug'' has the same effect as the
@@ -309,7 +309,7 @@ the
 .IR rld (3)
 package functions as though the
 .B \-force_cpusubtype_ALL
-option to 
+option to
 .IR ld (1)
 were specified.
 
@@ -324,7 +324,7 @@ symbols have been merged,
 has to allocate storage for these symbols
 for the code to run without error.  The problem occurs if, on a later call to
 .IR rld_load ,
-one of the common symbols that 
+one of the common symbols that
 .I rld_load
 allocated appears in an object
 file as a defining symbol (not a common or undefined symbol).  In this case,

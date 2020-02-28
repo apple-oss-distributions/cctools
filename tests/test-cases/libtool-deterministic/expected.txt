@@ -1,3 +1,0 @@
-Archive : libfoo1.a
--rw-r--r--  0/0      44 Wed Dec 31 16:00:00 1969 __.SYMDEF SORTED
--rw-r--r--  0/0     620 Wed Dec 31 16:00:00 1969 libfoo.o

@@ -5,8 +5,8 @@ include ${TESTROOT}/include/common.makefile
 
 all:
 	# build some libraries to consume
-	${CC} -arch $(ARCH) -o foo.o -c foo.c
-	${CC} -arch $(ARCH) -o bar.o -c bar.c
+	${CC} -arch $(ARCH) -o foo.o -c ${TESTROOT}/src/foo.c
+	${CC} -arch $(ARCH) -o bar.o -c ${TESTROOT}/src/bar.c
 	${LIBTOOL} -static -o libfoo.a foo.o;
 	${LIBTOOL} -static -o libbar.a bar.o;
 

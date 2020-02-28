@@ -22,7 +22,7 @@ all:
 		-Wl,-sectcreate,__ZERO,__zero1,$(TMPDIR)/zeroes \
 		-Wl,-sectcreate,__ZERO,__zero2,$(TMPDIR)/zeroes \
 		-Wl,-sectcreate,__ZERO,__zero3,$(TMPDIR)/zeroes \
-		-o $(TMPDIR)/hello hello.c
+		-o $(TMPDIR)/hello ${TESTROOT}/src/hello.c
 
 	$(PASS_IFF) $(CS_ALLOC) -i $(TMPDIR)/hello -o $(TMPDIR)/hello.cs \
 		-a $(ARCH) 1024

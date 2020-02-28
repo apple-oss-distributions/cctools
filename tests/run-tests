@@ -1,33 +1,29 @@
 #!/usr/bin/perl -w
-
-if (defined($ENV{"CAULDRON"})) {
-  @ARGV = (
-    "-v",
-    "-d",
-    "/Users/mtrent/c/cctools_tests/test-cases",
-  );
-}
+#
+# run-tests
+# cctools
+# Michael Trent <mtrent@apple.com>
 
 use Cwd 'realpath';
 use FileHandle;
 use Getopt::Std;
 
 ##############################################################################
-# 
+#
 # The following variables only apply when running tests asynchronously:
 #
 #   $MAXCHILDREN specifies the maximum number of child processes allowed
 #
 #   $CURCHILDREN describes the number of children currently in use.
 #
-#   $PASS counts the number of asynchronous tests that have passed. 
+#   $PASS counts the number of asynchronous tests that have passed.
 #
 $MAXCHILDREN = 4;
 $CURCHILDREN = 0;
 $PASS = 0;
 
 ##############################################################################
-# 
+#
 # @PLATFORMS holds the list of valid platforms. This list is hashed into
 # %PLATFORMS for ease of access.
 #
@@ -54,7 +50,7 @@ sub tests_dir_path {
 
 ##############################################################################
 #
-# find_tests returns an array of tests for a given test repository. tests are 
+# find_tests returns an array of tests for a given test repository. tests are
 # really just subdirectories.
 #
 sub find_tests {
@@ -72,7 +68,7 @@ sub find_tests {
 sub shellcmd {
   my (@args) = @_;
   my $rc = 0xffff & system @args;
-  
+
   if ($rc == 0xff00) {
     warn "system failed: $!\n";
     $rc = -1;
@@ -90,7 +86,7 @@ sub shellcmd {
     $w .= "signal $rc";
     warn "$w\n";
   }
-  
+
   return $rc;
 }
 
@@ -101,7 +97,7 @@ sub shellcmd {
 #
 sub print_test {
   my ($test, $note) = @_;
-  
+
   printf "%-32s %s\n", $test, $note;
 
 }
@@ -113,11 +109,11 @@ sub print_test {
 sub indent {
   my ($message) = @_;
   my ($result);
-  
+
   foreach my $line (split '\n', $message) {
     $result .= "\t$line\n";
   }
-  
+
   return $result;
 }
 
@@ -130,59 +126,72 @@ sub indent {
 # 1 if all tests pass. Sorry about that.
 #
 # run_test can be called serially or asynchronously. In either case, test
-# results will be printed to STDOUT. 
+# results will be printed to STDOUT.
 #
 sub run_test {
   my ($test, $platformRef, $cctools_root, $verbose) = @_;
-  
+
   my ($test_failed);
   my ($logmsg);
   my ($pass) = 0;
-  
+
   print "$test starting...\n" if ($verbose);
+
+  print "\tcleaning\n" if ($verbose);
+  &shellcmd("make clean > /dev/null");
+
+  if ($opt_C) {
+    &print_test($test, "cleaned");
+    return 1;
+  }
 
   # run the test once for each platform
   foreach $platform (@$platformRef) {
 
-    print "\tcleaning\n" if ($verbose);
-    &shellcmd("make clean > /dev/null");
-    
     print "\ttesting $platform\n" if ($verbose);
 
-    # run the makefile, redirecting to file. 
+    # run the makefile, redirecting to file.
     my $outfile = "/tmp/stdout.$$";
     my $errfile = "/tmp/stderr.$$";
     my $makearg = "PLATFORM=$platform";
     $makearg .= " CCTOOLS_ROOT=$cctools_root" if (defined($cctools_root));
-    
+
     #print "make $makearg 1>$outfile 2>$errfile\n" if ($verbose);
     my $rc = &shellcmd("make $makearg 1>$outfile 2>$errfile");
-    
+
     # interpret the return code and make output:
-    # 
+    #
     # 1) see if we got a FAIL marker.
     # 2) check the return code of make
     # 3) check for spurious STDERR
     # 4) check we got a PASS marker
     chomp(my $errstr = `cat $errfile`);
     chomp(my $outstr = `cat $outfile`);
-    if ($outstr =~ /^(FAIL|XFAIL)/m) {
+    if ($outstr =~ /^FAIL/m) {
       $logmsg = "FAIL $platform";
-      $logmsg .= "\n" . &indent($outstr) if ($outstr);
+      $logmsg .= "\nSTDOUT:\n" . &indent($outstr) if ($outstr);
+      $logmsg .= "\nSTDERR:\n" . &indent($errstr) if ($errstr);
       $test_failed = 1;
+    }
+    elsif ($outstr =~ /^XFAIL/m) {
+      $logmsg = "XFAIL" unless(defined($logmsg));
     }
     elsif ($rc) {
       $logmsg = "FAIL $platform Makefile failure";
-      $logmsg .= "\n" . &indent($errstr) if ($errstr);
+      $logmsg .= "\nSTDOUT:\n" . &indent($outstr) if ($outstr);
+      $logmsg .= "\nSTDERR:\n" . &indent($errstr) if ($errstr);
       $test_failed = 1;
     }
     elsif ($errstr ne "") {
       $logmsg = "FAIL $platform spurious stderr failure";
-      $logmsg .= "\n" . &indent($errstr) if ($errstr);
+      $logmsg .= "\nSTDOUT:\n" . &indent($outstr) if ($outstr);
+      $logmsg .= "\nSTDERR:\n" . &indent($errstr) if ($errstr);
       $test_failed = 1;
     }
     elsif (!($outstr =~ /^(PASS|XPASS)/m)) {
       $logmsg = "AMBIGIOUS $platform missing [X]PASS/[X]FAIL";
+      $logmsg .= "\nSTDOUT:\n" . &indent($outstr) if ($outstr);
+      $logmsg .= "\nSTDERR:\n" . &indent($errstr) if ($errstr);
       $test_failed = 1;
     }
     else {
@@ -193,19 +202,19 @@ sub run_test {
     # remove the temporary files
     unlink $outfile;
     unlink $errfile;
-    
+
     # if the test failed, bail on remaining platforms
     next if ($test_failed);
   }
-  
+
   print "\tcleaning\n" if ($verbose);
   &shellcmd("make clean > /dev/null");
 
   &print_test($test, $logmsg) if ($logmsg);
 
-  # this test passes only if none of its platforms failed. 
+  # this test passes only if none of its platforms failed.
   $pass += 1 unless ($test_failed);
-    
+
   return $pass;
 }
 
@@ -224,18 +233,18 @@ sub collect_test {
     my $pid = wait;
     my $status = $?;
     die "no children: $!\n" if ($pid == -1);
-    
+
     $CURCHILDREN -= 1;
-    
+
     # print the test results
     $path = "/tmp/result.$pid";
-    my $fh = new FileHandle($path) or 
+    my $fh = new FileHandle($path) or
       die "can't open $path: $!\n";
-        
+
     while (<$fh>) {
       print;
     }
-    
+
     # record success or failure
     $PASS += 1 if ($status == 0);
 
@@ -255,7 +264,7 @@ sub schedule_test {
 
   my $pid = fork;
   die "fork: $!\n" unless defined ($pid);
-  
+
   if ($pid == 0) {
     # child
     open(STDOUT, ">/tmp/result.$$") || die "can't redirect stdout: $!";
@@ -277,24 +286,25 @@ sub schedule_test {
 sub main {
 
   $opt_a = 1;
+  $opt_C = undef;
   $opt_c = undef;
   $opt_h = undef;
   $opt_r = undef;
   $opt_t = undef;
   $opt_v = undef;
-  
-  return &usage() unless (getopts('ac:r:t:hv'));
-  
+
+  return &usage() unless (getopts('aCc:r:t:hv'));
+
   my ($async) = $opt_a;
   my ($cctools_root) = $opt_c;
   my ($tests_dir) = $opt_r;
-  my ($one_test) = $opt_t;
+  my ($test_filter) = $opt_t;
   my ($verbose) = $opt_v;
-  
+
   if ($opt_h) {
     return &usage();
   }
-  
+
   $tests_dir = &tests_dir_path() unless(defined($tests_dir));
   $tests_dir = realpath $tests_dir;
 
@@ -310,40 +320,53 @@ sub main {
   if (defined($cctools_root)) {
     die "can't find $cctools_root\n" unless ( -e $cctools_root );
     die "not a directory: $cctools_root\n" unless ( -d $cctools_root );
-    die "does not appear to be a cctools root: $cctools_root\n" 
+    die "does not appear to be a cctools root: $cctools_root\n"
       unless ( -e "$cctools_root/usr/bin/lipo" );
   }
 
   # read the tests from the test directory
   my (@tests) = &find_tests($tests_dir);
-  
-  if ($one_test) {
+
+  # apply the test_filter. first look up a test with by requested name.
+  if ($test_filter) {
     my %tests = map { $_ => $_ } @tests;
-    die "test $one_test not found in $tests_dir\n" unless $tests{$one_test};
-    @tests = ( $one_test );
+    if ($tests{$test_filter}) {
+      @tests = ( $test_filter );
+    } else {
+      my @matches;
+      for my $test (@tests) {
+        if ($test =~ /$test_filter/) {
+          push @matches, $test;
+        }
+      }
+      die "tests matching $test_filter not found in $tests_dir\n"
+        unless scalar @matches;
+      @tests = @matches;
+    }
   }
-  
+
   my (%platform_map);
   my ($total, $pass);
-  
-  # run the selected tests
-  printf "### running %s in $tests_dir\n", 
-	 defined($one_test) ? $one_test : "all tests";
 
-  foreach my $test (@tests) 
+  # run the selected tests
+  my $verbing = $opt_C ? "cleaning" : "running";
+  printf "### $verbing %s in $tests_dir\n",
+	 defined($test_filter) ? $test_filter : "all tests";
+
+  foreach my $test (@tests)
   {
     $total += 1;
-    
+
     # find the makefile
     my ($makefile) = "$tests_dir/$test/Makefile";
     unless ( -e "$makefile" ) {
       &print_test($test, "FAIL missing Makefile");
       next;
     }
-    
+
     # read the PLATFORM string from the makefile. The line must be in one of
     # the following forms:
-    # 
+    #
     #   "# PLATFORM:  <platform 1> ... "
     #   "# PLATFORMS: <platform 1> ... "
     #
@@ -353,10 +376,10 @@ sub main {
       &print_test($test, "FAIL Makefile contains no platforms");
       next;
     }
-   
+
     # extract the platform names from the PLATFORM line
     my (@known_platforms, @unknown_platforms);
-    
+
     foreach my $entry (@platform_entries) {
       $entry =~ s/.*PLATFORMS?://;
       foreach my $platform (split ' ', $entry) {
@@ -367,20 +390,20 @@ sub main {
 	}
       }
     }
-    
+
     # warn on unknown platforms
     if (@unknown_platforms) {
       my ($unknown) = join ' ', @unknown_platforms;
       &print_test($test, "FAIL Makefile contains unknown platforms: $unknown");
       next;
     }
-    
+
     # warn on empty platforms
     if (@known_platforms == 0) {
       &print_test($test, "FAIL Makefile contains no known platforms");
       next;
     }
-    
+
     # run / schedule the test
     chdir "$tests_dir/$test" or die "can't cd to $tests_dir/$test: $!\n";
     if ($async) {
@@ -389,18 +412,22 @@ sub main {
       $pass += &run_test($test, \@known_platforms, $cctools_root, $verbose);
     }
   } # foreach my $test (@tests)
-  
+
   # if necessary, wait for any scheduled tests to complete
   if ($async) {
     while ($CURCHILDREN) {
       &collect_test();
     }
     $pass = $PASS;
-  } 
+  }
 
   # print summary
-  printf "### %d of %d tests passed (%.1f percent)\n", 
-	  $pass, $total, ($pass / $total) * 100;
+  if ($opt_C) {
+    printf "### %d of %d tests cleaned\n", $pass, $total;
+  } else {
+    printf "### %d of %d tests passed (%.1f percent)\n",
+           $pass, $total, ($pass / $total) * 100;
+  }
 
   return $pass == $total ? 0 : 1;
 }
@@ -415,6 +442,7 @@ sub usage {
 usage: $basename [-a] [-c cctools_root] [-r tests_dir] [-t test] [-v]
     -a        - run tests asynchronously, potentially boosting performance.
                 This value is currently on by default.
+    -C        - clean all of the tests instead of running them.
     -c <dir>  - use cctools installed in <dir>. The directory must be a root
                 filesystem; i.e., one containing ./usr/bin. By default, cctools
 	        will all run through "xcrun", although individual tests have
@@ -422,8 +450,10 @@ usage: $basename [-a] [-c cctools_root] [-r tests_dir] [-t test] [-v]
     -r <dir>  - run all the tests found in the repository <dir>. By default,
                 the test repository is a directory named "test-cases" in the
 	        same directory as $basename.
-    -t <test> - run only the test named <test> from the test repository.
-    -v        - verbose, print a line for each phase of the test. 
+    -t <test> - run only the test named <test> from the test repository. Test
+                may be the name of a test, or a regex pattern matching one
+                or more tests.
+    -v        - verbose, print a line for each phase of the test.
 USAGE
   return 1;
 }

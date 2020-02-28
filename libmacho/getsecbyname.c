@@ -22,7 +22,9 @@
  */
 #ifndef RLD
 #include <mach-o/ldsyms.h>
+#ifndef CCTB_DRIVERKIT_ENABLED
 #include <mach-o/swap.h>
+#endif /* !defined(CCTB_DRIVERKIT_ENABLED) */
 #include <string.h>
 #ifdef __DYNAMIC__
 #include <mach-o/dyld.h> /* defines _dyld_lookup_and_bind() */
@@ -48,6 +50,8 @@ if ( var ## _pointer == NULL) {				\
 #define USE_VAR(var) (* var ## _pointer)
 #endif
 #endif /* __OPENSTEP__ */
+
+#ifndef CCTB_DRIVERKIT_ENABLED
 
 /*
  * This routine returns the section structure for the named section in the
@@ -315,6 +319,8 @@ unsigned long *size)
 	return((char *)(sp->addr));
 }
 
+#endif /* !defined(CCTB_DRIVERKIT_ENABLED) */
+
 /*
  * This routine returns the a pointer to the section contents of the named
  * section in the named segment if it exists in the image pointed to by the
@@ -466,6 +472,8 @@ unsigned long *size)
 
 #endif /* defined(__LP64__) */
 
+#ifndef CCTB_DRIVERKIT_ENABLED
+
 /*
  * This routine returns the a pointer to the data for the named section in the
  * named segment if it exist in the mach header passed to it.  Also it returns
@@ -529,7 +537,8 @@ const char *segname,
 const char *sectname,
 unsigned long *size)
 {
-    uint32_t i, n;
+    uint32_t i;
+    unsigned long n;
     uintptr_t vmaddr_slide;
 #ifndef __LP64__
     struct mach_header *mh;
@@ -566,4 +575,5 @@ unsigned long *size)
         return(NULL);
 }
 #endif /* __DYNAMIC__ */
+#endif /* !defined(CCTB_DRIVERKIT_ENABLED) */
 #endif /* !defined(RLD) */

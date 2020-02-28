@@ -47,9 +47,9 @@ The effect of called routines is incorporated in the profile of each caller.
 The profile data is taken from the call graph profile file
 .RI ( gmon.out
 by default), which is created by programs
-compiled with the 
+compiled with the
 .B \-pg
-option of 
+option of
 .IR cc ,
 .IR pc ,
 and
@@ -71,7 +71,7 @@ and call counts for each of the functions
 in the program, sorted by decreasing time.
 .PP
 Next, these times are propagated along the edges of the call graph.
-Cycles are discovered, and calls into a cycle are made to share the time 
+Cycles are discovered, and calls into a cycle are made to share the time
 of the cycle.
 A second listing shows the functions
 sorted according to the time they represent
@@ -81,17 +81,17 @@ and how their times are propagated to this function.
 A similar display above the function shows how this function's time and the
 time of its descendents is propagated to its (direct) call graph parents.
 .PP
-Cycles are also shown, with an entry for the cycle as a whole as well as a 
+Cycles are also shown, with an entry for the cycle as a whole as well as a
 listing of the members of the cycle and their contributions to the
 time and call counts of the cycle.
 .SH "UNIVERSAL FILE SUPPORT"
 .I gprof
 accepts a ``universal'' file for the
 .I a.out
-file, using the host architecture from the file.  (It is an error if the 
+file, using the host architecture from the file.  (It is an error if the
 ``universal'' file does not contain the host architecture.)
 .SH OPTIONS
-.TP 
+.TP
 The following options are available:
 .TP
 .B \-a
@@ -109,7 +109,7 @@ suppresses the displaying of a description of each field in the profile.
 the static call graph of the program is discovered by a heuristic
 which examines the text space of the object file.
 Static-only parents or children are indicated
-with call counts of 0.  (The 
+with call counts of 0.  (The
 .B \-c
 option is currently not supported.)
 .TP
@@ -130,7 +130,7 @@ option.
 .BI \-E " name"
 suppresses the displaying of the graph profile entry for routine
 .I name
-(and its descendants) as 
+(and its descendants) as
 .BR \-e ,
 above, and also excludes the time spent in
 .I name
@@ -158,7 +158,7 @@ option.
 .BI \-F " name"
 displays the graph profile entry of only the routine
 .I name
-and its descendants (as 
+and its descendants (as
 .BR \-f,
 above) and also uses only the times of the displayed routines
 in total time and percentage computations.
@@ -191,7 +191,7 @@ to accumulate profile data across several runs of an
 file.
 .TP
 .B \-S
-produces four order files suitable as input to 
+produces four order files suitable as input to
 .IR ld (1):
 .I gmon.order
 is an ordering based on a closest is best algorithm,
@@ -203,12 +203,12 @@ is based on call order and
 is based on time.
 The order files contain only those functions which were called or
 sampled (including spontaneous functions). For library functions to
-appear correctly in the order file, a 
+appear correctly in the order file, a
 .I whatsloaded
 file produced by
 .IR ld (1)
 should exist in the working directory. Filenames in the order file
-will be missing for: files compiled without the 
+will be missing for: files compiled without the
 .BR \-g
 option, assembly files, and stripped executables.
 This option does not work with executables that have already been scattered.
@@ -221,30 +221,30 @@ option.
 .B \-z
 displays routines which have zero usage (as indicated by call counts
 and accumulated time).
-This is useful in conjunction with the 
+This is useful in conjunction with the
 .B \-c
 option for discovering which routines were never called.
 .SH FILES
 .ta 1.5i
-a.out	
+a.out
 the namelist and text space.
 .br
-gmon.out	
+gmon.out
 dynamic call graph and profile.
 .br
-gmon.sum	
+gmon.sum
 summarized dynamic call graph and profile.
 .br
-gmon.order	
+gmon.order
 ordering based on closest is best algorithm.
 .br
-callf.order	
+callf.order
 ordering based on call frequency.
 .br
-callo.order	
+callo.order
 ordering based on call order.
 .br
-time.order	
+time.order
 ordering based on time.
 .SH "SEE ALSO"
 monitor(3), profil(2), cc(1)
@@ -266,19 +266,19 @@ Thus the time propagated along the call graph arcs to parents of that
 function is directly proportional to the number of times that
 arc is traversed.
 .PP
-Parents which are not themselves profiled will have the time of 
+Parents which are not themselves profiled will have the time of
 their profiled children propagated to them, but they will appear
 to be spontaneously invoked in the call graph listing, and will
 not have their time propagated further.
 Similarly, signal catchers, even though profiled, will appear
 to be spontaneous (although for more obscure reasons).
 Any profiled children of signal catchers should have their times
-propagated properly, unless the signal catcher was invoked during 
+propagated properly, unless the signal catcher was invoked during
 the execution of the profiling routine, in which case all is lost.
 .PP
-The profiled program must call 
+The profiled program must call
 .IR exit (2)
 or return normally for the profiling information to be saved
-in the 
-.B gmon.out 
+in the
+.B gmon.out
 file.

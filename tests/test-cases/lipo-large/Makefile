@@ -19,18 +19,18 @@ all:
 	$(MKDIRS) $(TMPDIR)
 
 	# make a big file of zeroes
-	dd if=/dev/zero of=$(TMPDIR)/zeroes bs=1024000 count=1500 \
+	dd if=/dev/zero of=$(TMPDIR)/zeroes bs=1024000 count=1500	     \
 		2>&1 1>/dev/null
 
 	# link our file
-	for arch in $(VALID_ARCHS);					\
-	do								\
-	  ofile="$(TMPDIR)/hello.$$arch";				\
-	  files="$$ofile $$files";					\
-	  cc -arch $$arch -o $$ofile hello.c				\
-	    -Wl,-sectcreate,__ZERO,__zero1,$(TMPDIR)/zeroes;		\
-	done;								\
-									\
+	for arch in $(VALID_ARCHS);					     \
+	do								     \
+	  ofile="$(TMPDIR)/hello.$$arch";				     \
+	  files="$$ofile $$files";					     \
+	  cc -arch $$arch -o $$ofile ${TESTROOT}/src/hello.c		     \
+	    -Wl,-sectcreate,__ZERO,__zero1,$(TMPDIR)/zeroes;		     \
+	done;								     \
+									     \
 	$(PASS_IFF) $(LIPO) -create -output $(TMPDIR)/hello $$files
 
 clean:

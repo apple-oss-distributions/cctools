@@ -9,18 +9,18 @@ all:
 	rm -rf out.txt
 
 	# build some libraries to consume
-	${CC} -arch $(ARCH) -o foo.o -c foo.c
-	${CC} -arch $(ARCH) -o bar.o -c bar.c
+	${CC} -arch $(ARCH) -o foo.o -c ${TESTROOT}/src/foo.c
+	${CC} -arch $(ARCH) -o bar.o -c ${TESTROOT}/src/bar.c
 	${LIBTOOL} -static -o libfoo.a foo.o;
 	${LIBTOOL} -static -o libbar.a bar.o;
-	
-	# verify LD_TRACE_ARCHIVES writes to out.txt. 
+
+	# verify LD_TRACE_ARCHIVES writes to out.txt.
 	LD_TRACE_ARCHIVES=1 export LD_TRACE_ARCHIVES;			     \
 	LD_TRACE_FILE=out.txt export LD_TRACE_FILE;			     \
 	${LIBTOOL} -static -o libbaz.a libbar.a libfoo.a
 	$(FAIL_IF_ERROR) cmp out.txt expected.txt
 
-	# verify LD_TRACE_ARCHIVES appends to out.txt. 
+	# verify LD_TRACE_ARCHIVES appends to out.txt.
 	LD_TRACE_ARCHIVES=1 export LD_TRACE_ARCHIVES;			     \
 	LD_TRACE_FILE=out.txt export LD_TRACE_FILE;			     \
 	${LIBTOOL} -static -o libbaz.a libbar.a libfoo.a

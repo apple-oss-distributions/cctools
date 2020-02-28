@@ -171,19 +171,19 @@ struct object *object)
 			"LC_DYLD_INFO load command): ");
 		object->dyld_info = (struct dyld_info_command *)lc;
 	    }
-	    else if(lc->cmd == LC_DYLD_CHAINED_FIXUPS){
-		if(object->dyld_chained_fixups != NULL)
-		    fatal_arch(arch, member, "malformed file (more than one "
-			"LC_DYLD_CHAINED_FIXUPS load command): ");
-		object->dyld_chained_fixups =
-			(struct linkedit_data_command *)lc;
-	    }
 	    else if(lc->cmd == LC_DYLD_EXPORTS_TRIE){
 		if(object->dyld_exports_trie != NULL)
 		    fatal_arch(arch, member, "malformed file (more than one "
 			"LC_DYLD_EXPORTS_TRIE load command): ");
 		object->dyld_exports_trie =
 			(struct linkedit_data_command *)lc;
+	    }
+	    else if(lc->cmd == LC_DYLD_CHAINED_FIXUPS){
+		if(object->dyld_chained_fixups != NULL)
+		    fatal_arch(arch, member, "malformed file (more than one "
+			       "LC_DYLD_CHAINED_FIXUPS load command): ");
+		object->dyld_chained_fixups =
+		(struct linkedit_data_command *)lc;
 	    }
 	    else if(lc->cmd == LC_SEGMENT){
 		sg = (struct segment_command *)lc;
@@ -347,7 +347,8 @@ struct arch *arch,
 struct member *member,
 struct object *object)
 {
-    uint32_t offset, rounded_offset, isym;
+    uint64_t offset, rounded_offset;
+    uint32_t isym;
 
 	if(object->mh != NULL){
 	    if(object->seg_linkedit == NULL)
@@ -566,7 +567,8 @@ struct object *object)
 		rounded_offset = offset;
 	    }
 	    else if(object->dyst->tocoff == rounded_offset){
-		object->input_indirectsym_pad = rounded_offset - offset;
+		object->input_indirectsym_pad = (uint32_t)(rounded_offset -
+							   offset);
 		rounded_offset += object->dyst->ntoc *
 			          sizeof(struct dylib_table_of_contents);
 		offset = rounded_offset;
@@ -588,7 +590,8 @@ struct object *object)
 		    rounded_offset = offset;
 		}
 		else if(object->dyst->modtaboff == rounded_offset){
-		    object->input_indirectsym_pad = rounded_offset - offset;
+		    object->input_indirectsym_pad = (uint32_t)(rounded_offset -
+							       offset);
 		    rounded_offset += object->dyst->nmodtab *
 				      sizeof(struct dylib_module_64);
 		    offset = rounded_offset;
@@ -605,7 +608,8 @@ struct object *object)
 		rounded_offset = offset;
 	    }
 	    else if(object->dyst->extrefsymoff == rounded_offset){
-		object->input_indirectsym_pad = rounded_offset - offset;
+		object->input_indirectsym_pad = (uint32_t)(rounded_offset -
+							   offset);
 		rounded_offset += object->dyst->nextrefsyms *
 			          sizeof(struct dylib_reference);
 		offset = rounded_offset;
@@ -620,7 +624,8 @@ struct object *object)
 		rounded_offset = offset;
 	    }
 	    else if(object->st->stroff == rounded_offset){
-		object->input_indirectsym_pad = rounded_offset - offset;
+		object->input_indirectsym_pad = (uint32_t)(rounded_offset -
+							   offset);
 		rounded_offset += object->st->strsize;
 		offset = rounded_offset;
 	    }
@@ -676,7 +681,7 @@ struct object *object)
 		end = object->code_sig_cmd->dataoff;
 		if(object->st->strsize != 0){
 		    strend = object->st->stroff + object->st->strsize;
-		    rounded_strend = rnd(strend, 16);
+		    rounded_strend = (uint32_t)rnd(strend, 16);
 		    if(object->code_sig_cmd->dataoff == rounded_strend)
 		       end = strend;
 		}
@@ -688,7 +693,7 @@ struct object *object)
 		 * string table may not be exactly at the end of the
 		 * object_size due to rounding.
 		 */
-		rounded_strend = rnd(strend, 8);
+		rounded_strend = (uint32_t)rnd(strend, 8);
 		if(strend != end && rounded_strend != end)
 		    fatal_arch(arch, member, "string table not at the end "
 			"of the file (can't be processed) in file: ");
@@ -721,7 +726,7 @@ struct object *object)
 		 */
 		if(object->mh64 != NULL &&
 		   (object->dyst->nindirectsyms % 2) != 0){
-		    rounded_indirectend = rnd(indirectend, 8);
+		    rounded_indirectend = (uint32_t)rnd(indirectend, 8);
 		}
 		else{
 		    rounded_indirectend = indirectend;

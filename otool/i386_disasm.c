@@ -134,10 +134,10 @@ static void get_operand(
     const enum bool mmx,
     const unsigned int rex,
     const char *sect,
-    uint32_t sect_addr,
+    uint64_t sect_addr,
     uint32_t *length,
     uint32_t *left,
-    const uint32_t addr,
+    const uint64_t addr,
     const struct relocation_info *sorted_relocs,
     const uint32_t nsorted_relocs,
     const struct relocation_info *ext_relocs,
@@ -157,11 +157,11 @@ static void immediate(
     uint64_t *value,
     uint32_t value_size,
     const char *sect,
-    uint32_t sect_addr,
+    uint64_t sect_addr,
     uint32_t *length,
     uint32_t *left,
     const cpu_type_t cputype,
-    const uint32_t addr,
+    const uint64_t addr,
     const struct relocation_info *sorted_relocs,
     const uint32_t nsorted_relocs,
     const struct relocation_info *ext_relocs,
@@ -204,8 +204,8 @@ static void get_symbol(
     const char **symsub,
     uint64_t *offset,
     const cpu_type_t cputype,
-    const uint32_t sect_offset,
-    const uint32_t seg_offset,
+    const uint64_t sect_offset,
+    const uint64_t seg_offset,
     const uint64_t value,
     const struct relocation_info *relocs,
     const uint32_t nrelocs,
@@ -1617,7 +1617,7 @@ static unsigned int xmm_rm(int r_m, int rex)
 /*
  * This is passed to the llvm disassembler.
  */
-struct disassemble_info {
+static struct disassemble_info {
   enum bool verbose;
   /* Relocation information.  */
   struct relocation_info *sorted_relocs;
@@ -1647,13 +1647,13 @@ struct disassemble_info {
   uint32_t nindirect_symbols;
   char *sect;
   uint32_t left;
-  uint32_t addr;
-  uint32_t sect_addr;
+  uint64_t addr;
+  uint64_t sect_addr;
   cpu_type_t cputype;
   LLVMDisasmContextRef i386_dc;
   LLVMDisasmContextRef x86_64_dc;
   char *object_addr;
-  uint32_t object_size;
+  uint64_t object_size;
   struct inst *inst;
   struct inst *insts;
   uint32_t ninsts;
@@ -1699,7 +1699,7 @@ enum bool llvm_mc,
 LLVMDisasmContextRef i386_dc,
 LLVMDisasmContextRef x86_64_dc,
 char *object_addr,
-uint32_t object_size,
+uint64_t object_size,
 struct inst *inst,
 struct inst *insts,
 uint32_t ninsts)
@@ -1778,8 +1778,8 @@ uint32_t ninsts)
 		dc = i386_dc;
 	    else
 		dc = x86_64_dc;
-	    length = llvm_disasm_instruction(dc, (uint8_t *)sect, left,
-					     addr, dst, 8191);
+	    length = (uint32_t)llvm_disasm_instruction(dc, (uint8_t *)sect,
+						       left, addr, dst, 8191);
 	    if(length != 0){
 		if(inst == NULL || inst->print){
 		    /* print the opcode bytes */
@@ -3903,11 +3903,11 @@ const enum bool mmx,
 const unsigned int rex,
 
 const char *sect,
-uint32_t sect_addr,
+uint64_t sect_addr,
 uint32_t *length,
 uint32_t *left,
 
-const uint32_t addr,
+const uint64_t addr,
 const struct relocation_info *sorted_relocs,
 const uint32_t nsorted_relocs,
 const struct relocation_info *ext_relocs,
@@ -3927,7 +3927,7 @@ const enum bool verbose)
     uint32_t ss;		/* scale-factor from scale-index-byte */
     uint32_t index; 		/* index register number from scale-index-byte*/
     uint32_t base;  		/* base register number from scale-index-byte */
-    uint32_t sect_offset, seg_offset;
+    uint64_t sect_offset, seg_offset;
     uint64_t offset;
 
 	*symadd = NULL;
@@ -3959,10 +3959,10 @@ const enum bool verbose)
 	if(*value_size != 0){
 	    seg_offset = addr + *length;
 	    sect_offset = addr + *length - sect_addr;
-	    *value = get_value(*value_size, sect, length, left);
+	    *value = (uint32_t)get_value(*value_size, sect, length, left);
 	    GET_SYMBOL(symadd, symsub, &offset, sect_offset, seg_offset,*value);
 	    if(*symadd != NULL){
-		*value = offset;
+		*value = (uint32_t)offset;
 	    }
 	    else{
 		*symadd = GUESS_SYMBOL(*value);
@@ -4090,12 +4090,12 @@ uint64_t *value,
 uint32_t value_size,
 
 const char *sect,
-uint32_t sect_addr,
+uint64_t sect_addr,
 uint32_t *length,
 uint32_t *left,
 
 const cpu_type_t cputype,
-const uint32_t addr,
+const uint64_t addr,
 const struct relocation_info *sorted_relocs,
 const uint32_t nsorted_relocs,
 const struct relocation_info *ext_relocs,
@@ -4110,7 +4110,7 @@ const struct symbol *sorted_symbols,
 const uint32_t nsorted_symbols,
 const enum bool verbose)
 {
-    uint32_t sect_offset, seg_offset;
+    uint64_t sect_offset, seg_offset;
 	uint64_t offset;
 
 	seg_offset = addr + *length;
@@ -4160,7 +4160,7 @@ const struct symbol *sorted_symbols,
 const uint32_t nsorted_symbols,
 const enum bool verbose)
 {
-    uint32_t sect_offset, seg_offset;
+    uint64_t sect_offset, seg_offset;
     uint64_t offset;
     uint64_t guess_addr;
 
@@ -4222,8 +4222,8 @@ const char **symsub,
 uint64_t *offset,
 
 const cpu_type_t cputype,
-const uint32_t sect_offset,
-const uint32_t seg_offset,
+const uint64_t sect_offset,
+const uint64_t seg_offset,
 const uint64_t value,
 const struct relocation_info *relocs,
 const uint32_t nrelocs,
@@ -4502,9 +4502,9 @@ void *TagBuf)
 {
     struct disassemble_info *info;
     struct LLVMOpInfo1 *op_info;
-    unsigned int value;
-    int32_t reloc_found, offset;
-    uint32_t sect_offset, i, r_address, r_symbolnum, r_type, r_extern, r_length,
+    uint64_t value;
+    uint64_t reloc_found, offset;
+    uint64_t sect_offset, i, r_address, r_symbolnum, r_type, r_extern, r_length,
 	     r_value, r_scattered, pair_r_type, pair_r_value, seg_offset;
     uint32_t other_half;
     const char *strings, *name, *add, *sub;
@@ -4708,9 +4708,9 @@ void *TagBuf)
 {
     struct disassemble_info *info;
     struct LLVMOpInfo1 *op_info;
-    unsigned int value;
+    uint64_t value;
     int32_t reloc_found;
-    uint32_t sect_offset, seg_offset, i;
+    uint64_t sect_offset, seg_offset, i;
     const char *strings, *name;
     struct relocation_info *relocs;
     uint32_t nrelocs, strings_size, n_strx;
@@ -5020,7 +5020,8 @@ const uint64_t pc,	  /* pc of the referencing instruction */
 uint64_t *reference_type, /* type returned, symbol name or string literal */
 struct disassemble_info *info)
 {
-    uint32_t reloc_found, sect_offset, i, nrelocs, ncmds, sizeofcmds;
+    uint32_t reloc_found, i, nrelocs, ncmds, sizeofcmds;
+    uint64_t sect_offset;
     struct relocation_info *relocs;
     struct nlist_64 *symbols;
     struct load_command *load_commands;
@@ -5079,7 +5080,7 @@ struct disassemble_info *info)
 	     * will be set by dyld as part of the "bind information".
 	     */
 	    name = get_dyld_bind_info_symbolname(value, info->dbi, info->ndbi,
-						 FALSE, NULL);
+						 CHAIN_FORMAT_NONE, NULL);
 	    if(name != NULL){
 		*reference_type =
 		    LLVMDisassembler_ReferenceType_Out_Objc_Class_Ref;

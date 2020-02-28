@@ -837,6 +837,10 @@ enum bool all_archs)
     const struct arch_flag *family_arch_flag;
     struct ar_hdr h;
     char size_buf[sizeof(h.ar_size) + 1];
+    char date_buf[sizeof(h.ar_date) + 1];
+    enum bool zero_ar_date;
+
+	zero_ar_date = getenv("ZERO_AR_DATE") ? TRUE : FALSE;
 
 	/*
 	 * Using the specified arch_flags process specified objects for those
@@ -962,8 +966,8 @@ enum bool all_archs)
 		    archs[i].members[j].offset = offset;
 		    size = 0;
 		    if(archs[i].members[j].member_long_name == TRUE){
-			size = rnd(archs[i].members[j].member_name_size, 8) +
-			       (rnd(sizeof(struct ar_hdr), 8) -
+			size = rnd32(archs[i].members[j].member_name_size, 8) +
+			       (rnd32(sizeof(struct ar_hdr), 8) -
 				sizeof(struct ar_hdr));
 			archs[i].toc_long_name = TRUE;
 		    }
@@ -989,6 +993,21 @@ enum bool all_archs)
 		    offset += sizeof(struct ar_hdr) + size;
 		}
 		archs[i].library_size = offset;
+		/*
+		 * Reset the library date, if needed
+		 */
+		if (zero_ar_date == TRUE) {
+		    sprintf(date_buf, "%-*ld", (int)sizeof(h.ar_date),
+			    (unsigned long)0);
+		    /*
+		     * This has to be done by hand because sprintf puts a
+		     * null at the end of the buffer.
+		     */
+		    for(j = 0; j < archs[i].nmembers; j++){
+			memcpy(archs[i].members[j].ar_hdr->ar_date, date_buf,
+			   (int)sizeof(archs[i].members[j].ar_hdr->ar_date));
+		    }
+		}
 	    }
 	    else if(archs[i].type == OFILE_Mach_O){
 		strip_object(archs + i, NULL, archs[i].object);
@@ -1443,6 +1462,34 @@ struct object *object)
 #endif /* !(NMEDIT) */
 	    }
 
+	    if(object->dyld_chained_fixups != NULL) {
+#ifndef NMEDIT
+		if(!cflag)
+#endif /* !(NMEDIT) */
+		{
+		    object->output_sym_info_size +=
+			object->dyld_chained_fixups->datasize;
+		    object->output_dyld_chained_fixups_data =
+			object->object_addr +
+			object->dyld_chained_fixups->dataoff;
+		    object->output_dyld_chained_fixups_data_size =
+			object->dyld_chained_fixups->datasize;
+		}
+		object->input_sym_info_size +=
+		    object->dyld_chained_fixups->datasize;
+	    }
+
+	    if(object->dyld_exports_trie != NULL) {
+		object->input_sym_info_size +=
+		    object->dyld_exports_trie->datasize;
+		object->output_sym_info_size +=
+		    object->dyld_exports_trie->datasize;
+		object->output_dyld_exports_trie_data =
+		    object->object_addr + object->dyld_exports_trie->dataoff;
+		object->output_dyld_exports_trie_data_size =
+		    object->dyld_exports_trie->datasize;
+	    }
+
 	    if(object->dyst != NULL){
 #ifndef NMEDIT
 		/*
@@ -1660,7 +1707,7 @@ struct object *object)
 			object->code_sig_cmd->datasize;
 		}
 		object->input_sym_info_size =
-		    rnd(object->input_sym_info_size, 16);
+		    rnd32(object->input_sym_info_size, 16);
 		object->input_sym_info_size +=
 		    object->code_sig_cmd->datasize;
 #ifndef NMEDIT
@@ -1671,7 +1718,7 @@ struct object *object)
 #endif /* !(NMEDIT) */
 		{
 		    object->output_sym_info_size =
-			rnd(object->output_sym_info_size, 16);
+			rnd32(object->output_sym_info_size, 16);
 		    object->output_sym_info_size +=
 			object->code_sig_cmd->datasize;
 		}
@@ -1774,6 +1821,25 @@ struct object *object)
 		    }
 		}
 
+		if(object->dyld_chained_fixups != NULL){
+#ifndef NMEDIT
+		    if(cflag){
+			object->dyld_chained_fixups->dataoff = 0;
+			object->dyld_chained_fixups->datasize = 0;
+		    }
+		    else
+#endif /* !(NMEDIT) */
+		    {
+			object->dyld_chained_fixups->dataoff = offset;
+			offset += object->dyld_chained_fixups->datasize;
+		    }
+		}
+
+		if(object->dyld_exports_trie != NULL){
+		    object->dyld_exports_trie->dataoff = offset;
+		    offset += object->dyld_exports_trie->datasize;
+		}
+		
 		if(object->dyst->nlocrel != 0){
 		    object->output_loc_relocs = (struct relocation_info *)
 			(object->object_addr + object->dyst->locreloff);
@@ -2010,7 +2076,7 @@ struct object *object)
 		    object->st->stroff = offset;
 
 		if(object->code_sig_cmd != NULL){
-		    offset = rnd(offset, 16);
+		    offset = rnd32(offset, 16);
 		    object->code_sig_cmd->dataoff = offset;
 		    offset += object->code_sig_cmd->datasize;
 		}
@@ -2374,7 +2440,7 @@ struct object *object)
 			    s64++;
 			    continue;
 			}
-			nitems = s64->size / stride;
+			nitems = (uint32_t)(s64->size / stride);
 			contents = object->object_addr + s64->offset;
 			check_indirect_symtab(arch, member, object, nitems,
 			    s64->reserved1, section_type, contents, symbols,
@@ -2427,7 +2493,7 @@ struct object *object)
 	    if(object->mh != NULL)
 		offset = object->seg_linkedit->fileoff;
 	    else
-		offset = object->seg_linkedit64->fileoff;
+		offset = (uint32_t)object->seg_linkedit64->fileoff;
 	}
 	else{
 	    offset = UINT_MAX;
@@ -2683,7 +2749,8 @@ enum byte_sex host_byte_sex)
 	       index == (INDIRECT_SYMBOL_LOCAL | INDIRECT_SYMBOL_ABS))
 		continue;
 	    if(index > nsyms)
-		fatal_arch(arch, member,"indirect symbol table entry %d (past "		    "the end of the symbol table) in: ", reserved1 + k);
+		fatal_arch(arch, member,"indirect symbol table entry %d (past "
+			   "the end of the symbol table) in: ", reserved1 + k);
 #ifdef NMEDIT
 	    if(pflag == 0 && nmedits[index] == TRUE && saves[index] != -1)
 #else
@@ -2785,7 +2852,8 @@ void
 setup_debug_filenames(
 char *dfile)
 {
-    int fd, i, strings_size;
+    int fd, i;
+    off_t strings_size;
     struct stat stat_buf;
     char *strings, *p;
 
@@ -2878,7 +2946,8 @@ enum bool *nlist_outofsync_with_dyldinfo)
     uint32_t missing_symbols;
     char *p, *q, **pp, *basename;
     struct symbol_list *sp;
-    uint32_t new_ext_strsize, len, *changes, inew_undefsyms;
+    uint32_t new_ext_strsize, *changes, inew_undefsyms;
+    long len;
     unsigned char nsects;
     struct load_command *lc;
     struct segment_command *sg;
@@ -3757,9 +3826,9 @@ enum bool *nlist_outofsync_with_dyldinfo)
 			  allocate(new_nsyms * sizeof(struct nlist_64));
 	}
 	if(object->mh != NULL)
-	    new_strsize = rnd(new_strsize, sizeof(int32_t));
+	    new_strsize = rnd32(new_strsize, sizeof(int32_t));
 	else
-	    new_strsize = rnd(new_strsize, sizeof(int64_t));
+	    new_strsize = rnd32(new_strsize, sizeof(int64_t));
 	new_strings = (char *)allocate(new_strsize);
 	if(object->mh != NULL){
 	    new_strings[new_strsize - 3] = '\0';
@@ -3836,11 +3905,11 @@ enum bool *nlist_outofsync_with_dyldinfo)
 	    }
 	    strcpy(q, "radr://5614542");
 	    if(object->mh != NULL)
-		new_symbols[inew_syms].n_un.n_strx =
-		    q - new_strings;
+		new_symbols[inew_syms].n_un.n_strx = (uint32_t)
+		    (q - new_strings);
 	    else
-		new_symbols64[inew_syms].n_un.n_strx =
-		    q - new_strings;
+		new_symbols64[inew_syms].n_un.n_strx = (uint32_t)
+		    (q - new_strings);
 	    q += strlen(q) + 1;
 	    inew_syms++;
 	}
@@ -3877,7 +3946,7 @@ enum bool *nlist_outofsync_with_dyldinfo)
                         if (map != NULL) {
                             if (map->new_strx == 0) {
                                 strcpy(q, strings + n_strx);
-                                map->new_strx = q - new_strings;
+                                map->new_strx = (uint32_t)(q - new_strings);
                                 q += strlen(q) + 1;
                             }
                             if(object->mh != NULL)
@@ -3924,10 +3993,10 @@ enum bool *nlist_outofsync_with_dyldinfo)
 			strcpy(p, strings + n_strx);
 			if(object->mh != NULL)
 			    new_symbols[inew_syms].n_un.n_strx =
-				p - new_strings;
+				(uint32_t)(p - new_strings);
 			else
 			    new_symbols64[inew_syms].n_un.n_strx =
-				p - new_strings;
+				(uint32_t)(p - new_strings);
 			p += strlen(p) + 1;
 		    }
 		    if((n_type & N_TYPE) == N_INDR){
@@ -3935,10 +4004,10 @@ enum bool *nlist_outofsync_with_dyldinfo)
 			    strcpy(p, strings + n_value);
 			    if(object->mh != NULL)
 				new_symbols[inew_syms].n_value =
-				    p - new_strings;
+				    (uint32_t)(p - new_strings);
 			    else
 				new_symbols64[inew_syms].n_value =
-				    p - new_strings;
+				    (uint32_t)(p - new_strings);
 			    p += strlen(p) + 1;
 			}
 		    }
@@ -3982,10 +4051,10 @@ enum bool *nlist_outofsync_with_dyldinfo)
 			strcpy(p, strings + n_strx);
 			if(object->mh != NULL)
 			    undef_map[inew_undefsyms].symbol.n_un.n_strx =
-				p - new_strings;
+				(uint32_t)(p - new_strings);
 			else
 			    undef_map64[inew_undefsyms].symbol64.n_un.n_strx =
-				p - new_strings;
+				(uint32_t)(p - new_strings);
 			p += strlen(p) + 1;
 		    }
 		    if(object->mh != NULL)
@@ -4006,10 +4075,10 @@ enum bool *nlist_outofsync_with_dyldinfo)
 		    strcpy(p, strings + n_strx);
 		    if(object->mh != NULL)
 			undef_map[inew_undefsyms].symbol.n_un.n_strx =
-			    p - new_strings;
+			    (uint32_t)(p - new_strings);
 		    else
 			undef_map64[inew_undefsyms].symbol64.n_un.n_strx =
-			    p - new_strings;
+			    (uint32_t)(p - new_strings);
 		    p += strlen(p) + 1;
 		}
 		if(object->mh != NULL){
@@ -4060,7 +4129,7 @@ enum bool *nlist_outofsync_with_dyldinfo)
 	for(i = 0; i < nmodtab; i++){
 	    if(object->mh != NULL){
 		strcpy(p, strings + mods[i].module_name);
-		mods[i].module_name = p - new_strings;
+		mods[i].module_name = (uint32_t)(p - new_strings);
 		iextdefsym = mods[i].iextdefsym;
 		nextdefsym = mods[i].nextdefsym;
 		ilocalsym = mods[i].ilocalsym;
@@ -4070,7 +4139,7 @@ enum bool *nlist_outofsync_with_dyldinfo)
 	    }
 	    else{
 		strcpy(p, strings + mods64[i].module_name);
-		mods64[i].module_name = p - new_strings;
+		mods64[i].module_name = (uint32_t)(p - new_strings);
 		iextdefsym = mods64[i].iextdefsym;
 		nextdefsym = mods64[i].nextdefsym;
 		ilocalsym = mods64[i].ilocalsym;
@@ -4346,8 +4415,11 @@ struct object *object)
     struct ofile *ld_r_ofile;
     struct arch *ld_r_archs;
     uint32_t ld_r_narchs, save_errors;
+    char* ld;
 
 	host_byte_sex = get_host_byte_sex();
+
+	ld = getenv("STRIP_LD");
 
 	/*
 	 * Swap the object file back into its bytesex before writing it to the
@@ -4397,7 +4469,10 @@ struct object *object)
 	 * Create the ld -r command line and execute it.
 	 */
 	reset_execute_list();
-	add_execute_list_with_prefix("ld");
+	if (ld)
+	    add_execute_list(ld);
+	else
+	    add_execute_list_with_prefix("ld");
 	add_execute_list("-keep_private_externs");
 	add_execute_list("-r");
 	if(Sflag)
@@ -5258,9 +5333,9 @@ uint32_t nextrefsyms)
 		if(n_strx > strsize){
 		    error_arch(arch, member, "bad string index for symbol "
 			       "table entry %u in: ", i);
-		    return(FALSE);
+		    return((uint32_t)FALSE);
 		}
-		len = strlen(strings + n_strx) + 1;
+		len = (uint32_t)strlen(strings + n_strx) + 1;
 	    }
 	    if(n_type & N_EXT){
 		if((n_type & N_TYPE) != N_UNDF &&
@@ -5269,7 +5344,7 @@ uint32_t nextrefsyms)
 			if(n_sect > nsects){
 			    error_arch(arch, member, "bad n_sect for symbol "
 				       "table entry %u in: ", i);
-			    return(FALSE);
+			    return((uint32_t)FALSE);
 			}
 			if(((s_flags & SECTION_TYPE) == S_COALESCED) &&
 			   pflag == FALSE &&
@@ -5471,7 +5546,7 @@ change_symbol:
 			   "of module table entry %d in: ", i);
 		return(FALSE);
 	    }
-	    len = strlen(strings + module_name) + 1;
+	    len = (uint32_t)strlen(strings + module_name) + 1;
 	    new_strsize += len;
 	    new_ext_strsize += len;
 	}
@@ -5686,7 +5761,7 @@ change_symbol:
 	    new_symbols64 = (struct nlist_64 *)
 			    allocate(new_nsyms * sizeof(struct nlist_64));
 	}
-	new_strsize = rnd(new_strsize, sizeof(int32_t));
+	new_strsize = rnd32(new_strsize, sizeof(int32_t));
 	new_strings = (char *)allocate(new_strsize);
 	new_strings[new_strsize - 3] = '\0';
 	new_strings[new_strsize - 2] = '\0';
@@ -5756,10 +5831,10 @@ change_symbol:
 			    strcpy(q, strings + n_strx);
 			    if(object->mh != NULL)
 				new_symbols[inew_syms].n_un.n_strx =
-				    q - new_strings;
+				    (uint32_t)(q - new_strings);
 			    else
 				new_symbols64[inew_syms].n_un.n_strx =
-				    q - new_strings;
+				    (uint32_t)(q - new_strings);
 			    q += strlen(q) + 1;
 			}
 			inew_syms++;
@@ -5812,10 +5887,10 @@ change_symbol:
 				strcpy(q, strings + n_strx);
 				if(object->mh != NULL)
 				    new_symbols[inew_syms].n_un.n_strx =
-					q - new_strings;
+					(uint32_t)(q - new_strings);
 				else
 				    new_symbols64[inew_syms].n_un.n_strx =
-					q - new_strings;
+					(uint32_t)(q - new_strings);
 				q += strlen(q) + 1;
 			    }
 			    inew_syms++;
@@ -5864,10 +5939,10 @@ change_symbol:
 				strcpy(p, strings + n_strx);
 				if(object->mh != NULL)
 				    new_symbols[inew_syms].n_un.n_strx =
-					p - new_strings;
+					(uint32_t)(p - new_strings);
 				else
 				    new_symbols64[inew_syms].n_un.n_strx =
-					p - new_strings;
+					(uint32_t)(p - new_strings);
 				p += strlen(p) + 1;
 			    }
 			    inew_syms++;
@@ -5903,10 +5978,10 @@ change_symbol:
 			strcpy(p, strings + n_strx);
 			if(object->mh != NULL)
 			    new_symbols[inew_syms].n_un.n_strx =
-				p - new_strings;
+				(uint32_t)(p - new_strings);
 			else
 			    new_symbols64[inew_syms].n_un.n_strx =
-				p - new_strings;
+				(uint32_t)(p - new_strings);
 			p += strlen(p) + 1;
 		    }
 		    inew_syms++;
@@ -5922,7 +5997,7 @@ change_symbol:
 	    for(i = 0; i < nmodtab; i++){
 		if(object->mh != NULL){
 		    strcpy(p, strings + mods[i].module_name);
-		    new_mods[i].module_name = p - new_strings;
+		    new_mods[i].module_name = (uint32_t)(p - new_strings);
 		    p += strlen(p) + 1;
 
 		    new_mods[i].irefsym = mods[i].irefsym;
@@ -5938,7 +6013,7 @@ change_symbol:
 		}
 		else{
 		    strcpy(p, strings + mods64[i].module_name);
-		    new_mods64[i].module_name = p - new_strings;
+		    new_mods64[i].module_name = (uint32_t)(p - new_strings);
 		    p += strlen(p) + 1;
 
 		    new_mods64[i].irefsym = mods64[i].irefsym;
@@ -6033,10 +6108,10 @@ change_symbol:
 			strcpy(q, strings + n_strx);
 			if(object->mh != NULL)
 			    new_symbols[inew_syms].n_un.n_strx =
-				q - new_strings;
+				(uint32_t)(q - new_strings);
 			else
 			    new_symbols64[inew_syms].n_un.n_strx =
-				q - new_strings;
+				(uint32_t)(q - new_strings);
 			q += strlen(q) + 1;
 		    }
 		    inew_syms++;
@@ -6077,10 +6152,10 @@ change_symbol:
 				strcpy(q, strings + n_strx);
 				if(object->mh != NULL)
 				    new_symbols[inew_syms].n_un.n_strx =
-					q - new_strings;
+					(uint32_t)(q - new_strings);
 				else
 				    new_symbols64[inew_syms].n_un.n_strx =
-					q - new_strings;
+					(uint32_t)(q - new_strings);
 				q += strlen(q) + 1;
 			    }
 			    inew_syms++;
@@ -6122,10 +6197,10 @@ change_symbol:
 			    strcpy(p, strings + n_strx);
 			    if(object->mh != NULL)
 				new_symbols[inew_syms].n_un.n_strx =
-				    p - new_strings;
+				    (uint32_t)(p - new_strings);
 			    else
 				new_symbols64[inew_syms].n_un.n_strx =
-				    p - new_strings;
+				    (uint32_t)(p - new_strings);
 			    p += strlen(p) + 1;
 			}
 			inew_syms++;

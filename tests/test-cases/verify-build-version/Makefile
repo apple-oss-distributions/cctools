@@ -5,7 +5,7 @@ include ${TESTROOT}/include/common.makefile
 
 all:
 	# build the vers tool, for now
-	$(CC) -o verstool verstool.c
+	$(CC) -o verstool ${TESTROOT}/src/verstool.c
 
 	# compile a dylib
 	$(CC) -dynamiclib -o foo.dylib foo.c
@@ -161,6 +161,13 @@ all:
 	./verstool foo.dylib write \
 	    build-version macos 10.13 10.13 \
 	    build-version iosmac 11 11 \
+	    foo2.dylib
+	$(FAIL_IF_ERROR) $(CS_ALLOC) -i foo2.dylib -a x86_64 4096 \
+		-o foo3.dylib 2>&1
+
+	# driverkit
+	./verstool foo.dylib write \
+	    build-version driverkit 19 19 \
 	    foo2.dylib
 	$(FAIL_IF_ERROR) $(CS_ALLOC) -i foo2.dylib -a x86_64 4096 \
 		-o foo3.dylib 2>&1
