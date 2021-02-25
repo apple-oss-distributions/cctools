@@ -55,7 +55,7 @@ use POSIX ":sys_wait_h";
 my $gPrefix;
 my $gVerbose;
 
-my $gSpecials = "()[]{}\$\@";
+my $gSpecials = "^()[]{}\$\@";
 my $gEscapes = "";
 my %gSpecmap;
 
@@ -413,7 +413,9 @@ sub escape_file {
     }
 
     print "# ${opt_p}${next}: $line";
-    $next = "-NEXT" unless($next);
+    if ($opt_n and !$next) {
+      $next = "-NEXT";
+    }
   }
 }
 
@@ -429,9 +431,10 @@ sub main {
   # read the options and set globals
   $opt_p = "CHECK";
   $opt_x = undef;
+  $opt_n = undef;
   my (@files);
   while (scalar @ARGV) {
-    return &usage() unless getopts('ei:p:tTvx');
+    return &usage() unless getopts('ei:np:tTvx');
     push @files, shift @ARGV if (scalar @ARGV);
   }
 
@@ -541,6 +544,7 @@ usage: $basename [-i <input>] [-p <prefix>] [-v] checkfile
        $basename -t [-v]
     -e          - write out input with a test prefix appended to each line.
     -i <input>  - read the input under test from <input> rather than STDIN.
+    -n          - used with -e. Append "-NEXT" to the text prefix.
     -p <prefix> - use <prefix> instead of CHECK for rule labels.
     -t          - run $basename in "self-test" mode.
     -v          - print verbose output from the rules matching engine.

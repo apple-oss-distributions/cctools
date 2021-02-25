@@ -7,8 +7,10 @@
 #include <dlfcn.h>
 #include <llvm-c/lto.h>
 #include "stuff/ofile.h"
+#include "stuff/llvm.h"
 #include "stuff/lto.h"
 #include "stuff/allocate.h"
+#include "stuff/errors.h"
 #include <mach-o/nlist.h>
 #include <mach-o/dyld.h>
 
@@ -28,6 +30,10 @@ static unsigned int (*lto_get_num_symbols)(void *mod) = NULL;
 static lto_symbol_attributes (*lto_get_sym_attr)(void *mod,
                               unsigned int n) = NULL;
 static const char * (*lto_get_sym_name)(void *mod, unsigned int n) = NULL;
+static lto_bool_t (*lto_get_cputype)(lto_module_t mod,
+                                     unsigned int *out_cputype,
+                                     unsigned int *out_cpusubtype) = NULL;
+static const char* (*lto_error)(void) = NULL;
 
 /*
  * is_llvm_bitcode() is passed an ofile struct pointer and a pointer and size
@@ -79,10 +85,6 @@ uint32_t size,
 struct arch_flag *arch_flag,
 void **pmod) /* maybe NULL */
 {
-
-   uint32_t bufsize;
-   char *p, *prefix, *lto_path, buf[MAXPATHLEN], resolved_name[PATH_MAX];
-   int i;
    void *mod;
 
 	/*
@@ -94,35 +96,8 @@ void **pmod) /* maybe NULL */
 
 	if(tried_to_load_lto == 0){
 	    tried_to_load_lto = 1;
-	    /*
-	     * Construct the prefix to this executable assuming it is in a bin
-	     * directory relative to a lib directory of the matching lto library
-	     * and first try to load that.  If not then fall back to trying
-	     * "/Applications/Xcode.app/Contents/Developer/Toolchains/
-	     * XcodeDefault.xctoolchain/usr/lib/libLTO.dylib".
-	     */
-	    bufsize = MAXPATHLEN;
-	    p = buf;
-	    i = _NSGetExecutablePath(p, &bufsize);
-	    if(i == -1){
-		p = allocate(bufsize);
-		_NSGetExecutablePath(p, &bufsize);
-	    }
-	    prefix = realpath(p, resolved_name);
-	    p = rindex(prefix, '/');
-	    if(p != NULL)
-		p[1] = '\0';
-	    lto_path = makestr(prefix, "../lib/libLTO.dylib", NULL);
 
-	    lto_handle = dlopen(lto_path, RTLD_NOW);
-	    if(lto_handle == NULL){
-		free(lto_path);
-		lto_path = NULL;
-		lto_handle = dlopen("/Applications/Xcode.app/Contents/"
-				    "Developer/Toolchains/XcodeDefault."
-				    "xctoolchain/usr/lib/libLTO.dylib",
-				    RTLD_NOW);
-	    }
+	    lto_handle = llvm_load();
 	    if(lto_handle == NULL)
 		return(0);
 
@@ -138,17 +113,18 @@ void **pmod) /* maybe NULL */
 	    lto_get_sym_attr = dlsym(lto_handle,
 				     "lto_module_get_symbol_attribute");
 	    lto_get_sym_name = dlsym(lto_handle, "lto_module_get_symbol_name");
+            lto_get_cputype = dlsym(lto_handle, "lto_module_get_macho_cputype");
+            lto_error = dlsym(lto_handle, "lto_get_error_message");
 
 	    if(lto_is_object == NULL ||
 	       lto_create == NULL ||
 	       lto_dispose == NULL ||
 	       lto_get_target == NULL ||
 	       lto_get_num_symbols == NULL ||
-	       lto_get_sym_attr == NULL ||
+               lto_get_sym_attr == NULL ||
+               lto_error == NULL ||
 	       lto_get_sym_name == NULL){
 		dlclose(lto_handle);
-		if(lto_path != NULL)
-		    free(lto_path);
 		return(0);
 	    }
 	}
@@ -162,8 +138,15 @@ void **pmod) /* maybe NULL */
 	    mod = lto_create_local(addr, size, "is_llvm_bitcode_from_memory");
 	else
 	    mod = lto_create(addr, size);
-	if(mod == NULL)
+        if(mod == NULL) {
+            /*
+             * historically, lipo silently swallowed this error. The reason
+             * is reported now, but the program will continue as if the buffer
+             * is not bitcode.
+             */
+            warning("%s", lto_error());
 	    return(0);
+        }
 
 	/*
 	 * It is possible for new targets to be added to lto that are not yet
@@ -175,7 +158,28 @@ void **pmod) /* maybe NULL */
 	arch_flag->cputype = 0;
 	arch_flag->cpusubtype = 0;
 	arch_flag->name = NULL;
-	(void)get_lto_cputype(arch_flag, lto_get_target(mod));
+	if (NULL != lto_get_cputype)
+	{
+            unsigned int cputype, cpusubtype;
+	    if (lto_get_cputype(mod, &cputype, &cpusubtype))
+	    {
+                if (NULL != lto_error) {
+                    error("%s", lto_error());
+                    return 0;
+                }
+	    }
+            else {
+                arch_flag->cputype = cputype;
+                arch_flag->cpusubtype = cpusubtype;
+                arch_flag->name =
+                    (char *)get_arch_name_from_types(arch_flag->cputype,
+                                                     arch_flag->cpusubtype);
+            }
+	}
+	if (!arch_flag->name) {
+            //warning("guessing arch from target triple");
+	    (void)get_lto_cputype(arch_flag, lto_get_target(mod));
+	}
 
 	if(pmod != NULL)
 	    *pmod = mod;
@@ -366,6 +370,23 @@ uint32_t symbol_index)
 	    break;
 	case LTO_SYMBOL_SCOPE_DEFAULT:
 	    nl->n_type |= N_EXT;
+	    break;
+	case LTO_SYMBOL_SCOPE_DEFAULT_CAN_BE_HIDDEN:
+	    nl->n_type |= N_EXT;
+	    nl->n_desc |= N_WEAK_REF;
+	    break;
+	default:
+	    if (attr & LTO_SYMBOL_SCOPE_MASK) {
+		const char* name = lto_symbol_name(mod, symbol_index);
+		if (name) {
+		    warning("unknown scope for symbol '%s': 0x%x",
+			    name, attr & LTO_SYMBOL_SCOPE_MASK);
+		}
+		else {
+		    warning("unknown scope for symbol at index %d: 0x%x",
+			    symbol_index, attr & LTO_SYMBOL_SCOPE_MASK);
+		}
+	    }
 	}
 
 	if((attr & LTO_SYMBOL_DEFINITION_MASK) == LTO_SYMBOL_DEFINITION_WEAK)

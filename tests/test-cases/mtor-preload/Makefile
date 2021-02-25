@@ -10,7 +10,7 @@ all:
 	    -e _main -o preload.fat ${TESTROOT}/src/preload.c
 	${OTOOLC} -hv preload | ${CHECK}
 # CHECK:      Mach header
-# CHECK-NEXT:       magic cputype cpusubtype  caps    filetype ncmds sizeofcmds      flags
+# CHECK-NEXT:       magic  cputype cpusubtype  caps    filetype ncmds sizeofcmds      flags
 # CHECK-NEXT: MH_MAGIC_64  .*\s+ALL  0x00     PRELOAD     \d+\s+\d+\s+NOUNDEFS
 
 	${MTOR} -n -o preload.bad preload.fat 2>&1 | ${CHECK} -p FAT

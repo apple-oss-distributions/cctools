@@ -29,8 +29,14 @@ all:
 		> verstool2.s
 
 	# build the binary
-	${FAIL_IF_ERROR} ${AS} -arch ${ARCH} -Q -o verstool.o verstool2.s
+	${FAIL_IF_ERROR} ${AS} -arch ${ARCH} -Q -o verstool.o verstool2.s    \
+	  2>as.stderr
 	${FAIL_IF_ERROR} ${CC} -o verstool verstool.o -lsystem 2>&1
+
+	# verify as deprecation warning, and rethrow any remaining messages.
+	cat as.stderr | ${CHECK} -p DEP
+	cat as.stderr | grep -v deprecated 1>&2 | true
+# DEP: .*as: this system assembler is deprecated\..*
 
 	# run the binary, if applicable
 	if [ "$(ARCH)" == "x64_64" ];					     \
@@ -42,4 +48,4 @@ all:
 
 	echo PASS
 clean:
-	rm -rf verstool.s verstool2.s verstool.o verstool
+	rm -rf verstool.s verstool2.s verstool.o verstool as.stderr

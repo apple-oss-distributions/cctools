@@ -93,7 +93,7 @@ all:
 	    -tool clang 7.8.9						     \
 	    -o hello2 hello_fat
 	${VTOOL} -show hello2 2>&1 | ${CHECK} -p SBVEXIST_FAT
-# SBVEXIST_FAT:      hello2 (architecture x86_64h):
+# SBVEXIST_FAT:      hello2 (architecture x86_64):
 # SBVEXIST_FAT-NEXT: Load command \d+
 # SBVEXIST_FAT-NEXT:      cmd LC_SOURCE_VERSION
 # SBVEXIST_FAT-NEXT:  cmdsize 16
@@ -107,7 +107,7 @@ all:
 # SBVEXIST_FAT-NEXT:   ntools 1
 # SBVEXIST_FAT-NEXT:     tool CLANG
 # SBVEXIST_FAT-NEXT:  version 7.8.9
-# SBVEXIST_FAT:      hello2 (architecture x86_64):
+# SBVEXIST_FAT:      hello2 (architecture x86_64h):
 # SBVEXIST_FAT-NEXT: Load command \d+
 # SBVEXIST_FAT-NEXT:      cmd LC_SOURCE_VERSION
 # SBVEXIST_FAT-NEXT:  cmdsize 16

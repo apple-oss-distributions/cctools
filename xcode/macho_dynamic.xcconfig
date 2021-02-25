@@ -113,6 +113,11 @@ SWAP_M88K_H = -extra-public-header include/mach-o/m88k/swap.h
 SWAP_PPC_H = -extra-public-header include/mach-o/ppc/swap.h
 SWAP_SPARC_H = -extra-public-header include/mach-o/sparc/swap.h
 
+// MDT <rdar://problem/59894566> cctools_ofiles does not install <mach-o/ldsyms.h> during installhdrs
+// Politely ask tapi to ignore these two files.
+EXCLUDE_NLIST_H = -exclude-public-header ${DSTROOT}${PUBLIC_HEADERS_FOLDER_PATH}/nlist.h
+EXCLUDE_LDSYMS_H = -exclude-public-header ${DSTROOT}${PUBLIC_HEADERS_FOLDER_PATH}/ldsyms.h
+
 SUPPORTS_TEXT_BASED_API = YES
 TAPI_VERIFY_MODE = Pedantic
-OTHER_TAPI_FLAGS = ${LIBMACHO_TAPI_FLAGS} ${LIBMACHO_ZIPPER_TAPI_FLAGS} ${SLOT_NAME_H} ${SWAP_HPPA_H} ${SWAP_I386_H} ${SWAP_I860_H} ${SWAP_M68K_H} ${SWAP_M88K_H} ${SWAP_PPC_H} ${SWAP_SPARC_H}
+OTHER_TAPI_FLAGS = ${LIBMACHO_TAPI_FLAGS} ${LIBMACHO_ZIPPER_TAPI_FLAGS} ${SLOT_NAME_H} ${SWAP_HPPA_H} ${SWAP_I386_H} ${SWAP_I860_H} ${SWAP_M68K_H} ${SWAP_M88K_H} ${SWAP_PPC_H} ${SWAP_SPARC_H} ${EXCLUDE_NLIST_H} ${EXCLUDE_LDSYMS_H}

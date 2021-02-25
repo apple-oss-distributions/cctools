@@ -129,13 +129,8 @@ endif
 #
 # arm64e
 ifneq (,$(filter arm64e,$(VALID_ARCHS)))
-	echo chained arm64e
-	echo "<rdar://problem/47933660> ld64 raises an exception building chained fixups for arm64e on Grace SDK"
-	echo "Fixed in Yellowstone11A286"
+	$(call test_chains,arm64e,CHECK64)
 endif
-# ifneq (,$(filter arm64e,$(VALID_ARCHS)))
-# 	$(call test_chains,arm64e,CHECK64)
-# endif
 
 	echo PASS
 
@@ -181,7 +176,7 @@ all2:
 # CHECK64-NEXT:     superclass 0x0 _OBJC_CLASS_$_Dylib
 # CHECK64-NEXT:     cache      0x0 __objc_empty_cache
 # CHECK64-NEXT:     vtable     0x0
-# CHECK64-NEXT:     data       0x\[\[:xdigit:\]\]+
+# CHECK64-NEXT:     data       0x\[\[:xdigit:\]\]+ __OBJC_CLASS_RO_$_DylibSubclass
 # CHECK64-NEXT:         flags          0x0
 # CHECK64-NEXT:         instanceStart  12
 # CHECK64-NEXT:         instanceSize   12
@@ -198,7 +193,7 @@ all2:
 # CHECK64-NEXT:     superclass 0x0 _OBJC_METACLASS_$_Dylib
 # CHECK64-NEXT:     cache      0x0 __objc_empty_cache
 # CHECK64-NEXT:     vtable     0x0
-# CHECK64-NEXT:     data       0x\[\[:xdigit:\]\]+
+# CHECK64-NEXT:     data       0x\[\[:xdigit:\]\]+ __OBJC_METACLASS_RO_$_DylibSubclass
 # CHECK64-NEXT:         flags          0x1 RO_META
 # CHECK64-NEXT:         instanceStart  40
 # CHECK64-NEXT:         instanceSize   40
@@ -215,61 +210,61 @@ all2:
 # CHECK64-NEXT:     superclass 0x0 _OBJC_CLASS_$_NSObject
 # CHECK64-NEXT:     cache      0x0 __objc_empty_cache
 # CHECK64-NEXT:     vtable     0x0
-# CHECK64-NEXT:     data       0x\[\[:xdigit:\]\]+
+# CHECK64-NEXT:     data       0x\[\[:xdigit:\]\]+ __OBJC_CLASS_RO_$_Tool
 # CHECK64-NEXT:         flags          0x0
 # CHECK64-NEXT:         instanceStart  8
 # CHECK64-NEXT:         instanceSize   12
 # CHECK64-NEXT:         reserved       0x0
 # CHECK64-NEXT:         ivarLayout     0x0
 # CHECK64-NEXT:         name           0x\[\[:xdigit:\]\]+ Tool
-# CHECK64-NEXT:         baseMethods    0x\[\[:xdigit:\]\]+
-# CHECK64-NEXT:             entsize 24
-# CHECK64-NEXT:             count   2
-# CHECK64-NEXT:             name    0x\[\[:xdigit:\]\]+ verb
-# CHECK64-NEXT:             types   0x\[\[:xdigit:\]\]+ v16@0:8
-# CHECK64-NEXT:             imp     0x\[\[:xdigit:\]\]+ -[Tool verb]
-# CHECK64-NEXT:             name    0x\[\[:xdigit:\]\]+ intProperty
-# CHECK64-NEXT:             types   0x\[\[:xdigit:\]\]+ i16@0:8
-# CHECK64-NEXT:             imp     0x\[\[:xdigit:\]\]+ -[Tool intProperty]
-# CHECK64-NEXT:         baseProtocols  0x\[\[:xdigit:\]\]+
+# CHECK64-NEXT:         baseMethods    0x\[\[:xdigit:\]\]+ __OBJC_$_INSTANCE_METHODS_Tool
+# CHECK64-SKIP:             entsize 24
+# CHECK64-SKIP:             count   2
+# CHECK64-SKIP:             name    0x\[\[:xdigit:\]\]+ verb
+# CHECK64-SKIP:             types   0x\[\[:xdigit:\]\]+ v16@0:8
+# CHECK64-SKIP:             imp     0x\[\[:xdigit:\]\]+ -[Tool verb]
+# CHECK64-SKIP:             name    0x\[\[:xdigit:\]\]+ intProperty
+# CHECK64-SKIP:             types   0x\[\[:xdigit:\]\]+ i16@0:8
+# CHECK64-SKIP:             imp     0x\[\[:xdigit:\]\]+ -[Tool intProperty]
+# CHECK64:         baseProtocols  0x\[\[:xdigit:\]\]+ __OBJC_CLASS_PROTOCOLS_$_Tool
 # CHECK64-NEXT:             count    1
-# CHECK64-NEXT:             list[0]  0x\[\[:xdigit:\]\]+.*
+# CHECK64-NEXT:             list[0]  0x\[\[:xdigit:\]\]+ __OBJC_PROTOCOL_$_Verbing
 # CHECK64-NEXT:                 isa       0x0
 # CHECK64-NEXT:                 name      0x\[\[:xdigit:\]\]+ Verbing
 # CHECK64-NEXT:                 protocols 0x0
-# CHECK64-NEXT:                 instanceMethods 0x\[\[:xdigit:\]\]+
-# CHECK64-NEXT:                     entsize 24
-# CHECK64-NEXT:                     count   2
-# CHECK64-NEXT:                     name    0x\[\[:xdigit:\]\]+ verb
-# CHECK64-NEXT:                     types   0x\[\[:xdigit:\]\]+ v16@0:8
-# CHECK64-NEXT:                     imp     0x0
-# CHECK64-NEXT:                     name    0x\[\[:xdigit:\]\]+ intProperty
-# CHECK64-NEXT:                     types   0x\[\[:xdigit:\]\]+ i16@0:8
-# CHECK64-NEXT:                     imp     0x0
-# CHECK64-NEXT:                 classMethods 0x\[\[:xdigit:\]\]+
-# CHECK64-NEXT:                     entsize 24
-# CHECK64-NEXT:                     count   1
-# CHECK64-NEXT:                     name    0x\[\[:xdigit:\]\]+ classVerb
-# CHECK64-NEXT:                     types   0x\[\[:xdigit:\]\]+ v16@0:8
-# CHECK64-NEXT:                     imp     0x0
-# CHECK64-NEXT:                 optionalInstanceMethods 0x\[\[:xdigit:\]\]+
-# CHECK64-NEXT:                     entsize 24
-# CHECK64-NEXT:                     count   1
-# CHECK64-NEXT:                     name    0x\[\[:xdigit:\]\]+ optionalVerb
-# CHECK64-NEXT:                     types   0x\[\[:xdigit:\]\]+ v16@0:8
-# CHECK64-NEXT:                     imp     0x0
-# CHECK64-NEXT:                 optionalClassMethods 0x\[\[:xdigit:\]\]+
-# CHECK64-NEXT:                     entsize 24
-# CHECK64-NEXT:                     count   1
-# CHECK64-NEXT:                     name    0x\[\[:xdigit:\]\]+ classOptionalVerb
-# CHECK64-NEXT:                     types   0x\[\[:xdigit:\]\]+ v16@0:8
-# CHECK64-NEXT:                     imp     0x0
-# CHECK64-NEXT:                 instanceProperties 0x\[\[:xdigit:\]\]+
+# CHECK64-NEXT:                 instanceMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_INSTANCE_METHODS_Verbing
+# CHECK64-SKIP:                     entsize 24
+# CHECK64-SKIP:                     count   2
+# CHECK64-SKIP:                     name    0x\[\[:xdigit:\]\]+ verb
+# CHECK64-SKIP:                     types   0x\[\[:xdigit:\]\]+ v16@0:8
+# CHECK64-SKIP:                     imp     0x0
+# CHECK64-SKIP:                     name    0x\[\[:xdigit:\]\]+ intProperty
+# CHECK64-SKIP:                     types   0x\[\[:xdigit:\]\]+ i16@0:8
+# CHECK64-SKIP:                     imp     0x0
+# CHECK64:                 classMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_CLASS_METHODS_Verbing
+# CHECK64-SKIP:                     entsize 24
+# CHECK64-SKIP:                     count   1
+# CHECK64-SKIP:                     name    0x\[\[:xdigit:\]\]+ classVerb
+# CHECK64-SKIP:                     types   0x\[\[:xdigit:\]\]+ v16@0:8
+# CHECK64-SKIP:                     imp     0x0
+# CHECK64:                 optionalInstanceMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_INSTANCE_METHODS_OPT_Verbing
+# CHECK64-SKIP:                     entsize 24
+# CHECK64-SKIP:                     count   1
+# CHECK64-SKIP:                     name    0x\[\[:xdigit:\]\]+ optionalVerb
+# CHECK64-SKIP:                     types   0x\[\[:xdigit:\]\]+ v16@0:8
+# CHECK64-SKIP:                     imp     0x0
+# CHECK64:                 optionalClassMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_CLASS_METHODS_OPT_Verbing
+# CHECK64-SKIP:                     entsize 24
+# CHECK64-SKIP:                     count   1
+# CHECK64-SKIP:                     name    0x\[\[:xdigit:\]\]+ classOptionalVerb
+# CHECK64-SKIP:                     types   0x\[\[:xdigit:\]\]+ v16@0:8
+# CHECK64-SKIP:                     imp     0x0
+# CHECK64:                 instanceProperties 0x\[\[:xdigit:\]\]+ __OBJC_$_PROP_LIST_Verbing
 # CHECK64-NEXT:                     entsize    16
 # CHECK64-NEXT:                     count      1
 # CHECK64-NEXT:                     name       0x\[\[:xdigit:\]\]+ intProperty
 # CHECK64-NEXT:                     attributes 0x\[\[:xdigit:\]\]+ Ti,R,N
-# CHECK64-NEXT:         ivars          0x\[\[:xdigit:\]\]+
+# CHECK64-NEXT:         ivars          0x\[\[:xdigit:\]\]+ __OBJC_$_INSTANCE_VARIABLES_Tool
 # CHECK64-NEXT:             entsize   32
 # CHECK64-NEXT:             count     1
 # CHECK64-NEXT:             offset    0x\[\[:xdigit:\]\]+ _OBJC_IVAR_$_Tool.m_intProperty 8
@@ -278,7 +273,7 @@ all2:
 # CHECK64-NEXT:             alignment 2
 # CHECK64-NEXT:             size      4
 # CHECK64-NEXT:         weakIvarLayout 0x0
-# CHECK64-NEXT:         baseProperties 0x\[\[:xdigit:\]\]+
+# CHECK64-NEXT:         baseProperties 0x\[\[:xdigit:\]\]+ __OBJC_$_PROP_LIST_Tool
 # CHECK64-NEXT:             entsize    16
 # CHECK64-NEXT:             count      1
 # CHECK64-NEXT:             name       0x\[\[:xdigit:\]\]+ intProperty
@@ -288,53 +283,53 @@ all2:
 # CHECK64-NEXT:     superclass 0x0 _OBJC_METACLASS_$_NSObject
 # CHECK64-NEXT:     cache      0x0 __objc_empty_cache
 # CHECK64-NEXT:     vtable     0x0
-# CHECK64-NEXT:     data       0x\[\[:xdigit:\]\]+
+# CHECK64-NEXT:     data       0x\[\[:xdigit:\]\]+ __OBJC_METACLASS_RO_$_Tool
 # CHECK64-NEXT:         flags          0x1 RO_META
 # CHECK64-NEXT:         instanceStart  40
 # CHECK64-NEXT:         instanceSize   40
 # CHECK64-NEXT:         reserved       0x0
 # CHECK64-NEXT:         ivarLayout     0x0
 # CHECK64-NEXT:         name           0x\[\[:xdigit:\]\]+ Tool
-# CHECK64-NEXT:         baseMethods    0x\[\[:xdigit:\]\]+
-# CHECK64-NEXT:             entsize 24
-# CHECK64-NEXT:             count   1
-# CHECK64-NEXT:             name    0x\[\[:xdigit:\]\]+ classVerb
-# CHECK64-NEXT:             types   0x\[\[:xdigit:\]\]+ v16@0:8
-# CHECK64-NEXT:             imp     0x\[\[:xdigit:\]\]+ \+[Tool classVerb]
-# CHECK64-NEXT:         baseProtocols  0x\[\[:xdigit:\]\]+
+# CHECK64-NEXT:         baseMethods    0x\[\[:xdigit:\]\]+ __OBJC_$_CLASS_METHODS_Tool
+# CHECK64-SKIP:             entsize 24
+# CHECK64-SKIP:             count   1
+# CHECK64-SKIP:             name    0x\[\[:xdigit:\]\]+ classVerb
+# CHECK64-SKIP:             types   0x\[\[:xdigit:\]\]+ v16@0:8
+# CHECK64-SKIP:             imp     0x\[\[:xdigit:\]\]+ \+[Tool classVerb]
+# CHECK64:         baseProtocols  0x\[\[:xdigit:\]\]+ __OBJC_CLASS_PROTOCOLS_$_Tool
 # CHECK64-NEXT:             count    1
-# CHECK64-NEXT:             list[0]  0x\[\[:xdigit:\]\]+.*
+# CHECK64-NEXT:             list[0]  0x\[\[:xdigit:\]\]+ __OBJC_PROTOCOL_$_Verbing
 # CHECK64-NEXT:                 isa       0x0
 # CHECK64-NEXT:                 name      0x\[\[:xdigit:\]\]+ Verbing
 # CHECK64-NEXT:                 protocols 0x0
-# CHECK64-NEXT:                 instanceMethods 0x\[\[:xdigit:\]\]+
-# CHECK64-NEXT:                     entsize 24
-# CHECK64-NEXT:                     count   2
-# CHECK64-NEXT:                     name    0x\[\[:xdigit:\]\]+ verb
-# CHECK64-NEXT:                     types   0x\[\[:xdigit:\]\]+ v16@0:8
-# CHECK64-NEXT:                     imp     0x0
-# CHECK64-NEXT:                     name    0x\[\[:xdigit:\]\]+ intProperty
-# CHECK64-NEXT:                     types   0x\[\[:xdigit:\]\]+ i16@0:8
-# CHECK64-NEXT:                     imp     0x0
-# CHECK64-NEXT:                 classMethods 0x\[\[:xdigit:\]\]+
-# CHECK64-NEXT:                     entsize 24
-# CHECK64-NEXT:                     count   1
-# CHECK64-NEXT:                     name    0x\[\[:xdigit:\]\]+ classVerb
-# CHECK64-NEXT:                     types   0x\[\[:xdigit:\]\]+ v16@0:8
-# CHECK64-NEXT:                     imp     0x0
-# CHECK64-NEXT:                 optionalInstanceMethods 0x\[\[:xdigit:\]\]+
-# CHECK64-NEXT:                     entsize 24
-# CHECK64-NEXT:                     count   1
-# CHECK64-NEXT:                     name    0x\[\[:xdigit:\]\]+ optionalVerb
-# CHECK64-NEXT:                     types   0x\[\[:xdigit:\]\]+ v16@0:8
-# CHECK64-NEXT:                     imp     0x0
-# CHECK64-NEXT:                 optionalClassMethods 0x\[\[:xdigit:\]\]+
-# CHECK64-NEXT:                     entsize 24
-# CHECK64-NEXT:                     count   1
-# CHECK64-NEXT:                     name    0x\[\[:xdigit:\]\]+ classOptionalVerb
-# CHECK64-NEXT:                     types   0x\[\[:xdigit:\]\]+ v16@0:8
-# CHECK64-NEXT:                     imp     0x0
-# CHECK64-NEXT:                 instanceProperties 0x\[\[:xdigit:\]\]+
+# CHECK64-NEXT:                 instanceMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_INSTANCE_METHODS_Verbing
+# CHECK64-SKIP:                     entsize 24
+# CHECK64-SKIP:                     count   2
+# CHECK64-SKIP:                     name    0x\[\[:xdigit:\]\]+ verb
+# CHECK64-SKIP:                     types   0x\[\[:xdigit:\]\]+ v16@0:8
+# CHECK64-SKIP:                     imp     0x0
+# CHECK64-SKIP:                     name    0x\[\[:xdigit:\]\]+ intProperty
+# CHECK64-SKIP:                     types   0x\[\[:xdigit:\]\]+ i16@0:8
+# CHECK64-SKIP:                     imp     0x0
+# CHECK64:                 classMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_CLASS_METHODS_Verbing
+# CHECK64-SKIP:                     entsize 24
+# CHECK64-SKIP:                     count   1
+# CHECK64-SKIP:                     name    0x\[\[:xdigit:\]\]+ classVerb
+# CHECK64-SKIP:                     types   0x\[\[:xdigit:\]\]+ v16@0:8
+# CHECK64-SKIP:                     imp     0x0
+# CHECK64:                 optionalInstanceMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_INSTANCE_METHODS_OPT_Verbing
+# CHECK64-SKIP:                     entsize 24
+# CHECK64-SKIP:                     count   1
+# CHECK64-SKIP:                     name    0x\[\[:xdigit:\]\]+ optionalVerb
+# CHECK64-SKIP:                     types   0x\[\[:xdigit:\]\]+ v16@0:8
+# CHECK64-SKIP:                     imp     0x0
+# CHECK64:                 optionalClassMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_CLASS_METHODS_OPT_Verbing
+# CHECK64-SKIP:                     entsize 24
+# CHECK64-SKIP:                     count   1
+# CHECK64-SKIP:                     name    0x\[\[:xdigit:\]\]+ classOptionalVerb
+# CHECK64-SKIP:                     types   0x\[\[:xdigit:\]\]+ v16@0:8
+# CHECK64-SKIP:                     imp     0x0
+# CHECK64:                 instanceProperties 0x\[\[:xdigit:\]\]+ __OBJC_$_PROP_LIST_Verbing
 # CHECK64-NEXT:                     entsize    16
 # CHECK64-NEXT:                     count      1
 # CHECK64-NEXT:                     name       0x\[\[:xdigit:\]\]+ intProperty
@@ -345,66 +340,66 @@ all2:
 # CHECK64-NEXT: Contents of (__DATA\(_CONST\)?,__objc_classrefs) section
 # CHECK64-NEXT: \[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ _OBJC_CLASS_$_DylibSubclass
 # CHECK64-NEXT: Contents of (__DATA\(_CONST\)?,__objc_catlist) section
-# CHECK64-NEXT: \[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+
+# CHECK64-NEXT: \[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ __OBJC_$_CATEGORY_Dylib_$_Category
 # CHECK64-NEXT:     name      0x\[\[:xdigit:\]\]+ Category
 # CHECK64-NEXT:     cls       0x0 _OBJC_CLASS_$_Dylib
-# CHECK64-NEXT:     instanceMethods 0x\[\[:xdigit:\]\]+
-# CHECK64-NEXT:         entsize 24
-# CHECK64-NEXT:         count   3
-# CHECK64-NEXT:         name    0x\[\[:xdigit:\]\]+ categoryAddition
-# CHECK64-NEXT:         types   0x\[\[:xdigit:\]\]+ v16@0:8
-# CHECK64-NEXT:         imp     0x\[\[:xdigit:\]\]+ -[Dylib(Category) categoryAddition]
-# CHECK64-NEXT:         name    0x\[\[:xdigit:\]\]+ genericMethod
-# CHECK64-NEXT:         types   0x\[\[:xdigit:\]\]+ v16@0:8
-# CHECK64-NEXT:         imp     0x\[\[:xdigit:\]\]+ -[Dylib(Category) genericMethod]
-# CHECK64-NEXT:         name    0x\[\[:xdigit:\]\]+ categoryProperty
-# CHECK64-NEXT:         types   0x\[\[:xdigit:\]\]+ i16@0:8
-# CHECK64-NEXT:         imp     0x\[\[:xdigit:\]\]+ -[Dylib(Category) categoryProperty]
-# CHECK64-NEXT:     classMethods 0x\[\[:xdigit:\]\]+
-# CHECK64-NEXT:         entsize 24
-# CHECK64-NEXT:         count   1
-# CHECK64-NEXT:         name    0x\[\[:xdigit:\]\]+ categoryClass
-# CHECK64-NEXT:         types   0x\[\[:xdigit:\]\]+ v16@0:8
-# CHECK64-NEXT:         imp     0x\[\[:xdigit:\]\]+ \+[Dylib(Category) categoryClass]
-# CHECK64-NEXT:     protocols 0x\[\[:xdigit:\]\]+
+# CHECK64-NEXT:     instanceMethods 0x\[\[:xdigit:\]\]+ .*
+# CHECK64-SKIP:         entsize 24
+# CHECK64-SKIP:         count   3
+# CHECK64-SKIP:         name    0x\[\[:xdigit:\]\]+ categoryAddition
+# CHECK64-SKIP:         types   0x\[\[:xdigit:\]\]+ v16@0:8
+# CHECK64-SKIP:         imp     0x\[\[:xdigit:\]\]+ -[Dylib(Category) categoryAddition]
+# CHECK64-SKIP:         name    0x\[\[:xdigit:\]\]+ genericMethod
+# CHECK64-SKIP:         types   0x\[\[:xdigit:\]\]+ v16@0:8
+# CHECK64-SKIP:         imp     0x\[\[:xdigit:\]\]+ -[Dylib(Category) genericMethod]
+# CHECK64-SKIP:         name    0x\[\[:xdigit:\]\]+ categoryProperty
+# CHECK64-SKIP:         types   0x\[\[:xdigit:\]\]+ i16@0:8
+# CHECK64-SKIP:         imp     0x\[\[:xdigit:\]\]+ -[Dylib(Category) categoryProperty]
+# CHECK64:     classMethods 0x\[\[:xdigit:\]\]+ .*
+# CHECK64-SKIP:         entsize 24
+# CHECK64-SKIP:         count   1
+# CHECK64-SKIP:         name    0x\[\[:xdigit:\]\]+ categoryClass
+# CHECK64-SKIP:         types   0x\[\[:xdigit:\]\]+ v16@0:8
+# CHECK64-SKIP:         imp     0x\[\[:xdigit:\]\]+ \+[Dylib(Category) categoryClass]
+# CHECK64:     protocols 0x\[\[:xdigit:\]\]+ .*
 # CHECK64-NEXT:         count    1
-# CHECK64-NEXT:         list[0]  0x\[\[:xdigit:\]\]+.*
+# CHECK64-NEXT:         list[0]  0x\[\[:xdigit:\]\]+ __OBJC_PROTOCOL_$_Verbing
 # CHECK64-NEXT:             isa       0x0
 # CHECK64-NEXT:             name      0x\[\[:xdigit:\]\]+ Verbing
 # CHECK64-NEXT:             protocols 0x0
-# CHECK64-NEXT:             instanceMethods 0x\[\[:xdigit:\]\]+
-# CHECK64-NEXT:                 entsize 24
-# CHECK64-NEXT:                 count   2
-# CHECK64-NEXT:                 name    0x\[\[:xdigit:\]\]+ verb
-# CHECK64-NEXT:                 types   0x\[\[:xdigit:\]\]+ v16@0:8
-# CHECK64-NEXT:                 imp     0x0
-# CHECK64-NEXT:                 name    0x\[\[:xdigit:\]\]+ intProperty
-# CHECK64-NEXT:                 types   0x\[\[:xdigit:\]\]+ i16@0:8
-# CHECK64-NEXT:                 imp     0x0
-# CHECK64-NEXT:             classMethods 0x\[\[:xdigit:\]\]+
-# CHECK64-NEXT:                 entsize 24
-# CHECK64-NEXT:                 count   1
-# CHECK64-NEXT:                 name    0x\[\[:xdigit:\]\]+ classVerb
-# CHECK64-NEXT:                 types   0x\[\[:xdigit:\]\]+ v16@0:8
-# CHECK64-NEXT:                 imp     0x0
-# CHECK64-NEXT:             optionalInstanceMethods 0x\[\[:xdigit:\]\]+
-# CHECK64-NEXT:                 entsize 24
-# CHECK64-NEXT:                 count   1
-# CHECK64-NEXT:                 name    0x\[\[:xdigit:\]\]+ optionalVerb
-# CHECK64-NEXT:                 types   0x\[\[:xdigit:\]\]+ v16@0:8
-# CHECK64-NEXT:                 imp     0x0
-# CHECK64-NEXT:             optionalClassMethods 0x\[\[:xdigit:\]\]+
-# CHECK64-NEXT:                 entsize 24
-# CHECK64-NEXT:                 count   1
-# CHECK64-NEXT:                 name    0x\[\[:xdigit:\]\]+ classOptionalVerb
-# CHECK64-NEXT:                 types   0x\[\[:xdigit:\]\]+ v16@0:8
-# CHECK64-NEXT:                 imp     0x0
-# CHECK64-NEXT:             instanceProperties 0x\[\[:xdigit:\]\]+
+# CHECK64-NEXT:             instanceMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_INSTANCE_METHODS_Verbing
+# CHECK64-SKIP:                 entsize 24
+# CHECK64-SKIP:                 count   2
+# CHECK64-SKIP:                 name    0x\[\[:xdigit:\]\]+ verb
+# CHECK64-SKIP:                 types   0x\[\[:xdigit:\]\]+ v16@0:8
+# CHECK64-SKIP:                 imp     0x0
+# CHECK64-SKIP:                 name    0x\[\[:xdigit:\]\]+ intProperty
+# CHECK64-SKIP:                 types   0x\[\[:xdigit:\]\]+ i16@0:8
+# CHECK64-SKIP:                 imp     0x0
+# CHECK64:             classMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_CLASS_METHODS_Verbing
+# CHECK64-SKIP:                 entsize 24
+# CHECK64-SKIP:                 count   1
+# CHECK64-SKIP:                 name    0x\[\[:xdigit:\]\]+ classVerb
+# CHECK64-SKIP:                 types   0x\[\[:xdigit:\]\]+ v16@0:8
+# CHECK64-SKIP:                 imp     0x0
+# CHECK64:             optionalInstanceMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_INSTANCE_METHODS_OPT_Verbing
+# CHECK64-SKIP:                 entsize 24
+# CHECK64-SKIP:                 count   1
+# CHECK64-SKIP:                 name    0x\[\[:xdigit:\]\]+ optionalVerb
+# CHECK64-SKIP:                 types   0x\[\[:xdigit:\]\]+ v16@0:8
+# CHECK64-SKIP:                 imp     0x0
+# CHECK64:             optionalClassMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_CLASS_METHODS_OPT_Verbing
+# CHECK64-SKIP:                 entsize 24
+# CHECK64-SKIP:                 count   1
+# CHECK64-SKIP:                 name    0x\[\[:xdigit:\]\]+ classOptionalVerb
+# CHECK64-SKIP:                 types   0x\[\[:xdigit:\]\]+ v16@0:8
+# CHECK64-SKIP:                 imp     0x0
+# CHECK64:             instanceProperties 0x\[\[:xdigit:\]\]+ __OBJC_$_PROP_LIST_Verbing
 # CHECK64-NEXT:                 entsize    16
 # CHECK64-NEXT:                 count      1
 # CHECK64-NEXT:                 name       0x\[\[:xdigit:\]\]+ intProperty
 # CHECK64-NEXT:                 attributes 0x\[\[:xdigit:\]\]+ Ti,R,N
-# CHECK64-NEXT:     instanceProperties 0x\[\[:xdigit:\]\]+
+# CHECK64-NEXT:     instanceProperties 0x\[\[:xdigit:\]\]+.*
 # CHECK64-NEXT:         entsize    16
 # CHECK64-NEXT:         count      2
 # CHECK64-NEXT:         name       0x\[\[:xdigit:\]\]+ categoryProperty
@@ -412,43 +407,43 @@ all2:
 # CHECK64-NEXT:         name       0x\[\[:xdigit:\]\]+ intProperty
 # CHECK64-NEXT:         attributes 0x\[\[:xdigit:\]\]+ Ti,R,N
 # CHECK64-NEXT: Contents of (__DATA\(_CONST\)?,__objc_protolist) section
-# CHECK64-NEXT: \[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+.*
+# CHECK64-NEXT: \[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ __OBJC_PROTOCOL_$_Verbing
 # CHECK64-NEXT:     isa       0x0
 # CHECK64-NEXT:     name      0x\[\[:xdigit:\]\]+ Verbing
 # CHECK64-NEXT:     protocols 0x0
-# CHECK64-NEXT:     instanceMethods 0x\[\[:xdigit:\]\]+
-# CHECK64-NEXT:         entsize 24
-# CHECK64-NEXT:         count   2
-# CHECK64-NEXT:         name    0x\[\[:xdigit:\]\]+ verb
-# CHECK64-NEXT:         types   0x\[\[:xdigit:\]\]+ v16@0:8
-# CHECK64-NEXT:         imp     0x0
-# CHECK64-NEXT:         name    0x\[\[:xdigit:\]\]+ intProperty
-# CHECK64-NEXT:         types   0x\[\[:xdigit:\]\]+ i16@0:8
-# CHECK64-NEXT:         imp     0x0
-# CHECK64-NEXT:     classMethods 0x\[\[:xdigit:\]\]+
-# CHECK64-NEXT:         entsize 24
-# CHECK64-NEXT:         count   1
-# CHECK64-NEXT:         name    0x\[\[:xdigit:\]\]+ classVerb
-# CHECK64-NEXT:         types   0x\[\[:xdigit:\]\]+ v16@0:8
-# CHECK64-NEXT:         imp     0x0
-# CHECK64-NEXT:     optionalInstanceMethods 0x\[\[:xdigit:\]\]+
-# CHECK64-NEXT:         entsize 24
-# CHECK64-NEXT:         count   1
-# CHECK64-NEXT:         name    0x\[\[:xdigit:\]\]+ optionalVerb
-# CHECK64-NEXT:         types   0x\[\[:xdigit:\]\]+ v16@0:8
-# CHECK64-NEXT:         imp     0x0
-# CHECK64-NEXT:     optionalClassMethods 0x\[\[:xdigit:\]\]+
-# CHECK64-NEXT:         entsize 24
-# CHECK64-NEXT:         count   1
-# CHECK64-NEXT:         name    0x\[\[:xdigit:\]\]+ classOptionalVerb
-# CHECK64-NEXT:         types   0x\[\[:xdigit:\]\]+ v16@0:8
-# CHECK64-NEXT:         imp     0x0
-# CHECK64-NEXT:     instanceProperties 0x\[\[:xdigit:\]\]+
+# CHECK64-NEXT:     instanceMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_INSTANCE_METHODS_Verbing
+# CHECK64-SKIP:         entsize 24
+# CHECK64-SKIP:         count   2
+# CHECK64-SKIP:         name    0x\[\[:xdigit:\]\]+ verb
+# CHECK64-SKIP:         types   0x\[\[:xdigit:\]\]+ v16@0:8
+# CHECK64-SKIP:         imp     0x0
+# CHECK64-SKIP:         name    0x\[\[:xdigit:\]\]+ intProperty
+# CHECK64-SKIP:         types   0x\[\[:xdigit:\]\]+ i16@0:8
+# CHECK64-SKIP:         imp     0x0
+# CHECK64:     classMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_CLASS_METHODS_Verbing
+# CHECK64-SKIP:         entsize 24
+# CHECK64-SKIP:         count   1
+# CHECK64-SKIP:         name    0x\[\[:xdigit:\]\]+ classVerb
+# CHECK64-SKIP:         types   0x\[\[:xdigit:\]\]+ v16@0:8
+# CHECK64-SKIP:         imp     0x0
+# CHECK64:     optionalInstanceMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_INSTANCE_METHODS_OPT_Verbing
+# CHECK64-SKIP:         entsize 24
+# CHECK64-SKIP:         count   1
+# CHECK64-SKIP:         name    0x\[\[:xdigit:\]\]+ optionalVerb
+# CHECK64-SKIP:         types   0x\[\[:xdigit:\]\]+ v16@0:8
+# CHECK64-SKIP:         imp     0x0
+# CHECK64:     optionalClassMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_CLASS_METHODS_OPT_Verbing
+# CHECK64-SKIP:         entsize 24
+# CHECK64-SKIP:         count   1
+# CHECK64-SKIP:         name    0x\[\[:xdigit:\]\]+ classOptionalVerb
+# CHECK64-SKIP:         types   0x\[\[:xdigit:\]\]+ v16@0:8
+# CHECK64-SKIP:         imp     0x0
+# CHECK64:     instanceProperties 0x\[\[:xdigit:\]\]+ __OBJC_$_PROP_LIST_Verbing
 # CHECK64-NEXT:         entsize    16
 # CHECK64-NEXT:         count      1
 # CHECK64-NEXT:         name       0x\[\[:xdigit:\]\]+ intProperty
 # CHECK64-NEXT:         attributes 0x\[\[:xdigit:\]\]+ Ti,R,N
-# CHECK64-NEXT: Contents of (__DATA\(_CONST\)?,__objc_imageinfo) section
+# CHECK64: Contents of (__DATA\(_CONST\)?,__objc_imageinfo) section
 # CHECK64-NEXT:     version 0
 # CHECK64-NEXT:     flags   0x40
 
@@ -461,7 +456,7 @@ all2:
 # CHECK32-NEXT:     superclass 0x0 _OBJC_CLASS_$_Dylib
 # CHECK32-NEXT:     cache      0x0 __objc_empty_cache
 # CHECK32-NEXT:     vtable     0x0
-# CHECK32-NEXT:     data       0x\[\[:xdigit:\]\]+
+# CHECK32-NEXT:     data       0x\[\[:xdigit:\]\]+ __OBJC_CLASS_RO_$_DylibSubclass
 # CHECK32-NEXT:         flags          0x0
 # CHECK32-NEXT:         instanceStart  8
 # CHECK32-NEXT:         instanceSize   8
@@ -477,7 +472,7 @@ all2:
 # CHECK32-NEXT:     superclass 0x0 _OBJC_METACLASS_$_Dylib
 # CHECK32-NEXT:     cache      0x0 __objc_empty_cache
 # CHECK32-NEXT:     vtable     0x0
-# CHECK32-NEXT:     data       0x\[\[:xdigit:\]\]+
+# CHECK32-NEXT:     data       0x\[\[:xdigit:\]\]+ __OBJC_METACLASS_RO_$_DylibSubclass
 # CHECK32-NEXT:         flags          0x1 RO_META
 # CHECK32-NEXT:         instanceStart  20
 # CHECK32-NEXT:         instanceSize   20
@@ -493,60 +488,60 @@ all2:
 # CHECK32-NEXT:     superclass 0x0 _OBJC_CLASS_$_NSObject
 # CHECK32-NEXT:     cache      0x0 __objc_empty_cache
 # CHECK32-NEXT:     vtable     0x0
-# CHECK32-NEXT:     data       0x\[\[:xdigit:\]\]+
+# CHECK32-NEXT:     data       0x\[\[:xdigit:\]\]+ __OBJC_CLASS_RO_$_Tool
 # CHECK32-NEXT:         flags          0x0
 # CHECK32-NEXT:         instanceStart  4
 # CHECK32-NEXT:         instanceSize   8
 # CHECK32-NEXT:         ivarLayout     0x0
 # CHECK32-NEXT:         name           0x\[\[:xdigit:\]\]+ Tool
-# CHECK32-NEXT:         baseMethods    0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:             entsize 12
-# CHECK32-NEXT:             count   2
-# CHECK32-NEXT:             name    0x\[\[:xdigit:\]\]+ verb
-# CHECK32-NEXT:             types   0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECK32-NEXT:             imp     0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:             name    0x\[\[:xdigit:\]\]+ intProperty
-# CHECK32-NEXT:             types   0x\[\[:xdigit:\]\]+ i8@0:4
-# CHECK32-NEXT:             imp     0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:         baseProtocols  0x\[\[:xdigit:\]\]+
+# CHECK32-NEXT:         baseMethods    0x\[\[:xdigit:\]\]+ __OBJC_$_INSTANCE_METHODS_Tool
+# CHECK32-SKIP:             entsize 12
+# CHECK32-SKIP:             count   2
+# CHECK32-SKIP:             name    0x\[\[:xdigit:\]\]+ verb
+# CHECK32-SKIP:             types   0x\[\[:xdigit:\]\]+ v8@0:4
+# CHECK32-SKIP:             imp     0x\[\[:xdigit:\]\]+
+# CHECK32-SKIP:             name    0x\[\[:xdigit:\]\]+ intProperty
+# CHECK32-SKIP:             types   0x\[\[:xdigit:\]\]+ i8@0:4
+# CHECK32-SKIP:             imp     0x\[\[:xdigit:\]\]+
+# CHECK32:         baseProtocols  0x\[\[:xdigit:\]\]+ __OBJC_CLASS_PROTOCOLS_$_Tool
 # CHECK32-NEXT:             count    1
-# CHECK32-NEXT:             list[0]  0x\[\[:xdigit:\]\]+.*
+# CHECK32-NEXT:             list[0]  0x\[\[:xdigit:\]\]+ __OBJC_PROTOCOL_$_Verbing
 # CHECK32-NEXT:                 isa       0x0
 # CHECK32-NEXT:                 name      0x\[\[:xdigit:\]\]+ Verbing
 # CHECK32-NEXT:                 protocols 0x0
-# CHECK32-NEXT:                 instanceMethods 0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:                     entsize 12
-# CHECK32-NEXT:                     count   2
-# CHECK32-NEXT:                     name    0x\[\[:xdigit:\]\]+ verb
-# CHECK32-NEXT:                     types   0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECK32-NEXT:                     imp     0x0
-# CHECK32-NEXT:                     name    0x\[\[:xdigit:\]\]+ intProperty
-# CHECK32-NEXT:                     types   0x\[\[:xdigit:\]\]+ i8@0:4
-# CHECK32-NEXT:                     imp     0x0
-# CHECK32-NEXT:                 classMethods 0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:                     entsize 12
-# CHECK32-NEXT:                     count   1
-# CHECK32-NEXT:                     name    0x\[\[:xdigit:\]\]+ classVerb
-# CHECK32-NEXT:                     types   0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECK32-NEXT:                     imp     0x0
-# CHECK32-NEXT:                 optionalInstanceMethods 0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:                     entsize 12
-# CHECK32-NEXT:                     count   1
-# CHECK32-NEXT:                     name    0x\[\[:xdigit:\]\]+ optionalVerb
-# CHECK32-NEXT:                     types   0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECK32-NEXT:                     imp     0x0
-# CHECK32-NEXT:                 optionalClassMethods 0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:                     entsize 12
-# CHECK32-NEXT:                     count   1
-# CHECK32-NEXT:                     name    0x\[\[:xdigit:\]\]+ classOptionalVerb
-# CHECK32-NEXT:                     types   0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECK32-NEXT:                     imp     0x0
-# CHECK32-NEXT:                 instanceProperties 0x\[\[:xdigit:\]\]+
+# CHECK32-NEXT:                 instanceMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_INSTANCE_METHODS_Verbing
+# CHECK32-SKIP:                     entsize 12
+# CHECK32-SKIP:                     count   2
+# CHECK32-SKIP:                     name    0x\[\[:xdigit:\]\]+ verb
+# CHECK32-SKIP:                     types   0x\[\[:xdigit:\]\]+ v8@0:4
+# CHECK32-SKIP:                     imp     0x0
+# CHECK32-SKIP:                     name    0x\[\[:xdigit:\]\]+ intProperty
+# CHECK32-SKIP:                     types   0x\[\[:xdigit:\]\]+ i8@0:4
+# CHECK32-SKIP:                     imp     0x0
+# CHECK32:                 classMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_CLASS_METHODS_Verbing
+# CHECK32-SKIP:                     entsize 12
+# CHECK32-SKIP:                     count   1
+# CHECK32-SKIP:                     name    0x\[\[:xdigit:\]\]+ classVerb
+# CHECK32-SKIP:                     types   0x\[\[:xdigit:\]\]+ v8@0:4
+# CHECK32-SKIP:                     imp     0x0
+# CHECK32:                 optionalInstanceMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_INSTANCE_METHODS_OPT_Verbing
+# CHECK32-SKIP:                     entsize 12
+# CHECK32-SKIP:                     count   1
+# CHECK32-SKIP:                     name    0x\[\[:xdigit:\]\]+ optionalVerb
+# CHECK32-SKIP:                     types   0x\[\[:xdigit:\]\]+ v8@0:4
+# CHECK32-SKIP:                     imp     0x0
+# CHECK32:                 optionalClassMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_CLASS_METHODS_OPT_Verbing
+# CHECK32-SKIP:                     entsize 12
+# CHECK32-SKIP:                     count   1
+# CHECK32-SKIP:                     name    0x\[\[:xdigit:\]\]+ classOptionalVerb
+# CHECK32-SKIP:                     types   0x\[\[:xdigit:\]\]+ v8@0:4
+# CHECK32-SKIP:                     imp     0x0
+# CHECK32:                 instanceProperties 0x\[\[:xdigit:\]\]+ __OBJC_$_PROP_LIST_Verbing
 # CHECK32-NEXT:                     entsize    8
 # CHECK32-NEXT:                     count      1
 # CHECK32-NEXT:                     name       0x\[\[:xdigit:\]\]+ intProperty
 # CHECK32-NEXT:                     attributes 0x\[\[:xdigit:\]\]+ Ti,R,N
-# CHECK32-NEXT:         ivars          0x\[\[:xdigit:\]\]+
+# CHECK32-NEXT:         ivars          0x\[\[:xdigit:\]\]+ __OBJC_$_INSTANCE_VARIABLES_Tool
 # CHECK32-NEXT:             entsize   20
 # CHECK32-NEXT:             count     1
 # CHECK32-NEXT:             offset    0x\[\[:xdigit:\]\]+ _OBJC_IVAR_$_Tool.m_intProperty 4
@@ -555,7 +550,7 @@ all2:
 # CHECK32-NEXT:             alignment 2
 # CHECK32-NEXT:             size      4
 # CHECK32-NEXT:         weakIvarLayout 0x0
-# CHECK32-NEXT:         baseProperties 0x\[\[:xdigit:\]\]+
+# CHECK32-NEXT:         baseProperties 0x\[\[:xdigit:\]\]+ __OBJC_$_PROP_LIST_Tool
 # CHECK32-NEXT:             entsize    8
 # CHECK32-NEXT:             count      1
 # CHECK32-NEXT:             name       0x\[\[:xdigit:\]\]+ intProperty
@@ -565,52 +560,52 @@ all2:
 # CHECK32-NEXT:     superclass 0x0 _OBJC_METACLASS_$_NSObject
 # CHECK32-NEXT:     cache      0x0 __objc_empty_cache
 # CHECK32-NEXT:     vtable     0x0
-# CHECK32-NEXT:     data       0x\[\[:xdigit:\]\]+
+# CHECK32-NEXT:     data       0x\[\[:xdigit:\]\]+ __OBJC_METACLASS_RO_$_Tool
 # CHECK32-NEXT:         flags          0x1 RO_META
 # CHECK32-NEXT:         instanceStart  20
 # CHECK32-NEXT:         instanceSize   20
 # CHECK32-NEXT:         ivarLayout     0x0
 # CHECK32-NEXT:         name           0x\[\[:xdigit:\]\]+ Tool
-# CHECK32-NEXT:         baseMethods    0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:             entsize 12
-# CHECK32-NEXT:             count   1
-# CHECK32-NEXT:             name    0x\[\[:xdigit:\]\]+ classVerb
-# CHECK32-NEXT:             types   0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECK32-NEXT:             imp     0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:         baseProtocols  0x\[\[:xdigit:\]\]+
+# CHECK32-NEXT:         baseMethods    0x\[\[:xdigit:\]\]+ __OBJC_$_CLASS_METHODS_Tool
+# CHECK32-SKIP:             entsize 12
+# CHECK32-SKIP:             count   1
+# CHECK32-SKIP:             name    0x\[\[:xdigit:\]\]+ classVerb
+# CHECK32-SKIP:             types   0x\[\[:xdigit:\]\]+ v8@0:4
+# CHECK32-SKIP:             imp     0x\[\[:xdigit:\]\]+
+# CHECK32:         baseProtocols  0x\[\[:xdigit:\]\]+ __OBJC_CLASS_PROTOCOLS_$_Tool
 # CHECK32-NEXT:             count    1
-# CHECK32-NEXT:             list[0]  0x\[\[:xdigit:\]\]+.*
+# CHECK32-NEXT:             list[0]  0x\[\[:xdigit:\]\]+ __OBJC_PROTOCOL_$_Verbing
 # CHECK32-NEXT:                 isa       0x0
 # CHECK32-NEXT:                 name      0x\[\[:xdigit:\]\]+ Verbing
 # CHECK32-NEXT:                 protocols 0x0
-# CHECK32-NEXT:                 instanceMethods 0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:                     entsize 12
-# CHECK32-NEXT:                     count   2
-# CHECK32-NEXT:                     name    0x\[\[:xdigit:\]\]+ verb
-# CHECK32-NEXT:                     types   0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECK32-NEXT:                     imp     0x0
-# CHECK32-NEXT:                     name    0x\[\[:xdigit:\]\]+ intProperty
-# CHECK32-NEXT:                     types   0x\[\[:xdigit:\]\]+ i8@0:4
-# CHECK32-NEXT:                     imp     0x0
-# CHECK32-NEXT:                 classMethods 0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:                     entsize 12
-# CHECK32-NEXT:                     count   1
-# CHECK32-NEXT:                     name    0x\[\[:xdigit:\]\]+ classVerb
-# CHECK32-NEXT:                     types   0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECK32-NEXT:                     imp     0x0
-# CHECK32-NEXT:                 optionalInstanceMethods 0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:                     entsize 12
-# CHECK32-NEXT:                     count   1
-# CHECK32-NEXT:                     name    0x\[\[:xdigit:\]\]+ optionalVerb
-# CHECK32-NEXT:                     types   0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECK32-NEXT:                     imp     0x0
-# CHECK32-NEXT:                 optionalClassMethods 0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:                     entsize 12
-# CHECK32-NEXT:                     count   1
-# CHECK32-NEXT:                     name    0x\[\[:xdigit:\]\]+ classOptionalVerb
-# CHECK32-NEXT:                     types   0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECK32-NEXT:                     imp     0x0
-# CHECK32-NEXT:                 instanceProperties 0x\[\[:xdigit:\]\]+
+# CHECK32-NEXT:                 instanceMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_INSTANCE_METHODS_Verbing
+# CHECK32-SKIP:                     entsize 12
+# CHECK32-SKIP:                     count   2
+# CHECK32-SKIP:                     name    0x\[\[:xdigit:\]\]+ verb
+# CHECK32-SKIP:                     types   0x\[\[:xdigit:\]\]+ v8@0:4
+# CHECK32-SKIP:                     imp     0x0
+# CHECK32-SKIP:                     name    0x\[\[:xdigit:\]\]+ intProperty
+# CHECK32-SKIP:                     types   0x\[\[:xdigit:\]\]+ i8@0:4
+# CHECK32-SKIP:                     imp     0x0
+# CHECK32:                 classMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_CLASS_METHODS_Verbing
+# CHECK32-SKIP:                     entsize 12
+# CHECK32-SKIP:                     count   1
+# CHECK32-SKIP:                     name    0x\[\[:xdigit:\]\]+ classVerb
+# CHECK32-SKIP:                     types   0x\[\[:xdigit:\]\]+ v8@0:4
+# CHECK32-SKIP:                     imp     0x0
+# CHECK32:                 optionalInstanceMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_INSTANCE_METHODS_OPT_Verbing
+# CHECK32-SKIP:                     entsize 12
+# CHECK32-SKIP:                     count   1
+# CHECK32-SKIP:                     name    0x\[\[:xdigit:\]\]+ optionalVerb
+# CHECK32-SKIP:                     types   0x\[\[:xdigit:\]\]+ v8@0:4
+# CHECK32-SKIP:                     imp     0x0
+# CHECK32:                 optionalClassMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_CLASS_METHODS_OPT_Verbing
+# CHECK32-SKIP:                     entsize 12
+# CHECK32-SKIP:                     count   1
+# CHECK32-SKIP:                     name    0x\[\[:xdigit:\]\]+ classOptionalVerb
+# CHECK32-SKIP:                     types   0x\[\[:xdigit:\]\]+ v8@0:4
+# CHECK32-SKIP:                     imp     0x0
+# CHECK32:                 instanceProperties 0x\[\[:xdigit:\]\]+ __OBJC_$_PROP_LIST_Verbing
 # CHECK32-NEXT:                     entsize    8
 # CHECK32-NEXT:                     count      1
 # CHECK32-NEXT:                     name       0x\[\[:xdigit:\]\]+ intProperty
@@ -621,66 +616,66 @@ all2:
 # CHECK32-NEXT: Contents of (__DATA,__objc_classrefs) section
 # CHECK32-NEXT: \[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ _OBJC_CLASS_$_DylibSubclass
 # CHECK32-NEXT: Contents of (__DATA_CONST,__objc_catlist) section
-# CHECK32-NEXT: \[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+
+# CHECK32-NEXT: \[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ __OBJC_$_CATEGORY_Dylib_$_Category
 # CHECK32-NEXT:     name      0x\[\[:xdigit:\]\]+ Category
 # CHECK32-NEXT:     cls       0x0 _OBJC_CLASS_$_Dylib
-# CHECK32-NEXT:     instanceMethods 0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:         entsize 12
-# CHECK32-NEXT:         count   3
-# CHECK32-NEXT:         name    0x\[\[:xdigit:\]\]+ categoryAddition
-# CHECK32-NEXT:         types   0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECK32-NEXT:         imp     0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:         name    0x\[\[:xdigit:\]\]+ genericMethod
-# CHECK32-NEXT:         types   0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECK32-NEXT:         imp     0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:         name    0x\[\[:xdigit:\]\]+ categoryProperty
-# CHECK32-NEXT:         types   0x\[\[:xdigit:\]\]+ i8@0:4
-# CHECK32-NEXT:         imp     0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:     classMethods 0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:         entsize 12
-# CHECK32-NEXT:         count   1
-# CHECK32-NEXT:         name    0x\[\[:xdigit:\]\]+ categoryClass
-# CHECK32-NEXT:         types   0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECK32-NEXT:         imp     0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:     protocols 0x\[\[:xdigit:\]\]+
+# CHECK32-NEXT:     instanceMethods 0x\[\[:xdigit:\]\]+ .*
+# CHECK32-SKIP:         entsize 12
+# CHECK32-SKIP:         count   3
+# CHECK32-SKIP:         name    0x\[\[:xdigit:\]\]+ categoryAddition
+# CHECK32-SKIP:         types   0x\[\[:xdigit:\]\]+ v8@0:4
+# CHECK32-SKIP:         imp     0x\[\[:xdigit:\]\]+
+# CHECK32-SKIP:         name    0x\[\[:xdigit:\]\]+ genericMethod
+# CHECK32-SKIP:         types   0x\[\[:xdigit:\]\]+ v8@0:4
+# CHECK32-SKIP:         imp     0x\[\[:xdigit:\]\]+
+# CHECK32-SKIP:         name    0x\[\[:xdigit:\]\]+ categoryProperty
+# CHECK32-SKIP:         types   0x\[\[:xdigit:\]\]+ i8@0:4
+# CHECK32-SKIP:         imp     0x\[\[:xdigit:\]\]+
+# CHECK32:     classMethods 0x\[\[:xdigit:\]\]+ .*
+# CHECK32-SKIP:         entsize 12
+# CHECK32-SKIP:         count   1
+# CHECK32-SKIP:         name    0x\[\[:xdigit:\]\]+ categoryClass
+# CHECK32-SKIP:         types   0x\[\[:xdigit:\]\]+ v8@0:4
+# CHECK32-SKIP:         imp     0x\[\[:xdigit:\]\]+
+# CHECK32:     protocols 0x\[\[:xdigit:\]\]+ .*
 # CHECK32-NEXT:         count    1
-# CHECK32-NEXT:         list[0]  0x\[\[:xdigit:\]\]+.*
+# CHECK32-NEXT:         list[0]  0x\[\[:xdigit:\]\]+ __OBJC_PROTOCOL_$_Verbing
 # CHECK32-NEXT:             isa       0x0
 # CHECK32-NEXT:             name      0x\[\[:xdigit:\]\]+ Verbing
 # CHECK32-NEXT:             protocols 0x0
-# CHECK32-NEXT:             instanceMethods 0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:                 entsize 12
-# CHECK32-NEXT:                 count   2
-# CHECK32-NEXT:                 name    0x\[\[:xdigit:\]\]+ verb
-# CHECK32-NEXT:                 types   0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECK32-NEXT:                 imp     0x0
-# CHECK32-NEXT:                 name    0x\[\[:xdigit:\]\]+ intProperty
-# CHECK32-NEXT:                 types   0x\[\[:xdigit:\]\]+ i8@0:4
-# CHECK32-NEXT:                 imp     0x0
-# CHECK32-NEXT:             classMethods 0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:                 entsize 12
-# CHECK32-NEXT:                 count   1
-# CHECK32-NEXT:                 name    0x\[\[:xdigit:\]\]+ classVerb
-# CHECK32-NEXT:                 types   0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECK32-NEXT:                 imp     0x0
-# CHECK32-NEXT:             optionalInstanceMethods 0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:                 entsize 12
-# CHECK32-NEXT:                 count   1
-# CHECK32-NEXT:                 name    0x\[\[:xdigit:\]\]+ optionalVerb
-# CHECK32-NEXT:                 types   0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECK32-NEXT:                 imp     0x0
-# CHECK32-NEXT:             optionalClassMethods 0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:                 entsize 12
-# CHECK32-NEXT:                 count   1
-# CHECK32-NEXT:                 name    0x\[\[:xdigit:\]\]+ classOptionalVerb
-# CHECK32-NEXT:                 types   0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECK32-NEXT:                 imp     0x0
-# CHECK32-NEXT:             instanceProperties 0x\[\[:xdigit:\]\]+
+# CHECK32-NEXT:             instanceMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_INSTANCE_METHODS_Verbing
+# CHECK32-SKIP:                 entsize 12
+# CHECK32-SKIP:                 count   2
+# CHECK32-SKIP:                 name    0x\[\[:xdigit:\]\]+ verb
+# CHECK32-SKIP:                 types   0x\[\[:xdigit:\]\]+ v8@0:4
+# CHECK32-SKIP:                 imp     0x0
+# CHECK32-SKIP:                 name    0x\[\[:xdigit:\]\]+ intProperty
+# CHECK32-SKIP:                 types   0x\[\[:xdigit:\]\]+ i8@0:4
+# CHECK32-SKIP:                 imp     0x0
+# CHECK32:             classMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_CLASS_METHODS_Verbing
+# CHECK32-SKIP:                 entsize 12
+# CHECK32-SKIP:                 count   1
+# CHECK32-SKIP:                 name    0x\[\[:xdigit:\]\]+ classVerb
+# CHECK32-SKIP:                 types   0x\[\[:xdigit:\]\]+ v8@0:4
+# CHECK32-SKIP:                 imp     0x0
+# CHECK32:             optionalInstanceMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_INSTANCE_METHODS_OPT_Verbing
+# CHECK32-SKIP:                 entsize 12
+# CHECK32-SKIP:                 count   1
+# CHECK32-SKIP:                 name    0x\[\[:xdigit:\]\]+ optionalVerb
+# CHECK32-SKIP:                 types   0x\[\[:xdigit:\]\]+ v8@0:4
+# CHECK32-SKIP:                 imp     0x0
+# CHECK32:             optionalClassMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_CLASS_METHODS_OPT_Verbing
+# CHECK32-SKIP:                 entsize 12
+# CHECK32-SKIP:                 count   1
+# CHECK32-SKIP:                 name    0x\[\[:xdigit:\]\]+ classOptionalVerb
+# CHECK32-SKIP:                 types   0x\[\[:xdigit:\]\]+ v8@0:4
+# CHECK32-SKIP:                 imp     0x0
+# CHECK32:             instanceProperties 0x\[\[:xdigit:\]\]+ __OBJC_$_PROP_LIST_Verbing
 # CHECK32-NEXT:                 entsize    8
 # CHECK32-NEXT:                 count      1
 # CHECK32-NEXT:                 name       0x\[\[:xdigit:\]\]+ intProperty
 # CHECK32-NEXT:                 attributes 0x\[\[:xdigit:\]\]+ Ti,R,N
-# CHECK32-NEXT:     instanceProperties 0x\[\[:xdigit:\]\]+
+# CHECK32-NEXT:     instanceProperties 0x\[\[:xdigit:\]\]+.*
 # CHECK32-NEXT:         entsize    8
 # CHECK32-NEXT:         count      2
 # CHECK32-NEXT:         name       0x\[\[:xdigit:\]\]+ categoryProperty
@@ -688,183 +683,45 @@ all2:
 # CHECK32-NEXT:         name       0x\[\[:xdigit:\]\]+ intProperty
 # CHECK32-NEXT:         attributes 0x\[\[:xdigit:\]\]+ Ti,R,N
 # CHECK32-NEXT: Contents of (__DATA_CONST,__objc_protolist) section
-# CHECK32-NEXT: \[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+.*
+# CHECK32-NEXT: \[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ __OBJC_PROTOCOL_$_Verbing
 # CHECK32-NEXT:     isa       0x0
 # CHECK32-NEXT:     name      0x\[\[:xdigit:\]\]+ Verbing
 # CHECK32-NEXT:     protocols 0x0
-# CHECK32-NEXT:     instanceMethods 0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:         entsize 12
-# CHECK32-NEXT:         count   2
-# CHECK32-NEXT:         name    0x\[\[:xdigit:\]\]+ verb
-# CHECK32-NEXT:         types   0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECK32-NEXT:         imp     0x0
-# CHECK32-NEXT:         name    0x\[\[:xdigit:\]\]+ intProperty
-# CHECK32-NEXT:         types   0x\[\[:xdigit:\]\]+ i8@0:4
-# CHECK32-NEXT:         imp     0x0
-# CHECK32-NEXT:     classMethods 0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:         entsize 12
-# CHECK32-NEXT:         count   1
-# CHECK32-NEXT:         name    0x\[\[:xdigit:\]\]+ classVerb
-# CHECK32-NEXT:         types   0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECK32-NEXT:         imp     0x0
-# CHECK32-NEXT:     optionalInstanceMethods 0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:         entsize 12
-# CHECK32-NEXT:         count   1
-# CHECK32-NEXT:         name    0x\[\[:xdigit:\]\]+ optionalVerb
-# CHECK32-NEXT:         types   0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECK32-NEXT:         imp     0x0
-# CHECK32-NEXT:     optionalClassMethods 0x\[\[:xdigit:\]\]+
-# CHECK32-NEXT:         entsize 12
-# CHECK32-NEXT:         count   1
-# CHECK32-NEXT:         name    0x\[\[:xdigit:\]\]+ classOptionalVerb
-# CHECK32-NEXT:         types   0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECK32-NEXT:         imp     0x0
-# CHECK32-NEXT:     instanceProperties 0x\[\[:xdigit:\]\]+
+# CHECK32-NEXT:     instanceMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_INSTANCE_METHODS_Verbing
+# CHECK32-SKIP:         entsize 12
+# CHECK32-SKIP:         count   2
+# CHECK32-SKIP:         name    0x\[\[:xdigit:\]\]+ verb
+# CHECK32-SKIP:         types   0x\[\[:xdigit:\]\]+ v8@0:4
+# CHECK32-SKIP:         imp     0x0
+# CHECK32-SKIP:         name    0x\[\[:xdigit:\]\]+ intProperty
+# CHECK32-SKIP:         types   0x\[\[:xdigit:\]\]+ i8@0:4
+# CHECK32-SKIP:         imp     0x0
+# CHECK32:     classMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_CLASS_METHODS_Verbing
+# CHECK32-SKIP:         entsize 12
+# CHECK32-SKIP:         count   1
+# CHECK32-SKIP:         name    0x\[\[:xdigit:\]\]+ classVerb
+# CHECK32-SKIP:         types   0x\[\[:xdigit:\]\]+ v8@0:4
+# CHECK32-SKIP:         imp     0x0
+# CHECK32:     optionalInstanceMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_INSTANCE_METHODS_OPT_Verbing
+# CHECK32-SKIP:         entsize 12
+# CHECK32-SKIP:         count   1
+# CHECK32-SKIP:         name    0x\[\[:xdigit:\]\]+ optionalVerb
+# CHECK32-SKIP:         types   0x\[\[:xdigit:\]\]+ v8@0:4
+# CHECK32-SKIP:         imp     0x0
+# CHECK32:     optionalClassMethods 0x\[\[:xdigit:\]\]+ __OBJC_$_PROTOCOL_CLASS_METHODS_OPT_Verbing
+# CHECK32-SKIP:         entsize 12
+# CHECK32-SKIP:         count   1
+# CHECK32-SKIP:         name    0x\[\[:xdigit:\]\]+ classOptionalVerb
+# CHECK32-SKIP:         types   0x\[\[:xdigit:\]\]+ v8@0:4
+# CHECK32-SKIP:         imp     0x0
+# CHECK32:     instanceProperties 0x\[\[:xdigit:\]\]+ __OBJC_$_PROP_LIST_Verbing
 # CHECK32-NEXT:         entsize    8
 # CHECK32-NEXT:         count      1
 # CHECK32-NEXT:         name       0x\[\[:xdigit:\]\]+ intProperty
 # CHECK32-NEXT:         attributes 0x\[\[:xdigit:\]\]+ Ti,R,N
-# CHECK32-NEXT: Contents of (__DATA_CONST,__objc_imageinfo) section
+# CHECK32: Contents of (__DATA_CONST,__objc_imageinfo) section
 # CHECK32-NEXT:     version 0
 # CHECK32-NEXT:     flags   0x40
-
-################################################################################
-#
-# CHECKI386:Objective-C segment
-# CHECKI386-NEXT:Module 0x\[\[:xdigit:\]\]+
-# CHECKI386-NEXT:    version 7
-# CHECKI386-NEXT:       size 16
-# CHECKI386-NEXT:       name
-# CHECKI386-NEXT:     symtab 0x\[\[:xdigit:\]\]+
-# CHECKI386-NEXT:	sel_ref_cnt 0
-# CHECKI386-NEXT:	refs 0x00000000 (not in an __OBJC section)
-# CHECKI386-NEXT:	cls_def_cnt 2
-# CHECKI386-NEXT:	cat_def_cnt 1
-# CHECKI386-NEXT:	Class Definitions
-# CHECKI386-NEXT:	defs[0] 0x00003164
-# CHECKI386-NEXT:		      isa 0x\[\[:xdigit:\]\]+
-# CHECKI386-NEXT:	      super_class 0x\[\[:xdigit:\]\]+ Dylib
-# CHECKI386-NEXT:		     name 0x\[\[:xdigit:\]\]+ DylibSubclass
-# CHECKI386-NEXT:		  version 0x00000000
-# CHECKI386-NEXT:		     info 0x00000001 CLS_CLASS
-# CHECKI386-NEXT:	    instance_size 0x00000008
-# CHECKI386-NEXT:		    ivars 0x00000000 (not in an __OBJC section)
-# CHECKI386-NEXT:		  methods 0x00000000 (not in an __OBJC section)
-# CHECKI386-NEXT:		    cache 0x00000000
-# CHECKI386-NEXT:		protocols 0x00000000 (not in an __OBJC section)
-# CHECKI386-NEXT:	Meta Class
-# CHECKI386-NEXT:		      isa 0x\[\[:xdigit:\]\]+ NSObject
-# CHECKI386-NEXT:	      super_class 0x\[\[:xdigit:\]\]+ Dylib
-# CHECKI386-NEXT:		     name 0x\[\[:xdigit:\]\]+ DylibSubclass
-# CHECKI386-NEXT:		  version 0x00000000
-# CHECKI386-NEXT:		     info 0x00000002 CLS_META
-# CHECKI386-NEXT:	    instance_size 0x00000030
-# CHECKI386-NEXT:		    ivars 0x00000000 (not in an __OBJC section)
-# CHECKI386-NEXT:		  methods 0x00000000 (not in an __OBJC section)
-# CHECKI386-NEXT:		    cache 0x00000000
-# CHECKI386-NEXT:		protocols 0x00000000 (not in an __OBJC section)
-# CHECKI386-NEXT:	defs[1] 0x00003194
-# CHECKI386-NEXT:		      isa 0x\[\[:xdigit:\]\]+
-# CHECKI386-NEXT:	      super_class 0x\[\[:xdigit:\]\]+ NSObject
-# CHECKI386-NEXT:		     name 0x\[\[:xdigit:\]\]+ Tool
-# CHECKI386-NEXT:		  version 0x00000000
-# CHECKI386-NEXT:		     info 0x00000001 CLS_CLASS
-# CHECKI386-NEXT:	    instance_size 0x00000008
-# CHECKI386-NEXT:		    ivars 0x000031d8
-# CHECKI386-NEXT:		       ivar_count 1
-# CHECKI386-NEXT:			ivar_name 0x\[\[:xdigit:\]\]+ m_intProperty
-# CHECKI386-NEXT:			ivar_type 0x\[\[:xdigit:\]\]+ i
-# CHECKI386-NEXT:		      ivar_offset 0x00000004
-# CHECKI386-NEXT:		  methods 0x000031e8
-# CHECKI386-NEXT:		         obsolete 0x00000000
-# CHECKI386-NEXT:		     method_count 2
-# CHECKI386-NEXT:		      method_name 0x\[\[:xdigit:\]\]+ verb
-# CHECKI386-NEXT:		     method_types 0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECKI386-NEXT:		       method_imp 0x\[\[:xdigit:\]\]+ -[Tool verb]
-# CHECKI386-NEXT:		      method_name 0x\[\[:xdigit:\]\]+ intProperty
-# CHECKI386-NEXT:		     method_types 0x\[\[:xdigit:\]\]+ i8@0:4
-# CHECKI386-NEXT:		       method_imp 0x\[\[:xdigit:\]\]+ -[Tool intProperty]
-# CHECKI386-NEXT:		    cache 0x00000000
-# CHECKI386-NEXT:		protocols 0x\[\[:xdigit:\]\]+
-# CHECKI386-NEXT:		         next 0x00000000
-# CHECKI386-NEXT:		        count 1
-# CHECKI386-NEXT:		      list[0] 0x\[\[:xdigit:\]\]+.*
-# CHECKI386-NEXT:		              isa 0x\[\[:xdigit:\]\]+
-# CHECKI386-NEXT:		    protocol_name 0x\[\[:xdigit:\]\]+ Verbing
-# CHECKI386-NEXT:		    protocol_list 0x00000000 (not in an __OBJC section)
-# CHECKI386-NEXT:		 instance_methods 0x\[\[:xdigit:\]\]+
-# CHECKI386-NEXT:		        count 2
-# CHECKI386-NEXT:		        list[0]
-# CHECKI386-NEXT:		             name 0x\[\[:xdigit:\]\]+ verb
-# CHECKI386-NEXT:		            types 0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECKI386-NEXT:		        list[1]
-# CHECKI386-NEXT:		             name 0x\[\[:xdigit:\]\]+ intProperty
-# CHECKI386-NEXT:		            types 0x\[\[:xdigit:\]\]+ i8@0:4
-# CHECKI386-NEXT:		    class_methods 0x\[\[:xdigit:\]\]+
-# CHECKI386-NEXT:		        count 1
-# CHECKI386-NEXT:		        list[0]
-# CHECKI386-NEXT:		             name 0x\[\[:xdigit:\]\]+ classVerb
-# CHECKI386-NEXT:		            types 0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECKI386-NEXT:	Meta Class
-# CHECKI386-NEXT:		      isa 0x\[\[:xdigit:\]\]+ NSObject
-# CHECKI386-NEXT:	      super_class 0x\[\[:xdigit:\]\]+ NSObject
-# CHECKI386-NEXT:		     name 0x\[\[:xdigit:\]\]+ Tool
-# CHECKI386-NEXT:		  version 0x00000000
-# CHECKI386-NEXT:		     info 0x00000002 CLS_META
-# CHECKI386-NEXT:	    instance_size 0x00000030
-# CHECKI386-NEXT:		    ivars 0x00000000 (not in an __OBJC section)
-# CHECKI386-NEXT:		  methods 0x\[\[:xdigit:\]\]+
-# CHECKI386-NEXT:		         obsolete 0x00000000
-# CHECKI386-NEXT:		     method_count 1
-# CHECKI386-NEXT:		      method_name 0x\[\[:xdigit:\]\]+ classVerb
-# CHECKI386-NEXT:		     method_types 0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECKI386-NEXT:		       method_imp 0x\[\[:xdigit:\]\]+ \+[Tool classVerb]
-# CHECKI386-NEXT:		    cache 0x00000000
-# CHECKI386-NEXT:		protocols 0x\[\[:xdigit:\]\]+
-# CHECKI386-NEXT:		         next 0x00000000
-# CHECKI386-NEXT:		        count 1
-# CHECKI386-NEXT:		      list[0] 0x\[\[:xdigit:\]\]+.*
-# CHECKI386-NEXT:		              isa 0x\[\[:xdigit:\]\]+
-# CHECKI386-NEXT:		    protocol_name 0x\[\[:xdigit:\]\]+ Verbing
-# CHECKI386-NEXT:		    protocol_list 0x00000000 (not in an __OBJC section)
-# CHECKI386-NEXT:		 instance_methods 0x\[\[:xdigit:\]\]+
-# CHECKI386-NEXT:		        count 2
-# CHECKI386-NEXT:		        list[0]
-# CHECKI386-NEXT:		             name 0x\[\[:xdigit:\]\]+ verb
-# CHECKI386-NEXT:		            types 0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECKI386-NEXT:		        list[1]
-# CHECKI386-NEXT:		             name 0x\[\[:xdigit:\]\]+ intProperty
-# CHECKI386-NEXT:		            types 0x\[\[:xdigit:\]\]+ i8@0:4
-# CHECKI386-NEXT:		    class_methods 0x\[\[:xdigit:\]\]+
-# CHECKI386-NEXT:		        count 1
-# CHECKI386-NEXT:		        list[0]
-# CHECKI386-NEXT:		             name 0x\[\[:xdigit:\]\]+ classVerb
-# CHECKI386-NEXT:		            types 0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECKI386-NEXT:	Category Definitions
-# CHECKI386-NEXT:	defs[2] 0x000030e4
-# CHECKI386-NEXT:	       category name 0x\[\[:xdigit:\]\]+ Category
-# CHECKI386-NEXT:		  class name 0x\[\[:xdigit:\]\]+ Dylib
-# CHECKI386-NEXT:	    instance methods 0x\[\[:xdigit:\]\]+
-# CHECKI386-NEXT:		         obsolete 0x00000000
-# CHECKI386-NEXT:		     method_count 3
-# CHECKI386-NEXT:		      method_name 0x\[\[:xdigit:\]\]+ categoryAddition
-# CHECKI386-NEXT:		     method_types 0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECKI386-NEXT:		       method_imp 0x\[\[:xdigit:\]\]+ -[Dylib(Category) categoryAddition]
-# CHECKI386-NEXT:		      method_name 0x\[\[:xdigit:\]\]+ genericMethod
-# CHECKI386-NEXT:		     method_types 0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECKI386-NEXT:		       method_imp 0x\[\[:xdigit:\]\]+ -[Dylib(Category) genericMethod]
-# CHECKI386-NEXT:		      method_name 0x\[\[:xdigit:\]\]+ categoryProperty
-# CHECKI386-NEXT:		     method_types 0x\[\[:xdigit:\]\]+ i8@0:4
-# CHECKI386-NEXT:		       method_imp 0x\[\[:xdigit:\]\]+ -[Dylib(Category) categoryProperty]
-# CHECKI386-NEXT:	       class methods 0x\[\[:xdigit:\]\]+
-# CHECKI386-NEXT:		         obsolete 0x00000000
-# CHECKI386-NEXT:		     method_count 1
-# CHECKI386-NEXT:		      method_name 0x\[\[:xdigit:\]\]+ categoryClass
-# CHECKI386-NEXT:		     method_types 0x\[\[:xdigit:\]\]+ v8@0:4
-# CHECKI386-NEXT:		       method_imp 0x\[\[:xdigit:\]\]+ \+[Dylib(Category) categoryClass]
-# CHECKI386-NEXT:Contents of (__OBJC,__image_info) section
-# CHECKI386-NEXT:  version 0
-# CHECKI386-NEXT:    flags 0x40 RR
 
 clean:
 	rm -f test_*

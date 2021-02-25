@@ -1,1 +1,0 @@
-{"archives":["/Users/mtrent/git/cctools/tests/test-cases/libtool-ldtrace-json-file/libbar.a","/Users/mtrent/git/cctools/tests/test-cases/libtool-ldtrace-json-file/libfoo.a"]}

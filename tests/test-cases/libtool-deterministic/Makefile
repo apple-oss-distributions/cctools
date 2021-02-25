@@ -18,8 +18,8 @@ all:
 	$(FAIL_IF_SUCCESS) cmp libfoo1.a libfoo2.a
 	${OTOOL} -av libfoo1.a | ${CHECK}
 #CHECK: Archive : libfoo1.a
-#CHECK: -rw-r--r--  0/0      44 Wed Dec 31 16:00:00 1969 __.SYMDEF SORTED
-#CHECK: -rw-r--r--  0/0     620 Wed Dec 31 16:00:00 1969 libfoo.o
+# CHECK-NEXT: -rw-r--r--  0/0 \s+\d+ Wed Dec 31 16:00:00 1969 __.SYMDEF SORTED
+# CHECK-NEXT: -rw-r--r--  0/0 \s+\d+ Wed Dec 31 16:00:00 1969 libfoo.o
 
 	# build a second deterministic library, verify identity
 	sleep 1

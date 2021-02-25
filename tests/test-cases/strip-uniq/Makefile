@@ -9,9 +9,9 @@ all:
 	${CC} -arch $(ARCH) -g -o foo.o -c foo.c
 	${CC} -arch $(ARCH) -g -o bar.o -c bar.c
 	${CC} -arch $(ARCH) -g -o main.o -c main.c
-	${LD} -lsystem -o main foo.o bar.o main.o 2>&1
-	
-	# verify the linker uniqed the local strings, and if so, 
+	${LD} -lSystem -o main foo.o bar.o main.o 2>&1
+
+	# verify the linker uniqed the local strings, and if so,
 	# strip the binary and verify the strings are still unqiued
 	uniq=`nm -px main | awk '{ print $$2 " " $$5 " " $$6 }' |	     \
 		grep '^0e ' | uniq | wc -l | tr -d " "`;		     \

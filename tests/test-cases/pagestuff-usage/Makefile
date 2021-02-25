@@ -17,14 +17,16 @@ include ${TESTROOT}/include/common.makefile
 
 .PHONY: all clean
 
+PAGESTUFF_MACOS := ${PAGESTUFF} -pagesize 0x1000
+
 all:
 	# General Usage
 	${PAGESTUFF} 2>&1 | ${CHECK} -p USAGE
 	${PAGESTUFF} testfile 2>&1 | ${CHECK} -p USAGE
-	${PAGESTUFF} -arch 2>&1 | ${CHECK} -p USAGE
 # USAGE: Usage: .*pagestuff mach-o [-arch name] [-p] [-a] pagenumber [pagenumber ...]
 
 	# Missing Arch
+	${PAGESTUFF} -arch 2>&1 | ${CHECK} -p NOARCH
 	${PAGESTUFF} testfile -arch 2>&1 | ${CHECK} -p NOARCH
 # NOARCH: error: .*pagestuff: missing argument to -arch option
 
@@ -37,8 +39,8 @@ all:
 	${PAGESTUFF} testfile -arch x86_64 2>&1 | ${CHECK} -p USAGE
 
 	# All pages
-	${PAGESTUFF} testfile -arch x86_64 -a 2>&1 | ${CHECK} -p ALL
-	${PAGESTUFF} testfile -a 2>&1 | ${CHECK} -p ALL
+	${PAGESTUFF_MACOS} testfile -arch x86_64 -a 2>&1 | ${CHECK} -p ALL
+	${PAGESTUFF_MACOS} testfile -a 2>&1 | ${CHECK} -p ALL
 # ALL: File Page 0 contains Mach-O headers
 # ALL-NEXT: File Page 1 contains contents of section (__TEXT,__text)
 # ALL-NEXT: Symbols on file page 1 virtual address 0x100001370 to 0x100002000
@@ -94,13 +96,13 @@ all:
 # ALL-NEXT: File Page 10 contains data of code signature
 
 	# Bad Page
-	${PAGESTUFF} testfile -arch x86_64 11 2>&1 | ${CHECK} -p BADPAGE
+	${PAGESTUFF_MACOS} testfile -arch x86_64 11 2>&1 | ${CHECK} -p BADPAGE
 # BADPAGE: File for architecture x86_64 has no page 11 (has only 11 pages)
-	${PAGESTUFF} testfile 11 2>&1 | ${CHECK} -p BADPAGE2
+	${PAGESTUFF_MACOS} testfile 11 2>&1 | ${CHECK} -p BADPAGE2
 # BADPAGE2: File has no page 11 (file has only 11 pages)
 
 	# Page 1
-	${PAGESTUFF} testfile 1 2>&1 | ${CHECK} -p PAGE1
+	${PAGESTUFF_MACOS} testfile 1 2>&1 | ${CHECK} -p PAGE1
 # PAGE1: File Page 1 contains contents of section (__TEXT,__text)
 # PAGE1-NEXT: Symbols on file page 1 virtual address 0x100001370 to 0x100002000
 # PAGE1-NEXT:   0x0000000100001370 _main
@@ -111,7 +113,7 @@ all:
 # PAGE1-NEXT:   0x0000000100001d10 _read_file
 
 	# Page 1 3 5
-	${PAGESTUFF} testfile 1 3 5 2>&1 | ${CHECK} -p PAGE1_3_5
+	${PAGESTUFF_MACOS} testfile 1 3 5 2>&1 | ${CHECK} -p PAGE1_3_5
 # PAGE1_3_5: File Page 1 contains contents of section (__TEXT,__text)
 # PAGE1_3_5-NEXT: Symbols on file page 1 virtual address 0x100001370 to 0x100002000
 # PAGE1_3_5-NEXT:   0x0000000100001370 _main

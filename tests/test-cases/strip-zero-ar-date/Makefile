@@ -30,9 +30,9 @@ all:
 	${STRIP} foo.a 2>&1
 	${OTOOL} -av foo.a | ${CHECK} -p NOZERO
 # NOZERO: Archive : foo.a
-# NOZERO-NOT: .* Wed Dec 31 16:00:00 1969 __.SYMDEF SORTED
+# NOZERO-NOT: .* Wed Dec 31 \d+:00:00 1969 __.SYMDEF SORTED
 # NOZERO: .* __.SYMDEF SORTED
-# NOZERO-NOT: .* Wed Dec 31 16:00:00 1969 foo.o
+# NOZERO-NOT: .* Wed Dec 31 \d+:00:00 1969 foo.o
 # NOZERO: .* foo.o
 
 	# verify the archive is still newer than the .o file
@@ -42,8 +42,8 @@ all:
 	ZERO_AR_DATE=YES ${STRIP} foo.a 2>&1
 	${OTOOL} -av foo.a | ${CHECK} -p ZERO
 # ZERO: Archive : foo.a
-# ZERO: .* Wed Dec 31 16:00:00 1969 __.SYMDEF SORTED
-# ZERO: .* Wed Dec 31 16:00:00 1969 foo.o
+# ZERO: .* Wed Dec 31 \d+:00:00 1969 __.SYMDEF SORTED
+# ZERO: .* Wed Dec 31 \d+:00:00 1969 foo.o
 
 	# verify the archive is still newer than the .o file
 	ls -1tr foo.o foo.a | ${CHECK} -p LS

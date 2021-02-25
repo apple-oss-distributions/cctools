@@ -1,2 +1,0 @@
-[Logging for XBS] Used static archive: /Users/mtrent/git/cctools/tests/test-cases/libtool-ldtrace-stderr/libbar.a
-[Logging for XBS] Used static archive: /Users/mtrent/git/cctools/tests/test-cases/libtool-ldtrace-stderr/libfoo.a

@@ -49,7 +49,7 @@ all: main
 # CHECK:                  (undefined) external _fooVers (from FooVers)
 # CHECK:                  (undefined) external _foo_bar (from libfoo_bar)
 # CHECK:                  (undefined) external _foo_barSuffix (from libfoo_barSuffix)
-# CHECK: 0000000100000e50 (__TEXT,__text) external _main
+# CHECK: \[\[:xdigit:\]\]+ (__TEXT,__text) external _main
 # CHECK:                  (undefined) external _qt (from QT)
 # CHECK:                  (undefined) external _qtPath (from QTPath)
 # CHECK:                  (undefined) external _x (from libx)

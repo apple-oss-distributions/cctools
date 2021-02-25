@@ -83,37 +83,35 @@ clean:
 ################################################################################
 #
 # CHECK: a.out:
-# CHECK-NEXT: bind information:
-# CHECK-NEXT: segment\s+section         address     value              type       \[\[:xdigit:\]\]+nd   dylib     symbol
-# CHECK-NEXT: __DATA\(_CONST\)?\s+__got           0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ rebase ptr 0x0
-# CHECK-NEXT: __DATA\(_CONST\)?\s+__got           0x\[\[:xdigit:\]\]+                    bind ptr   0x0      weak      __ZdlPv
-# CHECK-NEXT: __DATA\(_CONST\)?\s+__got           0x\[\[:xdigit:\]\]+                    bind ptr   0x0      weak      __Znwm
-# CHECK-NEXT: __DATA\(_CONST\)?\s+__got           0x\[\[:xdigit:\]\]+                    bind ptr   0x0      libc\+\+    ___cxa_call_unexpected
-# CHECK-NEXT: __DATA\(_CONST\)?\s+__got           0x\[\[:xdigit:\]\]+                    bind ptr   0x0      libSystem ___error
-# CHECK-NEXT: __DATA\(_CONST\)?\s+__got           0x\[\[:xdigit:\]\]+                    bind ptr   0x0      libc\+\+    ___gxx_personality_v0
-# CHECK-NEXT: __DATA\(_CONST\)?\s+__got           0x\[\[:xdigit:\]\]+                    bind ptr   0x0      weak      _a
-# CHECK-NEXT: __DATA\(_CONST\)?\s+__got           0x\[\[:xdigit:\]\]+                    bind ptr   0x0      libSystem _malloc
-# CHECK-NEXT: __DATA\(_CONST\)?\s+__mod_init_func 0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ rebase ptr 0x0
-# CHECK-NEXT: __DATA\(_CONST\)?\s+__const         0x\[\[:xdigit:\]\]+                    bind ptr   0x10     libc\+\+    __ZTVN10__cxxabiv117__class_type_infoE
-# CHECK-NEXT: __DATA\(_CONST\)?\s+__const         0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ rebase ptr 0x0
-# CHECK-NEXT: __DATA\(_CONST\)?\s+__data          0x\[\[:xdigit:\]\]+                    bind ptr   0x\[\[:xdigit:\]\]+\s+weak      _b
-# CHECK-NEXT: __DATA\(_CONST\)?\s+__data          0x\[\[:xdigit:\]\]+                    bind ptr   0x\[\[:xdigit:\]\]+\s+weak      _b
+# CHECK-NEXT: dyld information:
+# CHECK-NEXT: segment      section address     pointer            type   \[\[:xdigit:\]\]+nd   dylib     symbol/vm address
+# CHECK-NEXT: __DATA_CONST __got   0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ rebase                    0x\[\[:xdigit:\]\]+
+# CHECK-NEXT: __DATA_CONST __got   0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind   0x0      weak      __ZdlPv
+# CHECK-NEXT: __DATA_CONST __got   0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind   0x0      weak      __Znwm
+# CHECK-NEXT: __DATA_CONST __got   0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind   0x0      libc\+\+    ___cxa_call_unexpected
+# CHECK-NEXT: __DATA_CONST __got   0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind   0x0      libSystem ___error
+# CHECK-NEXT: __DATA_CONST __got   0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind   0x0      libc\+\+    ___gxx_personality_v0
+# CHECK-NEXT: __DATA_CONST __got   0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind   0x0      weak      _a
+# CHECK-NEXT: __DATA_CONST __got   0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind   0x0      libSystem _malloc
+# CHECK-NEXT: __DATA_CONST __const 0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind   0x10     libc\+\+    __ZTVN10__cxxabiv117__class_type_infoE
+# CHECK-NEXT: __DATA_CONST __const 0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ rebase                    0x\[\[:xdigit:\]\]+
+# CHECK-NEXT: __DATA       __data  0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind   0x\[\[:xdigit:\]\]+\s* weak      _b
+# CHECK-NEXT: __DATA       __data  0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind   0x\[\[:xdigit:\]\]+\s* weak      _b
 
 ################################################################################
 #
 # CHECK64E: a.out:
-# CHECK64E-NEXT: bind information:
-# CHECK64E-NEXT: segment      section         address     value              type       \[\[:xdigit:\]\]+nd   dylib     symbol
-# CHECK64E-NEXT: __DATA_CONST __auth_got      0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind aptr  0x0      weak      __ZdlPv (JOP: diversity 0, address true, IA)
-# CHECK64E-NEXT: __DATA_CONST __auth_got      0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind aptr  0x0      weak      __Znwm (JOP: diversity 0, address true, IA)
-# CHECK64E-NEXT: __DATA_CONST __auth_got      0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind aptr  0x0      libc\+\+    ___cxa_call_unexpected (JOP: diversity 0, address true, IA)
-# CHECK64E-NEXT: __DATA_CONST __auth_got      0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind aptr  0x0      libSystem ___error (JOP: diversity 0, address true, IA)
-# CHECK64E-NEXT: __DATA_CONST __auth_got      0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind aptr  0x0      libSystem _malloc (JOP: diversity 0, address true, IA)
-# CHECK64E-NEXT: __DATA_CONST __got           0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ rebase ptr 0x0
-# CHECK64E-NEXT: __DATA_CONST __got           0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind aptr  0x0      libc\+\+    ___gxx_personality_v0 (JOP: diversity 0, address true, IA)
-# CHECK64E-NEXT: __DATA_CONST __got           0x\[\[:xdigit:\]\]+                    bind ptr   0x0      weak      _a
-# CHECK64E-NEXT: __DATA_CONST __mod_init_func 0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ rebase ptr 0x0
-# CHECK64E-NEXT: __DATA_CONST __const         0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind aptr  0x0      libc\+\+    __ZTVN10__cxxabiv117__class_type_infoE (JOP: diversity 0, address false, DA)
-# CHECK64E-NEXT: __DATA_CONST __const         0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ rebase ptr 0x0
-# CHECK64E-NEXT: __DATA       __data          0x\[\[:xdigit:\]\]+                    bind ptr   0x\[\[:xdigit:\]\]+\s* weak      _b
-# CHECK64E-NEXT: __DATA       __data          0x\[\[:xdigit:\]\]+                    bind ptr   0x\[\[:xdigit:\]\]+\s* weak      _b
+# CHECK64E-NEXT: dyld information:
+# CHECK64E-NEXT: segment      section    address     pointer            type   div    addr  key \[\[:xdigit:\]\]+nd   dylib     symbol/vm address
+# CHECK64E-NEXT: __DATA_CONST __auth_got 0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind   0x\[\[:xdigit:\]\]+ true  IA  0x0      weak      __ZdlPv
+# CHECK64E-NEXT: __DATA_CONST __auth_got 0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind   0x\[\[:xdigit:\]\]+ true  IA  0x0      weak      __Znwm
+# CHECK64E-NEXT: __DATA_CONST __auth_got 0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind   0x\[\[:xdigit:\]\]+ true  IA  0x0      libc\+\+    ___cxa_call_unexpected
+# CHECK64E-NEXT: __DATA_CONST __auth_got 0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind   0x\[\[:xdigit:\]\]+ true  IA  0x0      libSystem ___error
+# CHECK64E-NEXT: __DATA_CONST __auth_got 0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind   0x\[\[:xdigit:\]\]+ true  IA  0x0      libSystem _malloc
+# CHECK64E-NEXT: __DATA_CONST __got      0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ rebase                                     0x\[\[:xdigit:\]\]+
+# CHECK64E-NEXT: __DATA_CONST __got      0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind   0x\[\[:xdigit:\]\]+ true  IA  0x0      libc\+\+    ___gxx_personality_v0
+# CHECK64E-NEXT: __DATA_CONST __got      0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind                    0x0      weak      _a
+# CHECK64E-NEXT: __DATA_CONST __const    0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind   0x\[\[:xdigit:\]\]+ false DA  0x10     libc\+\+    __ZTVN10__cxxabiv117__class_type_infoE
+# CHECK64E-NEXT: __DATA_CONST __const    0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ rebase                                     0x\[\[:xdigit:\]\]+
+# CHECK64E-NEXT: __DATA       __data     0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind                    0x\[\[:xdigit:\]\]+\s* weak      _b
+# CHECK64E-NEXT: __DATA       __data     0x\[\[:xdigit:\]\]+ 0x\[\[:xdigit:\]\]+ bind                    0x\[\[:xdigit:\]\]+\s* weak      _b

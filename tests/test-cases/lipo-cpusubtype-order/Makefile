@@ -1,5 +1,6 @@
-# PLATFORM: MACOS IOS
+# PLATFORM: IOS
 
+PLATFORM = IOS
 TESTROOT = ../..
 include ${TESTROOT}/include/common.makefile
 
@@ -7,12 +8,12 @@ all:
 	for arch in armv7k arm64e arm64 arm64_32;			      \
 	do								      \
 	  ofile="foo.$$arch";						      \
-	  cc -arch $$arch -o $$ofile -dynamiclib foo.c > /dev/null 2>&1;      \
+	  $(CC) -arch $$arch -o $$ofile -dynamiclib foo.c > /dev/null 2>&1;      \
 	  files="$$files $$ofile";					      \
 	done;								      \
 	${LIPO} -create -output foo.dylib $$files;
 	${LIPO} -info foo.dylib | grep -e 'arm64 arm64e\s*$$' 		      \
-		| ${FAIL_IF_EMPTY}  
+		| ${FAIL_IF_EMPTY}
 	${PASS_IFF_SUCCESS} true
 
 clean:

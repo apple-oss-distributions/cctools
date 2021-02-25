@@ -14,7 +14,7 @@ all:
 	    -o preload ${TESTROOT}/src/preload.c
 	${OTOOLC} -hv preload | ${CHECK}
 # CHECK:      Mach header
-# CHECK-NEXT:       magic cputype cpusubtype  caps    filetype ncmds sizeofcmds      flags
+# CHECK-NEXT:       magic  cputype cpusubtype  caps    filetype ncmds sizeofcmds      flags
 # CHECK-NEXT: MH_MAGIC_64  .*\s+ALL  0x00     PRELOAD     \d+\s+\d+\s+NOUNDEFS
 
 	# produce the ordinary raw file

@@ -23,7 +23,7 @@ all:
 	${CC} -arch ${ARCH} ${TESTROOT}/src/verstool.c -S -o verstool.s -O2
 
 	# build the binary
-	${FAIL_IF_ERROR} ${AS} -arch ${ARCH} -q -o verstool.o verstool.s
+	${FAIL_IF_ERROR} ${AS} -arch ${ARCH} -q -o verstool.o verstool.s 2>&1
 	${FAIL_IF_ERROR} ${CC} -o verstool verstool.o -lsystem 2>&1
 
 	# run the binary, if applicable

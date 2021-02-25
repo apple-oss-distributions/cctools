@@ -30,8 +30,10 @@ DYLIB_CURRENT_VERSION = ${CCTB_VERSION}
 // libmacho driverkit compiles some code out
 OTHER_CFLAGS = ${inherited} -DCCTB_DRIVERKIT_ENABLED
 
-// Look for DriverKit headers in the include path
-HEADER_SEARCH_PATHS = ${SDKROOT}${CCTOOLS_LOCATION}/Runtime/usr/include ${inherited}
+// Look for DriverKit headers in the include path. These values are only for
+// tools like clang or tapi, not for installation.
+CCTB_DRIVERKIT_HEADERS_INCLUDE_PATH = ${SDKROOT}${DRIVERKITROOT}/Runtime/usr/include
+HEADER_SEARCH_PATHS = ${CCTB_DRIVERKIT_HEADERS_INCLUDE_PATH} ${inherited}
 
 // DriverKit libmacho needs to only link against a specific set of system
 // dylibs: libcompiler_rt, libdyld, libsystem_c, and libsystem_kernel. Note
@@ -78,6 +80,11 @@ PUBLIC_HEADERS_FOLDER_PATH = ${CCTOOLS_LOCATION}/Runtime/usr/include/mach-o
 // the expense of obfuscating the true value of OTHER_TAPI_FLAGSS.
 LIBMACHO_TAPI_FLAGS = -umbrella System -fapplication-extension
 
+// MDT <rdar://problem/59894566> cctools_ofiles does not install <mach-o/ldsyms.h> during installhdrs
+// Politely ask tapi to ignore these two files.
+EXCLUDE_NLIST_H = -exclude-public-header ${DSTROOT}${PUBLIC_HEADERS_FOLDER_PATH}/nlist.h
+EXCLUDE_LDSYMS_H = -exclude-public-header ${DSTROOT}${PUBLIC_HEADERS_FOLDER_PATH}/ldsyms.h
+
 SUPPORTS_TEXT_BASED_API = YES
 TAPI_VERIFY_MODE = Pedantic
-OTHER_TAPI_FLAGS = ${LIBMACHO_TAPI_FLAGS}
+OTHER_TAPI_FLAGS = ${LIBMACHO_TAPI_FLAGS} -I${CCTB_DRIVERKIT_HEADERS_INCLUDE_PATH} ${EXCLUDE_NLIST_H} ${EXCLUDE_LDSYMS_H}

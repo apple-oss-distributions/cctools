@@ -4,11 +4,11 @@ TESTROOT = ../..
 include ${TESTROOT}/include/common.makefile
 
 all:
-	${CC} -arch ${ARCH} -Wl,-preload -nodefaultlibs -e _main	     \
-	-o preload ${TESTROOT}/src/preload_bss.c
+	${CC} -arch ${ARCH} -Wl,-preload,-segalign,0x1000 -nodefaultlibs     \
+	  -e _main -o preload ${TESTROOT}/src/preload_bss.c
 	${OTOOLC} -hv preload | ${CHECK}
 # CHECK:      Mach header
-# CHECK-NEXT:       magic cputype cpusubtype  caps    filetype ncmds sizeofcmds      flags
+# CHECK-NEXT:       magic  cputype cpusubtype  caps    filetype ncmds sizeofcmds      flags
 # CHECK-NEXT: MH_MAGIC_64  .*\s+ALL  0x00     PRELOAD     \d+\s+\d+\s+NOUNDEFS
 
 	${MTOR} -v -start 0 -o preload.out preload | ${CHECK} -p PRELOAD

@@ -176,6 +176,13 @@ extern vm_offset_t		interrupt_stack[];
 #define CPU_SUBTYPE_MASK       0xff000000      /* mask for feature flags */
 #define CPU_SUBTYPE_LIB64      0x80000000      /* 64 bit libraries */
 
+/* CPU subtype capability flags for ptrauth on arm64e platforms */
+#define CPU_SUBTYPE_ARM64_PTR_AUTH_MASK 0x0f000000
+
+/* CPU subtype capability flags for ptrauth on arm64e platforms, take 2 */
+#define CPU_SUBTYPE_ARM64E_VERSIONED_ABI_MASK 0x80000000
+#define CPU_SUBTYPE_ARM64E_KERNEL_ABI_MASK 0x40000000
+#define CPU_SUBTYPE_ARM64E_PTR_AUTH_MASK 0x3f000000
 
 /*
  *	Object files that are hand-crafted to run on any
@@ -321,9 +328,9 @@ extern vm_offset_t		interrupt_stack[];
 
 #define	CPU_SUBTYPE_ARM64_ALL		((cpu_subtype_t) 0)
 #define	CPU_SUBTYPE_ARM64_V8		((cpu_subtype_t) 1)
+#define CPU_SUBTYPE_ARM64E		((cpu_subtype_t) 2)
 
 #define	CPU_SUBTYPE_ARM64_32_V8		((cpu_subtype_t) 1)
-#define	CPU_SUBTYPE_ARM64E		((cpu_subtype_t) 2)
 
 /*
  *	MC88000 subtypes

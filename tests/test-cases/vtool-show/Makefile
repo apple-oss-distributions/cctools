@@ -83,7 +83,7 @@ all:
 	    ${CHECK} -p SHOW_FAT
 	${VTOOL} -arch x86_64 -arch x86_64h -show hello_fat 2>&1 |	     \
 	    ${CHECK} -p SHOW_FAT
-# SHOW_FAT:      hello_fat (architecture x86_64h):
+# SHOW_FAT:      hello_fat (architecture x86_64):
 # SHOW_FAT-NEXT: Load command \d+
 # SHOW_FAT-NEXT:       cmd LC_BUILD_VERSION
 # SHOW_FAT-NEXT:   cmdsize 32
@@ -97,7 +97,7 @@ all:
 # SHOW_FAT-NEXT:       cmd LC_SOURCE_VERSION
 # SHOW_FAT-NEXT:   cmdsize 16
 # SHOW_FAT-NEXT:   version 0.0
-# SHOW_FAT:      hello_fat (architecture x86_64):
+# SHOW_FAT:      hello_fat (architecture x86_64h):
 # SHOW_FAT-NEXT: Load command \d+
 # SHOW_FAT-NEXT:       cmd LC_BUILD_VERSION
 # SHOW_FAT-NEXT:   cmdsize 32
@@ -149,9 +149,9 @@ all:
 	${VTOOL} -show-space hello 2>&1 | ${CHECK} -p SHOWSPACE
 #SHOWSPACE:      hello:
 #SHOWSPACE-NEXT:   Mach header size:     32
-#SHOWSPACE-NEXT:   Load command size:  \d+
-#SHOWSPACE-NEXT:   Available space:    \d+
-#SHOWSPACE-NEXT:   Total:              \d+
+#SHOWSPACE-NEXT:   Load command size: \s*\d+
+#SHOWSPACE-NEXT:   Available space: \s*\d+
+#SHOWSPACE-NEXT:   Total: \s*\d+
 
 	echo PASS
 

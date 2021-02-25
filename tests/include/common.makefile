@@ -17,7 +17,7 @@ TEST = $(shell basename `pwd`)
 # Mach-O slices.
 ifeq ($(PLATFORM), MACOS)
 	ARCH        := x86_64
-	VALID_ARCHS := i386 x86_64 x86_64h
+	VALID_ARCHS := x86_64
 	SDKROOT     := $(shell xcodebuild -sdk macosx.internal -version Path 2>/dev/null)
 	SDKVERS     := $(shell xcodebuild -sdk macosx.internal -version PlatformVersion 2>/dev/null)
 	TOOLCHAIN   := OSX${SDKVERS}
@@ -44,14 +44,19 @@ ifeq ($(PLATFORM), TVOS)
 	TOOLCHAIN   := AppleTVOS${SDKVERS}
 endif
 
+ARCHS_FAT := $(foreach arch,$(VALID_ARCHS),-arch $(arch))
+ARCH_THIN := $(foreach arch,$(firstword $(VALID_ARCHS)),-arch $(arch))
+
 # set the command invocations for cctools. If CCTOOLS_ROOT is set and exists
 # in the filesystem use cctools from that root. Otherwise, fall back to the
 # xcode toolchain.
 ifneq ("$(wildcard ${CCTOOLS_ROOT})","")
+	AR 	 =	$(CCTOOLS_ROOT)/usr/bin/ar
 	AS 	 =	$(CCTOOLS_ROOT)/usr/bin/as
 	BITCODE_STRIP = $(CCTOOLS_ROOT)/usr/bin/bitcode_strip
 	CHECKSYMS=	$(CCTOOLS_ROOT)/usr/local/bin/checksyms
 	CS_ALLOC =	$(CCTOOLS_ROOT)/usr/bin/codesign_allocate
+	CTF_INSERT =	$(CCTOOLS_ROOT)/usr/bin/ctf_insert
 	LIBTOOL	 =	$(CCTOOLS_ROOT)/usr/bin/libtool
 	LIPO	 =	$(CCTOOLS_ROOT)/usr/bin/lipo
 	LLOTOOL  =      $(CCTOOLS_ROOT)/usr/bin/llvm-otool
@@ -73,10 +78,12 @@ ifneq ("$(wildcard ${CCTOOLS_ROOT})","")
 
 	STUFF_TESTS =	$(CCTOOLS_ROOT)/usr/local/bin/cctools/libstuff_test
 else
+	AR 	 =	`xcrun --sdk $(SDKROOT) -f ar`
 	AS 	 =	`xcrun --sdk $(SDKROOT) -f as`
 	BITCODE_STRIP = `xcrun --sdk $(SDKROOT) -f bitcode_strip`
 	CHECKSYMS=	`xcrun --sdk $(SDKROOT) -f checksyms`
 	CS_ALLOC =	`xcrun --sdk $(SDKROOT) -f codesign_allocate`
+	CTF_INSERT =	`xcrun --sdk $(SDKROOT) -f ctf_insert`
 	LIBTOOL	 =	`xcrun --sdk $(SDKROOT) -f libtool`
 	LIPO	 =	`xcrun --sdk $(SDKROOT) -f lipo`
 	LLOTOOL  =      `xcrun --sdk $(SDKROOT) -f llvm-otool`
@@ -100,6 +107,7 @@ endif
 # set other common tool commands
 CC		=	xcrun --toolchain $(TOOLCHAIN) cc -isysroot $(SDKROOT)
 CPP		=	xcrun --toolchain $(TOOLCHAIN) c++ -isysroot $(SDKROOT)
+LD		=	xcrun --toolchain $(TOOLCHAIN) ld -syslibroot $(SDKROOT)
 MKDIRS		=	mkdir -p
 
 # utilites for Makefiles

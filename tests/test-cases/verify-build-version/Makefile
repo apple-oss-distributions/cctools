@@ -6,6 +6,7 @@ include ${TESTROOT}/include/common.makefile
 all:
 	# build the vers tool, for now
 	$(CC) -o verstool ${TESTROOT}/src/verstool.c
+	codesign -s - verstool
 
 	# compile a dylib
 	$(CC) -dynamiclib -o foo.dylib foo.c

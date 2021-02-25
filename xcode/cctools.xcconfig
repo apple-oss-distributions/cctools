@@ -34,22 +34,37 @@ CURRENT_PROJECT_VERSION = ${RC_ProjectNameAndSourceVersion}
 RC_ProjectNameAndSourceVersion = cctools-localbuild
 RC_ProjectSourceVersion = 1
 
+// CCTB_IS_TRUE_ is a utility for normalizing boolean values within xcconfig
+// files, where values from Xcode and XBS may use different values for TRUE and
+// FALSE. CCTB_IS_TRUE represents TRUE as "YES" and FALSE as (NULL). Usage is:
+//
+//   CCTB_FLAG = ${CCTB_IS_TRUE_${XBS_FLAG}}
+//
+// TODO: Consider representing FALSE as "NO".
+
+CCTB_IS_TRUE_    =
+CCTB_IS_TRUE_0   =
+CCTB_IS_TRUE_NO  =
+CCTB_IS_TRUE_1   = YES
+CCTB_IS_TRUE_YES = YES
+
 // cctools builds are heavily dependent on context and configuration from B&I
 // build train settings. To ease project maintenance, all of the RC_ variables
 // consumed by the cctools project are consulted here and only here. This way
 // we can easily audit what settings are used by cctools and easily change the
 // project as these values are added or removed.
 
-CCTB_MACOS    = ${RC_MACOS}    // YES or (NULL)
-CCTB_IOS      = ${RC_IPHONE}   // YES or (NULL)
-CCTB_WATCHOS  = ${RC_WATCH}    // YES or (NULL)
-CCTB_TVOS     = ${RC_APPLETV}  // YES or (NULL)
-CCTB_BRIDGEOS = ${RC_BRIDGE}   // YES or (NULL)
-CCTB_XCODE    = ${RC_DEVTOOLS} // YES or (NULL)
+CCTB_MACOS     = ${CCTB_IS_TRUE_${RC_MACOS}}    // YES or (NULL)
+CCTB_IOS       = ${CCTB_IS_TRUE_${RC_IPHONE}}   // YES or (NULL)
+CCTB_WATCHOS   = ${CCTB_IS_TRUE_${RC_WATCH}}    // YES or (NULL)
+CCTB_TVOS      = ${CCTB_IS_TRUE_${RC_APPLETV}}  // YES or (NULL)
+CCTB_BRIDGEOS  = ${CCTB_IS_TRUE_${RC_BRIDGE}}   // YES or (NULL)
+CCTB_XCODE     = ${CCTB_IS_TRUE_${RC_DEVTOOLS}} // YES or (NULL)
+CCTB_DRIVERKIT = ${CCTB_IS_TRUE_${DRIVERKIT}}   // YES or (NULL)
 
-CCTB_PROJECT  = ${RC_ProjectName}
-CCTB_PROJVERS = ${RC_ProjectNameAndSourceVersion}
-CCTB_VERSION  = ${RC_ProjectSourceVersion}
+CCTB_PROJECT   = ${RC_ProjectName}
+CCTB_PROJVERS  = ${RC_ProjectNameAndSourceVersion}
+CCTB_VERSION   = ${RC_ProjectSourceVersion}
 
 // Currently B&I will set INSTALL_LOCATION before building cctools in order
 // to control the location of cctools at build time. Ideally the install

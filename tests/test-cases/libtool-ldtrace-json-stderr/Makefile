@@ -19,7 +19,10 @@ all:
 	LD_TRACE_DEPENDENTS=1 export LD_TRACE_DEPENDENTS;		     \
 	LD_TRACE_ARCHIVES=1 export LD_TRACE_ARCHIVES;			     \
 	${LIBTOOL} -static -o libbaz.a libbar.a libfoo.a 2>out.txt
-	$(FAIL_IF_ERROR) cmp out.txt expected.txt
+	#$(FAIL_IF_ERROR) cmp out.txt expected.txt
+	${CHECK} -i out.txt -p EXPECTED
+# EXPECTED: {"archives":[".*/libtool-ldtrace-json-stderr/libbar.a",".*/libtool-ldtrace-json-stderr/libfoo.a"]}
+
 	cat out.txt | $(PASS_IFF_VALID_PYTHON)
 
 clean:

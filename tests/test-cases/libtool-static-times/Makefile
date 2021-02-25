@@ -68,8 +68,8 @@ all:
 	ZERO_AR_DATE=YES ${LIBTOOL} -static -o foo.a foo.o
 	${OTOOL} -av foo.a | ${CHECK} -p ZERO
 # ZERO: Archive : foo.a
-# ZERO: .* Wed Dec 31 16:00:00 1969 __.SYMDEF SORTED
-# ZERO: .* Wed Dec 31 16:00:00 1969 foo.o
+# ZERO: .* Wed Dec 31 \d+:00:00 1969 __.SYMDEF SORTED
+# ZERO: .* Wed Dec 31 \d+:00:00 1969 foo.o
 
 	echo PASS
 

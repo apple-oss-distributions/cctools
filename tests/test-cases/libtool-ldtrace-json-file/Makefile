@@ -36,7 +36,10 @@ all:
 	LD_TRACE_ARCHIVES=1 export LD_TRACE_ARCHIVES;			     \
 	LD_TRACE_FILE=out.txt export LD_TRACE_FILE;			     \
 	${LIBTOOL} -static -o libbaz.a libbar.a libfoo.a
-	$(FAIL_IF_ERROR) cmp out.txt expected.txt
+	#$(FAIL_IF_ERROR) cmp out.txt expected.txt
+	${CHECK} -i out.txt -p EXPECTED1
+# EXPECTED1: {"archives":[".*/libtool-ldtrace-json-file/libbar.a",".*/libtool-ldtrace-json-file/libfoo.a"]}
+
 	cat out.txt | $(FAIL_UNLESS_VALID_PYTHON)
 
 	# verify LD_TRACE_DEPENDENTS will append to the target file. This will
@@ -45,7 +48,10 @@ all:
 	LD_TRACE_DEPENDENTS=1 export LD_TRACE_DEPENDENTS;		     \
 	LD_TRACE_FILE=out.txt export LD_TRACE_FILE;			     \
 	${LIBTOOL} -static -o libbaz.a libbar.a libfoo.a
-	$(PASS_IFF) cmp out.txt expected2.txt
+	#$(PASS_IFF) cmp out.txt expected2.txt
+	$(PASS_IFF) ${CHECK} -i out.txt -p EXPECTED2
+# EXPECTED2: {"archives":[".*/test-cases/libtool-ldtrace-json-file/libbar.a",".*/test-cases/libtool-ldtrace-json-file/libfoo.a"]}
+# EXPECTED2: {"archives":[".*/test-cases/libtool-ldtrace-json-file/libbar.a",".*/test-cases/libtool-ldtrace-json-file/libfoo.a"]}
 
 clean:
 	rm -rf foo.o bar.o libfoo.a libbar.a libbaz.a out.txt

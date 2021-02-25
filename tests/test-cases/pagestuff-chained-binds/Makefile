@@ -11,8 +11,8 @@ all:
 
 	${PAGESTUFF} hello -a | ${CHECK} -p OPTA
 # OPTA: File Page 0 contains Mach-O headers
-# OPTA: File Page 2 contains dyld info for chained fixups
-# OPTA: File Page 2 contains dyld info for exported symbols (TRIE)
+# OPTA: File Page \d+ contains dyld info for chained fixups
+# OPTA: File Page \d+ contains dyld info for exported symbols (TRIE)
 
 	${PAGESTUFF} hello -p | ${CHECK} -p OPTP
 # OPTP:      FP_MACH_O
