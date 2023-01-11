@@ -368,8 +368,8 @@ all:
 	${CC} -arch x86_64 -o hello ${TESTROOT}/src/hello.c
 	codesign -s - hello
 	${VTOOL} -set-source-version 1 -o hello2 hello 2>&1 |		     \
-	    ${CHECK} -p CODESIGN
-# CODESIGN: .*vtool warning: code signature will be invalid for hello2
+	  ${CHECK} -p CS_WARN
+	## # CS_WARN: .*vtool warning: code signature will be invalid for hello2
 
 	echo PASS
 

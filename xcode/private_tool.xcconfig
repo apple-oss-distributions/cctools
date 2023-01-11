@@ -17,3 +17,9 @@ INSTALL_PATH = ${CCTOOLS_USRLOCALBIN}
 CCTOOLS_C_FLAGS_LTO = -DLTO_SUPPORT
 
 OTHER_CFLAGS = ${inherited} ${CCTOOLS_C_FLAGS_LTO}
+
+// MacOS and Xcode default toolchain binaries are built with support for
+// re-signing binaries via libcodedirectory.
+CCTOOLS_LDFLAGS_CODEDIR_YES = ${TOOLCHAIN_DIR}/usr/lib/libcodedirectory.dylib -rpath @executable_path/../../lib
+CCTOOLS_LDFLAGS_CODEDIR = ${CCTOOLS_LDFLAGS_CODEDIR_${CCTB_MACOS}${CCTB_XCODE}}
+OTHER_LDFLAGS = ${inherited} ${CCTOOLS_LDFLAGS_CODEDIR}

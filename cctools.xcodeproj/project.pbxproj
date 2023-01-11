@@ -527,11 +527,13 @@
 		DE822A1E21CDAB2B008CD150 /* slot_name.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F6721CC1ABB00C4ADA1 /* slot_name.c */; };
 		DE822A1F21CDAB2B008CD150 /* sparc_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F7021CC1ABB00C4ADA1 /* sparc_swap.c */; };
 		DE822A2021CDAB2B008CD150 /* swap.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F7121CC1ABB00C4ADA1 /* swap.c */; };
+		DE8239C424E0A1B9004CD381 /* libstuff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE09612C21CC218E00C4ADA1 /* libstuff.a */; };
 		DE97E91B21F3B72700C7947D /* libstuff_test.c in Sources */ = {isa = PBXBuildFile; fileRef = DE97E91A21F3B72700C7947D /* libstuff_test.c */; };
 		DE97E92421F3B86100C7947D /* libstuff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE09612C21CC218E00C4ADA1 /* libstuff.a */; };
 		DE97E92621F3B8EC00C7947D /* guess_short_name_test.c in Sources */ = {isa = PBXBuildFile; fileRef = DE97E92521F3B8EC00C7947D /* guess_short_name_test.c */; };
 		DE97E92921F3B91900C7947D /* test.c in Sources */ = {isa = PBXBuildFile; fileRef = DE97E92721F3B91800C7947D /* test.c */; };
 		DE97E92B21F3B97A00C7947D /* null_test.c in Sources */ = {isa = PBXBuildFile; fileRef = DE97E92A21F3B97A00C7947D /* null_test.c */; };
+		DE9B64BB24DC900600D6B674 /* code_directory.c in Sources */ = {isa = PBXBuildFile; fileRef = DE9B64BA24DC900600D6B674 /* code_directory.c */; };
 		DEA1B37B221F52A4003A9149 /* reloc.h in Headers */ = {isa = PBXBuildFile; fileRef = DE0960A421CC1ABC00C4ADA1 /* reloc.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DEA1B37C221F52C8003A9149 /* fat.h in Headers */ = {isa = PBXBuildFile; fileRef = DE0960B121CC1ABC00C4ADA1 /* fat.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DEA240A221CE0C250026D013 /* libsyminfo.3 in CopyFiles */ = {isa = PBXBuildFile; fileRef = DE095FC421CC1ABB00C4ADA1 /* libsyminfo.3 */; };
@@ -1675,18 +1677,15 @@
 		DE095F5821CC1ABB00C4ADA1 /* fail-if-exit-non-zero.pl */ = {isa = PBXFileReference; lastKnownFileType = text.script.perl; path = "fail-if-exit-non-zero.pl"; sourceTree = "<group>"; };
 		DE095F5921CC1ABB00C4ADA1 /* pass-iff-exit-non-zero.pl */ = {isa = PBXFileReference; lastKnownFileType = text.script.perl; path = "pass-iff-exit-non-zero.pl"; sourceTree = "<group>"; };
 		DE095F5A21CC1ABB00C4ADA1 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		DE095F5C21CC1ABB00C4ADA1 /* verstool.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = verstool.c; sourceTree = "<group>"; };
 		DE095F5D21CC1ABB00C4ADA1 /* common.makefile */ = {isa = PBXFileReference; lastKnownFileType = text; path = common.makefile; sourceTree = "<group>"; };
 		DE095F5E21CC1ABB00C4ADA1 /* README.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		DE095F5F21CC1ABB00C4ADA1 /* run-tests */ = {isa = PBXFileReference; lastKnownFileType = text.script.perl; path = "run-tests"; sourceTree = "<group>"; };
-		DE095F6121CC1ABB00C4ADA1 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		DE095F6321CC1ABB00C4ADA1 /* libsyminfo.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = libsyminfo.c; sourceTree = "<group>"; };
 		DE095F6521CC1ABB00C4ADA1 /* shlib.ofileList */ = {isa = PBXFileReference; lastKnownFileType = text; path = shlib.ofileList; sourceTree = "<group>"; };
 		DE095F6621CC1ABB00C4ADA1 /* getsegbyname.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = getsegbyname.c; sourceTree = "<group>"; };
 		DE095F6721CC1ABB00C4ADA1 /* slot_name.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = slot_name.c; sourceTree = "<group>"; };
 		DE095F6821CC1ABB00C4ADA1 /* i386_swap.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = i386_swap.c; sourceTree = "<group>"; };
 		DE095F6921CC1ABB00C4ADA1 /* m88k_swap.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = m88k_swap.c; sourceTree = "<group>"; };
-		DE095F6A21CC1ABB00C4ADA1 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		DE095F6B21CC1ABB00C4ADA1 /* arch.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = arch.c; sourceTree = "<group>"; };
 		DE095F6C21CC1ABB00C4ADA1 /* get_end.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = get_end.c; sourceTree = "<group>"; };
 		DE095F6D21CC1ABB00C4ADA1 /* dylib.ofileList */ = {isa = PBXFileReference; lastKnownFileType = text; path = dylib.ofileList; sourceTree = "<group>"; };
@@ -1702,10 +1701,9 @@
 		DE095F7A21CC1ABB00C4ADA1 /* cmpdylib.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = cmpdylib.c; sourceTree = "<group>"; };
 		DE095F7B21CC1ABB00C4ADA1 /* seg_hack.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = seg_hack.c; sourceTree = "<group>"; };
 		DE095F7C21CC1ABB00C4ADA1 /* strings.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = strings.c; sourceTree = "<group>"; };
-		DE095F7D21CC1ABB00C4ADA1 /* strip.c */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = strip.c; sourceTree = "<group>"; usesTabs = 1; };
+		DE095F7D21CC1ABB00C4ADA1 /* strip.c */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = strip.c; sourceTree = "<group>"; tabWidth = 8; usesTabs = 1; };
 		DE095F7E21CC1ABB00C4ADA1 /* inout.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = inout.c; sourceTree = "<group>"; };
 		DE095F7F21CC1ABB00C4ADA1 /* nm.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = nm.c; sourceTree = "<group>"; };
-		DE095F8021CC1ABB00C4ADA1 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		DE095F8121CC1ABB00C4ADA1 /* libtool.c */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = libtool.c; sourceTree = "<group>"; usesTabs = 1; };
 		DE095F8221CC1ABB00C4ADA1 /* check_dylib.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = check_dylib.c; sourceTree = "<group>"; };
 		DE095F8321CC1ABB00C4ADA1 /* indr.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = indr.c; sourceTree = "<group>"; };
@@ -1733,7 +1731,6 @@
 		DE095F9B21CC1ABB00C4ADA1 /* nm-classic.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = "nm-classic.1"; sourceTree = "<group>"; };
 		DE095F9C21CC1ABB00C4ADA1 /* bitcode_strip.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = bitcode_strip.1; sourceTree = "<group>"; };
 		DE095F9D21CC1ABB00C4ADA1 /* getsectdatafromheader.3 */ = {isa = PBXFileReference; lastKnownFileType = text; path = getsectdatafromheader.3; sourceTree = "<group>"; };
-		DE095F9E21CC1ABB00C4ADA1 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		DE095F9F21CC1ABB00C4ADA1 /* a.out.5 */ = {isa = PBXFileReference; lastKnownFileType = text; path = a.out.5; sourceTree = "<group>"; };
 		DE095FA021CC1ABB00C4ADA1 /* segedit.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = segedit.1; sourceTree = "<group>"; };
 		DE095FA121CC1ABB00C4ADA1 /* Mach-O.5 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Mach-O.5"; sourceTree = "<group>"; };
@@ -1779,7 +1776,6 @@
 		DE095FCB21CC1ABB00C4ADA1 /* symbol_list.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = symbol_list.c; sourceTree = "<group>"; };
 		DE095FCC21CC1ABB00C4ADA1 /* print.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = print.c; sourceTree = "<group>"; };
 		DE095FCD21CC1ABB00C4ADA1 /* dylib_roots.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = dylib_roots.c; sourceTree = "<group>"; };
-		DE095FCE21CC1ABB00C4ADA1 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		DE095FCF21CC1ABB00C4ADA1 /* execute.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = execute.c; sourceTree = "<group>"; };
 		DE095FD021CC1ABB00C4ADA1 /* checkout.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = checkout.c; sourceTree = "<group>"; usesTabs = 1; };
 		DE095FD121CC1ABB00C4ADA1 /* fatal_arch.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = fatal_arch.c; sourceTree = "<group>"; };
@@ -1818,7 +1814,6 @@
 		DE095FF421CC1ABC00C4ADA1 /* i860_disasm.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = i860_disasm.c; sourceTree = "<group>"; };
 		DE095FF521CC1ABC00C4ADA1 /* ofile_print.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofile_print.h; sourceTree = "<group>"; };
 		DE095FF621CC1ABC00C4ADA1 /* i386_disasm.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = i386_disasm.c; sourceTree = "<group>"; };
-		DE095FF721CC1ABC00C4ADA1 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		DE095FF821CC1ABC00C4ADA1 /* print_objc2_32bit.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = print_objc2_32bit.c; sourceTree = "<group>"; usesTabs = 0; };
 		DE095FF921CC1ABC00C4ADA1 /* m68k_disasm.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = m68k_disasm.c; sourceTree = "<group>"; };
 		DE095FFA21CC1ABC00C4ADA1 /* arm64_disasm.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = arm64_disasm.c; sourceTree = "<group>"; };
@@ -1843,7 +1838,6 @@
 		DE09600F21CC1ABC00C4ADA1 /* sparc_disasm.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = sparc_disasm.c; sourceTree = "<group>"; };
 		DE09601121CC1ABC00C4ADA1 /* print_objc.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = print_objc.c; sourceTree = "<group>"; };
 		DE09601321CC1ABC00C4ADA1 /* CompilerTools.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = CompilerTools.html; sourceTree = "<group>"; };
-		DE09601421CC1ABC00C4ADA1 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		DE09601521CC1ABC00C4ADA1 /* FatFiles.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = FatFiles.rtf; sourceTree = "<group>"; };
 		DE09601621CC1ABC00C4ADA1 /* Private_CompilerTools.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Private_CompilerTools.html; sourceTree = "<group>"; };
 		DE09601721CC1ABC00C4ADA1 /* Prebinding.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Prebinding.html; sourceTree = "<group>"; };
@@ -1852,7 +1846,6 @@
 		DE09601B21CC1ABC00C4ADA1 /* print.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = print.c; sourceTree = "<group>"; };
 		DE09601C21CC1ABC00C4ADA1 /* contents.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = contents.c; sourceTree = "<group>"; };
 		DE09601D21CC1ABC00C4ADA1 /* ar.5 */ = {isa = PBXFileReference; lastKnownFileType = text; path = ar.5; sourceTree = "<group>"; };
-		DE09601E21CC1ABC00C4ADA1 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		DE09601F21CC1ABC00C4ADA1 /* move.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = move.c; sourceTree = "<group>"; };
 		DE09602021CC1ABC00C4ADA1 /* ar.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ar.c; sourceTree = "<group>"; };
 		DE09602121CC1ABC00C4ADA1 /* append.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = append.c; sourceTree = "<group>"; };
@@ -1873,7 +1866,6 @@
 		DE09603321CC1ABC00C4ADA1 /* scnhdr.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = scnhdr.h; sourceTree = "<group>"; };
 		DE09603521CC1ABC00C4ADA1 /* libsyminfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = libsyminfo.h; sourceTree = "<group>"; };
 		DE09603721CC1ABC00C4ADA1 /* libsa.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = libsa.h; sourceTree = "<group>"; };
-		DE09603821CC1ABC00C4ADA1 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		DE09603A21CC1ABC00C4ADA1 /* eflags.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = eflags.h; sourceTree = "<group>"; };
 		DE09603C21CC1ABC00C4ADA1 /* xar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = xar.h; sourceTree = "<group>"; };
 		DE09603E21CC1ABC00C4ADA1 /* SymLoc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SymLoc.h; sourceTree = "<group>"; };
@@ -1972,7 +1964,6 @@
 		DE0960B921CC1ABC00C4ADA1 /* dwarf2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = dwarf2.h; sourceTree = "<group>"; };
 		DE0960BB21CC1ABC00C4ADA1 /* Disassembler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Disassembler.h; sourceTree = "<group>"; };
 		DE0960BD21CC1ABC00C4ADA1 /* mtoc.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = mtoc.c; sourceTree = "<group>"; };
-		DE0960BE21CC1ABC00C4ADA1 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		DE0960C021CC1ABC00C4ADA1 /* makerelocs.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = makerelocs.c; sourceTree = "<group>"; };
 		DE0960C221CC1ABC00C4ADA1 /* write_object.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = write_object.h; sourceTree = "<group>"; };
 		DE0960C321CC1ABC00C4ADA1 /* as.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = as.h; sourceTree = "<group>"; };
@@ -1994,7 +1985,6 @@
 		DE0960D321CC1ABC00C4ADA1 /* atof-ieee.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = "atof-ieee.c"; sourceTree = "<group>"; };
 		DE0960D421CC1ABC00C4ADA1 /* i386.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = i386.c; sourceTree = "<group>"; };
 		DE0960D521CC1ABC00C4ADA1 /* i860-opcode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "i860-opcode.h"; sourceTree = "<group>"; };
-		DE0960D621CC1ABC00C4ADA1 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		DE0960D721CC1ABC00C4ADA1 /* arm_reloc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = arm_reloc.h; sourceTree = "<group>"; };
 		DE0960D821CC1ABC00C4ADA1 /* fixes.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = fixes.c; sourceTree = "<group>"; };
 		DE0960D921CC1ABC00C4ADA1 /* i860.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = i860.c; sourceTree = "<group>"; };
@@ -2152,6 +2142,8 @@
 		DE97E92721F3B91800C7947D /* test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test.c; sourceTree = "<group>"; };
 		DE97E92821F3B91900C7947D /* test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = test.h; sourceTree = "<group>"; };
 		DE97E92A21F3B97A00C7947D /* null_test.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = null_test.c; sourceTree = "<group>"; };
+		DE9B64BA24DC900600D6B674 /* code_directory.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = code_directory.c; sourceTree = "<group>"; usesTabs = 0; };
+		DE9B64BC24DC912600D6B674 /* code_directory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = code_directory.h; sourceTree = "<group>"; };
 		DEA2409421CE04460026D013 /* as_license.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = as_license.sh; sourceTree = "<group>"; };
 		DEA639232328385500729793 /* depinfo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = depinfo.c; sourceTree = "<group>"; };
 		DEA63925232838B200729793 /* depinfo_test.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = depinfo_test.c; sourceTree = "<group>"; };
@@ -2558,6 +2550,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE8239C424E0A1B9004CD381 /* libstuff.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2877,7 +2870,6 @@
 			isa = PBXGroup;
 			children = (
 				DE095F5D21CC1ABB00C4ADA1 /* common.makefile */,
-				DE095F5C21CC1ABB00C4ADA1 /* verstool.c */,
 			);
 			path = include;
 			sourceTree = "<group>";
@@ -2886,7 +2878,6 @@
 			isa = PBXGroup;
 			children = (
 				DE095F6321CC1ABB00C4ADA1 /* libsyminfo.c */,
-				DE095F6121CC1ABB00C4ADA1 /* Makefile */,
 			);
 			path = cbtlibs;
 			sourceTree = "<group>";
@@ -2904,7 +2895,6 @@
 				DE095F7521CC1ABB00C4ADA1 /* i860_swap.c */,
 				DE095F7421CC1ABB00C4ADA1 /* m68k_swap.c */,
 				DE095F6921CC1ABB00C4ADA1 /* m88k_swap.c */,
-				DE095F6A21CC1ABB00C4ADA1 /* Makefile */,
 				DE095F6F21CC1ABB00C4ADA1 /* ppc_swap.c */,
 				DE095F6521CC1ABB00C4ADA1 /* shlib.ofileList */,
 				DE095F6721CC1ABB00C4ADA1 /* slot_name.c */,
@@ -2958,7 +2948,6 @@
 				DE095F8621CC1ABB00C4ADA1 /* install_name_tool.c */,
 				DE095F8121CC1ABB00C4ADA1 /* libtool.c */,
 				DE095F8721CC1ABB00C4ADA1 /* lipo.c */,
-				DE095F8021CC1ABB00C4ADA1 /* Makefile */,
 				DE095F7F21CC1ABB00C4ADA1 /* nm.c */,
 				DE095F8521CC1ABB00C4ADA1 /* pagestuff.c */,
 				DE095F7921CC1ABB00C4ADA1 /* redo_prebinding.c */,
@@ -2976,7 +2965,6 @@
 		DE095F8F21CC1ABB00C4ADA1 /* man */ = {
 			isa = PBXGroup;
 			children = (
-				DE095F9E21CC1ABB00C4ADA1 /* Makefile */,
 				DE095F9321CC1ABB00C4ADA1 /* as.1 */,
 				DE095F9C21CC1ABB00C4ADA1 /* bitcode_strip.1 */,
 				DE095FB521CC1ABB00C4ADA1 /* check_dylib.1 */,
@@ -3049,6 +3037,7 @@
 				DE095FEB21CC1ABB00C4ADA1 /* breakout.c */,
 				DE095FDE21CC1ABB00C4ADA1 /* bytesex.c */,
 				DE095FD021CC1ABB00C4ADA1 /* checkout.c */,
+				DE9B64BA24DC900600D6B674 /* code_directory.c */,
 				DE095FD921CC1ABB00C4ADA1 /* coff_bytesex.c */,
 				DE095FD821CC1ABB00C4ADA1 /* crc32.c */,
 				DEA639232328385500729793 /* depinfo.c */,
@@ -3067,7 +3056,6 @@
 				DE095FE921CC1ABB00C4ADA1 /* llvm.c */,
 				DE095FD221CC1ABB00C4ADA1 /* lto.c */,
 				DE095FE621CC1ABB00C4ADA1 /* macosx_deployment_target.c */,
-				DE095FCE21CC1ABB00C4ADA1 /* Makefile */,
 				DE095FC921CC1ABB00C4ADA1 /* ofile_error.c */,
 				DE095FD621CC1ABB00C4ADA1 /* ofile_get_word.c */,
 				DE095FDB21CC1ABB00C4ADA1 /* ofile.c */,
@@ -3112,7 +3100,6 @@
 				DE09600821CC1ABC00C4ADA1 /* m88k_disasm.c */,
 				DE095FF321CC1ABC00C4ADA1 /* m88k_disasm.h */,
 				DE09600421CC1ABC00C4ADA1 /* main.c */,
-				DE095FF721CC1ABC00C4ADA1 /* Makefile */,
 				DE09600721CC1ABC00C4ADA1 /* ofile_print.c */,
 				DE095FF521CC1ABC00C4ADA1 /* ofile_print.h */,
 				DE09600E21CC1ABC00C4ADA1 /* otool.h */,
@@ -3135,7 +3122,6 @@
 			children = (
 				DE09601321CC1ABC00C4ADA1 /* CompilerTools.html */,
 				DE09601521CC1ABC00C4ADA1 /* FatFiles.rtf */,
-				DE09601421CC1ABC00C4ADA1 /* Makefile */,
 				DE09601721CC1ABC00C4ADA1 /* Prebinding.html */,
 				DE09601621CC1ABC00C4ADA1 /* Private_CompilerTools.html */,
 			);
@@ -3155,7 +3141,6 @@
 				DE09602621CC1ABC00C4ADA1 /* delete.c */,
 				DE09602821CC1ABC00C4ADA1 /* extern.h */,
 				DE09601A21CC1ABC00C4ADA1 /* extract.c */,
-				DE09601E21CC1ABC00C4ADA1 /* Makefile */,
 				DE09602921CC1ABC00C4ADA1 /* misc.c */,
 				DE09601F21CC1ABC00C4ADA1 /* move.c */,
 				DE09602421CC1ABC00C4ADA1 /* pathnames.h */,
@@ -3178,7 +3163,6 @@
 				DE0960BA21CC1ABC00C4ADA1 /* llvm-c */,
 				DE09606F21CC1ABC00C4ADA1 /* mach */,
 				DE09608821CC1ABC00C4ADA1 /* mach-o */,
-				DE09603821CC1ABC00C4ADA1 /* Makefile */,
 				DEF3BC9623C68D8200EF319C /* modules */,
 				DE0960B621CC1ABC00C4ADA1 /* opcode */,
 				DE09603621CC1ABC00C4ADA1 /* standalone */,
@@ -3247,6 +3231,7 @@
 				DE09604421CC1ABC00C4ADA1 /* bool.h */,
 				DE09604A21CC1ABC00C4ADA1 /* breakout.h */,
 				DE09604121CC1ABC00C4ADA1 /* bytesex.h */,
+				DE9B64BC24DC912600D6B674 /* code_directory.h */,
 				DE09605721CC1ABC00C4ADA1 /* crc32.h */,
 				DE4B20552326CB1C00C8A22F /* depinfo.h */,
 				DE1FBBFA249B1D4000293E8D /* diagnostics.h */,
@@ -3578,7 +3563,6 @@
 		DE0960BC21CC1ABC00C4ADA1 /* efitools */ = {
 			isa = PBXGroup;
 			children = (
-				DE0960BE21CC1ABC00C4ADA1 /* Makefile */,
 				DE0960C021CC1ABC00C4ADA1 /* makerelocs.c */,
 				DE0960BD21CC1ABC00C4ADA1 /* mtoc.c */,
 				DEC00B6A220012C80079FFD3 /* mtor.c */,
@@ -3645,7 +3629,6 @@
 				DE0960CC21CC1ABC00C4ADA1 /* m88k-check.c */,
 				DE09610721CC1ABC00C4ADA1 /* m88k-opcode.h */,
 				DE0960DD21CC1ABC00C4ADA1 /* m88k.c */,
-				DE0960D621CC1ABC00C4ADA1 /* Makefile */,
 				DE0960E121CC1ABC00C4ADA1 /* md.h */,
 				DE0960FD21CC1ABC00C4ADA1 /* messages.c */,
 				DE0960CA21CC1ABC00C4ADA1 /* messages.h */,
@@ -5337,6 +5320,7 @@
 				DE09614C21CC2BEC00C4ADA1 /* llvm.c in Sources */,
 				DE1FBBFD249B1D4000293E8D /* diagnostics.c in Sources */,
 				DE09614E21CC2BEC00C4ADA1 /* macosx_deployment_target.c in Sources */,
+				DE9B64BB24DC900600D6B674 /* code_directory.c in Sources */,
 				DE09615E21CC2BEC00C4ADA1 /* writeout.c in Sources */,
 				DE09613D21CC2BEC00C4ADA1 /* bytesex.c in Sources */,
 				DE09615B21CC2BEC00C4ADA1 /* version_number.c in Sources */,
@@ -6667,7 +6651,7 @@
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_MODULES = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
@@ -6732,7 +6716,7 @@
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_MODULES = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
@@ -6912,6 +6896,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
 		};
@@ -6966,6 +6951,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Release;
 		};
@@ -8202,6 +8188,11 @@
 				OTHER_CFLAGS = (
 					"${inherited}",
 					"-DNMEDIT",
+					"${CCTOOLS_C_FLAGS_CODEDIR}",
+				);
+				OTHER_LDFLAGS = (
+					"${inherited}",
+					"${CCTOOLS_LDFLAGS_CODEDIR}",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -8258,6 +8249,11 @@
 				OTHER_CFLAGS = (
 					"${inherited}",
 					"-DNMEDIT",
+					"${CCTOOLS_C_FLAGS_CODEDIR}",
+				);
+				OTHER_LDFLAGS = (
+					"${inherited}",
+					"${CCTOOLS_LDFLAGS_CODEDIR}",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -8318,6 +8314,15 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = (
+					"${inherited}",
+					"${CCTOOLS_C_FLAGS_LTO}",
+					"${CCTOOLS_C_FLAGS_CODEDIR}",
+				);
+				OTHER_LDFLAGS = (
+					"${inherited}",
+					"${CCTOOLS_LDFLAGS_CODEDIR}",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -8370,6 +8375,15 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				OTHER_CFLAGS = (
+					"${inherited}",
+					"${CCTOOLS_C_FLAGS_LTO}",
+					"${CCTOOLS_C_FLAGS_CODEDIR}",
+				);
+				OTHER_LDFLAGS = (
+					"${inherited}",
+					"${CCTOOLS_LDFLAGS_CODEDIR}",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -8762,6 +8776,15 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = (
+					"${inherited}",
+					"${CCTOOLS_C_FLAGS_LTO}",
+					"${CCTOOLS_C_FLAGS_CODEDIR}",
+				);
+				OTHER_LDFLAGS = (
+					"${inherited}",
+					"${CCTOOLS_LDFLAGS_CODEDIR}",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -8814,6 +8837,15 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				OTHER_CFLAGS = (
+					"${inherited}",
+					"${CCTOOLS_C_FLAGS_LTO}",
+					"${CCTOOLS_C_FLAGS_CODEDIR}",
+				);
+				OTHER_LDFLAGS = (
+					"${inherited}",
+					"${CCTOOLS_LDFLAGS_CODEDIR}",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -8854,6 +8886,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -8873,6 +8906,17 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = (
+					"${inherited}",
+					"${CCTOOLS_C_FLAGS_LTO}",
+				);
+				OTHER_LDFLAGS = (
+					"${inherited}",
+					"-sectcreate",
+					__TEXT,
+					__info_plist,
+					"${SRCROOT}/misc/codesign_allocate-Info.plist",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -8913,6 +8957,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -8925,6 +8970,17 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				OTHER_CFLAGS = (
+					"${inherited}",
+					"${CCTOOLS_C_FLAGS_LTO}",
+				);
+				OTHER_LDFLAGS = (
+					"${inherited}",
+					"-sectcreate",
+					__TEXT,
+					__info_plist,
+					"${SRCROOT}/misc/codesign_allocate-Info.plist",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -8984,6 +9040,15 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = (
+					"${inherited}",
+					"${CCTOOLS_C_FLAGS_LTO}",
+					"${CCTOOLS_C_FLAGS_CODEDIR}",
+				);
+				OTHER_LDFLAGS = (
+					"${inherited}",
+					"${CCTOOLS_LDFLAGS_CODEDIR}",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -9036,6 +9101,15 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				OTHER_CFLAGS = (
+					"${inherited}",
+					"${CCTOOLS_C_FLAGS_LTO}",
+					"${CCTOOLS_C_FLAGS_CODEDIR}",
+				);
+				OTHER_LDFLAGS = (
+					"${inherited}",
+					"${CCTOOLS_LDFLAGS_CODEDIR}",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -9095,6 +9169,15 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = (
+					"${inherited}",
+					"${CCTOOLS_C_FLAGS_LTO}",
+					"${CCTOOLS_C_FLAGS_CODEDIR}",
+				);
+				OTHER_LDFLAGS = (
+					"${inherited}",
+					"${CCTOOLS_LDFLAGS_CODEDIR}",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -9147,6 +9230,15 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				OTHER_CFLAGS = (
+					"${inherited}",
+					"${CCTOOLS_C_FLAGS_LTO}",
+					"${CCTOOLS_C_FLAGS_CODEDIR}",
+				);
+				OTHER_LDFLAGS = (
+					"${inherited}",
+					"${CCTOOLS_LDFLAGS_CODEDIR}",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -10254,7 +10346,7 @@
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_MODULES = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
@@ -10316,7 +10408,7 @@
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_MODULES = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
@@ -11627,7 +11719,7 @@
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "compiler-default";
-				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_MODULES = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
@@ -11675,6 +11767,10 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"${inherited}",
+					"${CCTOOLS_LDFLAGS_CODEDIR}",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -11689,7 +11785,7 @@
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "compiler-default";
-				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_MODULES = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
@@ -11730,6 +11826,10 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				OTHER_LDFLAGS = (
+					"${inherited}",
+					"${CCTOOLS_LDFLAGS_CODEDIR}",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -11810,6 +11910,15 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = (
+					"${inherited}",
+					"${CCTOOLS_C_FLAGS_LTO}",
+					"${CCTOOLS_C_FLAGS_CODEDIR}",
+				);
+				OTHER_LDFLAGS = (
+					"${inherited}",
+					"${CCTOOLS_LDFLAGS_CODEDIR}",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -11865,6 +11974,15 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				OTHER_CFLAGS = (
+					"${inherited}",
+					"${CCTOOLS_C_FLAGS_LTO}",
+					"${CCTOOLS_C_FLAGS_CODEDIR}",
+				);
+				OTHER_LDFLAGS = (
+					"${inherited}",
+					"${CCTOOLS_LDFLAGS_CODEDIR}",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};

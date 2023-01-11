@@ -381,7 +381,7 @@ sub main {
   # to copy themselves.
   if ($test_filter) {
     print "copying\n" if ($verbose);
-    for my $sub ("bin", "include", "src") {
+    for my $sub ("bin", "include", "src", "data") {
       print "\t$sub ...\n" if ($verbose);
       system "ditto $src_testroot/$sub $dst_testroot/$sub" and
         die "can't copy $src_testroot/$sub into $dst_testroot/$sub: $!\n";

@@ -8,7 +8,13 @@ include ${TESTROOT}/include/common.makefile
 
 all:
 	# compile a bitcode app
+	#
+	# NOTE: In GlacierPoint ld64 changed to ad-hoc sign all code. And as
+	# of rdar://51911417 bitcode_strip will re-sign these signatures. So
+	# these tests are only meaningful in the context of files signed by
+	# codesign, or when bitcode_stripping Apple-signed binaries.
 	${CC} -arch arm64_32 -fembed-bitcode -o hello ${TESTROOT}/src/hello.c
+	${CS_ALLOC} -r -i hello -o hello
 	codesign -s - hello
 
 	################################################################
@@ -16,6 +22,8 @@ all:
 	# test various options, and verify the code signature is removed
 	#
 	# remove the bitcode segment (-r)
+	#
+
 	${BITCODE_STRIP} -r -o hello.st hello
 	${OTOOLC} -lv hello.st | ${CHECK} -p NOCS
 

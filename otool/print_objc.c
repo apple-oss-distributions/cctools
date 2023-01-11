@@ -500,6 +500,20 @@ static enum bool get_hashEntry(
     enum byte_sex host_byte_sex,
     enum bool swapped);
 
+#ifndef __cls_getinfo
+#define __cls_getinfo(cls,infomask)        ((cls)->info & (infomask))
+#endif
+
+// class is not a metaclass
+#ifndef CLS_CLASS
+#define CLS_CLASS               0x1
+#endif
+
+// class is a metaclass
+#ifndef CLS_META
+#define CLS_META                0x2
+#endif
+
 /*
  * Print the objc segment.
  */
@@ -636,7 +650,7 @@ print_objc_class:
 			printf("\n");
 		    printf("\t\t      isa 0x%08x", objc_class.isa);
 
-		    if(verbose && CLS_GETINFO(&objc_class, CLS_META)){
+		    if(verbose && __cls_getinfo(&objc_class, CLS_META)){
 			p = get_pointer(objc_class.isa, &left, objc_sections,
 					nobjc_sections, &cstring_section);
 			if(p != NULL)
@@ -675,9 +689,9 @@ print_objc_class:
 		    printf("\t\t     info 0x%08x",
 			   (unsigned int)objc_class.info);
 		    if(verbose){
-			if(CLS_GETINFO(&objc_class, CLS_CLASS))
+			if(__cls_getinfo(&objc_class, CLS_CLASS))
 			    printf(" CLS_CLASS\n");
-			else if(CLS_GETINFO(&objc_class, CLS_META))
+			else if(__cls_getinfo(&objc_class, CLS_META))
 			    printf(" CLS_META\n");
 			else
 			    printf("\n");
@@ -767,7 +781,7 @@ print_objc_class:
 			host_byte_sex, swapped, verbose) == FALSE)
 			printf(" (not in an " SEG_OBJC " section)\n");
 
-		    if(CLS_GETINFO((&objc_class), CLS_CLASS)){
+		    if(__cls_getinfo((&objc_class), CLS_CLASS)){
 			printf("\tMeta Class");
 			if(get_objc_class((uint32_t)objc_class.isa,
 			     &objc_class, &trunc, objc_sections, nobjc_sections,

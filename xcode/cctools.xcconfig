@@ -128,3 +128,5 @@ INSTALL_MODE_FLAG = a=rX
 // complain quite loudly about this particular situation, and so the warning is
 // disabled here. 
 OTHER_CFLAGS = -Wno-ambiguous-macro
+
+STRIP_STYLE = debugging

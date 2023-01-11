@@ -6,9 +6,6 @@ PLATFORM = MACOS
 TESTROOT = ../..
 include ${TESTROOT}/include/common.makefile
 
-# Temporary
-OTOOLC = /tmp/cctools.root/usr/bin/otool-classic
-# VALID_ARCHS := $(filter-out i386,$(VALID_ARCHS))
 
 # test_preload compiles and runs the test
 #   $1 is the arch

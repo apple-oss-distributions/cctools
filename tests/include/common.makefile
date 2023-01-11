@@ -57,6 +57,7 @@ ifneq ("$(wildcard ${CCTOOLS_ROOT})","")
 	CHECKSYMS=	$(CCTOOLS_ROOT)/usr/local/bin/checksyms
 	CS_ALLOC =	$(CCTOOLS_ROOT)/usr/bin/codesign_allocate
 	CTF_INSERT =	$(CCTOOLS_ROOT)/usr/bin/ctf_insert
+	INSTALL_NAME_TOOL = $(CCTOOLS_ROOT)/usr/bin/install_name_tool
 	LIBTOOL	 =	$(CCTOOLS_ROOT)/usr/bin/libtool
 	LIPO	 =	$(CCTOOLS_ROOT)/usr/bin/lipo
 	LLOTOOL  =      $(CCTOOLS_ROOT)/usr/bin/llvm-otool
@@ -84,6 +85,7 @@ else
 	CHECKSYMS=	`xcrun --sdk $(SDKROOT) -f checksyms`
 	CS_ALLOC =	`xcrun --sdk $(SDKROOT) -f codesign_allocate`
 	CTF_INSERT =	`xcrun --sdk $(SDKROOT) -f ctf_insert`
+	INSTALL_NAME_TOOL = `xcrun --sdk $(SDKROOT) -f install_name_tool`
 	LIBTOOL	 =	`xcrun --sdk $(SDKROOT) -f libtool`
 	LIPO	 =	`xcrun --sdk $(SDKROOT) -f lipo`
 	LLOTOOL  =      `xcrun --sdk $(SDKROOT) -f llvm-otool`
@@ -101,11 +103,13 @@ else
 	STRIP	 = 	`xcrun --sdk $(SDKROOT) -f strip`
 	VTOOL	 = 	`xcrun --sdk $(SDKROOT) -f vtool`
 
-	STUFF_TESTS = 	${SDKROOT}/usr/local/bin/cctools/libstuff_test
+	TEMP1      := $(shell xcrun -sdk  $(SDKROOT) -find mtor)
+	TEMP2      := $(shell dirname ${TEMP1})
+	STUFF_TESTS = 	${TEMP2}/cctools/libstuff_test
 endif
 
 # set other common tool commands
-CC		=	xcrun --toolchain $(TOOLCHAIN) cc -isysroot $(SDKROOT)
+CC		=	xcrun -sdk $(SDKROOT) clang -isysroot $(SDKROOT)
 CPP		=	xcrun --toolchain $(TOOLCHAIN) c++ -isysroot $(SDKROOT)
 LD		=	xcrun --toolchain $(TOOLCHAIN) ld -syslibroot $(SDKROOT)
 MKDIRS		=	mkdir -p
@@ -131,3 +135,8 @@ FAIL_IF_STDIN		= ${MYDIR}/fail-if-stdin.pl
 # FAIL_IF_BAD_OBJ		= ${FAIL_IF_ERROR} ${OBJECTDUMP} >/dev/null
 VERIFY_ALIGN_16K	= $(MYDIR)/verify-align.pl -a 0x4000
 VERIFY_ALIGN_4K		= $(MYDIR)/verify-align.pl -a 0x1000
+
+# other useful variables
+TESTROOT		= $(shell cd ../../; pwd)
+TESTSRC			= ${TESTROOT}/src
+TESTDATA		= ${TESTROOT}/data

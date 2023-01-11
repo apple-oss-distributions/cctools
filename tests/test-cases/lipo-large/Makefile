@@ -27,7 +27,7 @@ all:
 	do								     \
 	  ofile="$(TMPDIR)/hello.$$arch";				     \
 	  files="$$ofile $$files";					     \
-	  cc -arch $$arch -o $$ofile ${TESTROOT}/src/hello.c		     \
+	  $(CC) -arch $$arch -o $$ofile ${TESTROOT}/src/hello.c		     \
 	    -Wl,-sectcreate,__ZERO,__zero1,$(TMPDIR)/zeroes;		     \
 	done;								     \
 									     \

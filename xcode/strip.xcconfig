@@ -24,8 +24,8 @@
 // against environment variables, this needs to be done in a round-about way
 // using nested variable expansion.
 STRIP_HEADER_SEARCH_PATHS = ${DT_TOOLCHAIN_DIR}/usr/local/include
-STRIP_OTHER_CFLAGS        = -DTRIE_SUPPORT
-STRIP_OTHER_LDFLAGS       = -lc++ -stdlib=libc++ -L${DT_TOOLCHAIN_DIR}/usr/local/lib -lprunetrie
+STRIP_OTHER_CFLAGS        = -DTRIE_SUPPORT ${CCTOOLS_C_FLAGS_CODEDIR}
+STRIP_OTHER_LDFLAGS       = -lc++ -stdlib=libc++ -L${DT_TOOLCHAIN_DIR}/usr/local/lib -lprunetrie ${CCTOOLS_LDFLAGS_CODEDIR}
 
 STRIP_HEADER_SEARCH_PATHS_MACOS_XOR_XCODE_YES = ${STRIP_HEADER_SEARCH_PATHS}
 STRIP_OTHER_CFLAGS_MACOS_XOR_XCODE_YES        = ${STRIP_OTHER_CFLAGS}

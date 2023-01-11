@@ -3,7 +3,7 @@
 # Install extra content along with the libmacho headers.
 #
 # This used to include the architecture-specific mach-o headers. Currently,
-# it is (or will be) only used to install the mach-o module.
+# it is only used to install the mach-o module.
 
 install_files() {
   src_dir=$1; shift
@@ -46,13 +46,14 @@ install_files() {
 # install_files ${src} ${dst} bool.h
 
 # install the /usr/include/mach-o module map
-#
-# This code was disabled due to
-#   <rdar://problem/58579774> Cannot build against iOSHostAdditions SDK : Redefinition of module MachO
-# The problem is clang does not support modules for sparse SDKs, as tracked
-# here:
-#   <rdar://problem/58622988> Clang module redefinition error when module exists in multiple SDK
-#
-# src=${SRCROOT}/include/modules
-# dst=${DSTROOT}/usr/include/mach-o
-# install -c -m 444 ${src}/mach-o.modulemap ${dst}/module.modulemap
+
+if [ \( "${RC_PROJECT_COMPILATION_PLATFORM}" = "osx" \) -a \( "${RC_PURPLE}" = "YES" \) ]
+then
+    # clang does not support modules for sparse SDKs, as tracked here:
+    #   <rdar://problem/58622988> Clang module redefinition error when module exists in multiple SDK
+    :
+else
+    src=${SRCROOT}/include/modules
+    dst=${DSTROOT}/usr/include/mach-o
+    install -c -m 444 ${src}/mach-o.modulemap ${dst}/module.modulemap
+fi

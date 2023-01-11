@@ -9,6 +9,7 @@ all:
 	$(CC) -arch $(ARCH) -Wl,-sectcreate,Memento,Mori,MementoMori1.txt    \
 		-Wl,-dirty_data_list,dirty_data.txt			     \
 		-o main main.c
+	codesign -s - main
 	$(OTOOL) -lv main | grep __DATA_DIRTY -A4 -B2 | $(CHECK)
 # CHECK:       cmd LC_SEGMENT_64
 # CHECK:   segname __DATA_DIRTY
@@ -21,7 +22,9 @@ all:
 	then								     \
 	    ./main | grep "Remember that you will die." | ${FAIL_IF_EMPTY};  \
 	fi
-	${SEGEDIT} -r Memento Mori MementoMori2.txt -o main2 main
+	${SEGEDIT} -r Memento Mori MementoMori2.txt -o main2 main 2>&1 |     \
+	    ${CHECK} -p CS_WARN
+# CS_WARN: .*changes being made to the file will invalidate the code signature in:.*
 	if [ "$(ARCH)" == "x64_64" ];					     \
 	then								     \
 	    ./main2 | grep "Always remember that you will die." |	     \
