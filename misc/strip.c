@@ -2617,7 +2617,8 @@ struct object *object)
 			section_type = s->flags & SECTION_TYPE;
 			if(section_type == S_LAZY_SYMBOL_POINTERS ||
 			   section_type == S_LAZY_DYLIB_SYMBOL_POINTERS ||
-			   section_type == S_NON_LAZY_SYMBOL_POINTERS)
+			   section_type == S_NON_LAZY_SYMBOL_POINTERS ||
+               section_type == S_THREAD_LOCAL_VARIABLE_POINTERS)
 			  stride = 4;
 			else if(section_type == S_SYMBOL_STUBS)
 			    stride = s->reserved2;
@@ -2643,7 +2644,8 @@ struct object *object)
 			section_type = s64->flags & SECTION_TYPE;
 			if(section_type == S_LAZY_SYMBOL_POINTERS ||
 			   section_type == S_LAZY_DYLIB_SYMBOL_POINTERS ||
-			   section_type == S_NON_LAZY_SYMBOL_POINTERS)
+			   section_type == S_NON_LAZY_SYMBOL_POINTERS ||
+               section_type == S_THREAD_LOCAL_VARIABLE_POINTERS)
 			  stride = 8;
 			else if(section_type == S_SYMBOL_STUBS)
 			    stride = s64->reserved2;
