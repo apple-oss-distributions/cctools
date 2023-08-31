@@ -1710,7 +1710,7 @@
 		DE095F8421CC1ABB00C4ADA1 /* ctf_insert.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ctf_insert.c; sourceTree = "<group>"; };
 		DE095F8521CC1ABB00C4ADA1 /* pagestuff.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = pagestuff.c; sourceTree = "<group>"; };
 		DE095F8621CC1ABB00C4ADA1 /* install_name_tool.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = install_name_tool.c; sourceTree = "<group>"; };
-		DE095F8721CC1ABB00C4ADA1 /* lipo.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = lipo.c; sourceTree = "<group>"; usesTabs = 1; };
+		DE095F8721CC1ABB00C4ADA1 /* lipo.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = lipo.c; sourceTree = "<group>"; tabWidth = 8; usesTabs = 1; };
 		DE095F8921CC1ABB00C4ADA1 /* size.c */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = size.c; sourceTree = "<group>"; usesTabs = 1; };
 		DE095F8A21CC1ABB00C4ADA1 /* bitcode_strip.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = bitcode_strip.c; sourceTree = "<group>"; usesTabs = 1; };
 		DE095F8B21CC1ABB00C4ADA1 /* codesign_allocate.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = codesign_allocate.c; sourceTree = "<group>"; };
@@ -1788,7 +1788,7 @@
 		DE095FD821CC1ABB00C4ADA1 /* crc32.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = crc32.c; sourceTree = "<group>"; };
 		DE095FD921CC1ABB00C4ADA1 /* coff_bytesex.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = coff_bytesex.c; sourceTree = "<group>"; };
 		DE095FDA21CC1ABB00C4ADA1 /* hash_string.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = hash_string.c; sourceTree = "<group>"; };
-		DE095FDB21CC1ABB00C4ADA1 /* ofile.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ofile.c; sourceTree = "<group>"; usesTabs = 1; };
+		DE095FDB21CC1ABB00C4ADA1 /* ofile.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ofile.c; sourceTree = "<group>"; tabWidth = 8; usesTabs = 1; };
 		DE095FDD21CC1ABB00C4ADA1 /* SymLoc.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SymLoc.c; sourceTree = "<group>"; };
 		DE095FDE21CC1ABB00C4ADA1 /* bytesex.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = bytesex.c; sourceTree = "<group>"; };
 		DE095FDF21CC1ABB00C4ADA1 /* rnd.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = rnd.c; sourceTree = "<group>"; };
@@ -1827,7 +1827,7 @@
 		DE09600421CC1ABC00C4ADA1 /* main.c */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; usesTabs = 1; };
 		DE09600521CC1ABC00C4ADA1 /* dyld_bind_info.h */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = dyld_bind_info.h; sourceTree = "<group>"; };
 		DE09600621CC1ABC00C4ADA1 /* ppc_disasm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ppc_disasm.h; sourceTree = "<group>"; };
-		DE09600721CC1ABC00C4ADA1 /* ofile_print.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ofile_print.c; sourceTree = "<group>"; };
+		DE09600721CC1ABC00C4ADA1 /* ofile_print.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ofile_print.c; sourceTree = "<group>"; tabWidth = 8; };
 		DE09600821CC1ABC00C4ADA1 /* m88k_disasm.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = m88k_disasm.c; sourceTree = "<group>"; };
 		DE09600921CC1ABC00C4ADA1 /* i860_disasm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = i860_disasm.h; sourceTree = "<group>"; };
 		DE09600A21CC1ABC00C4ADA1 /* m68k_disasm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = m68k_disasm.h; sourceTree = "<group>"; };
@@ -2142,13 +2142,13 @@
 		DE97E92721F3B91800C7947D /* test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test.c; sourceTree = "<group>"; };
 		DE97E92821F3B91900C7947D /* test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = test.h; sourceTree = "<group>"; };
 		DE97E92A21F3B97A00C7947D /* null_test.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = null_test.c; sourceTree = "<group>"; };
-		DE9B64BA24DC900600D6B674 /* code_directory.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = code_directory.c; sourceTree = "<group>"; usesTabs = 0; };
+		DE9B64BA24DC900600D6B674 /* code_directory.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = code_directory.c; sourceTree = "<group>"; tabWidth = 8; usesTabs = 1; };
 		DE9B64BC24DC912600D6B674 /* code_directory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = code_directory.h; sourceTree = "<group>"; };
 		DEA2409421CE04460026D013 /* as_license.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = as_license.sh; sourceTree = "<group>"; };
 		DEA639232328385500729793 /* depinfo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = depinfo.c; sourceTree = "<group>"; };
 		DEA63925232838B200729793 /* depinfo_test.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = depinfo_test.c; sourceTree = "<group>"; };
 		DEB23D8D21DEA11C007F9934 /* vtool */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = vtool; sourceTree = BUILT_PRODUCTS_DIR; };
-		DEB23D9421DEA192007F9934 /* vtool.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vtool.c; sourceTree = "<group>"; };
+		DEB23D9421DEA192007F9934 /* vtool.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vtool.c; sourceTree = "<group>"; tabWidth = 8; };
 		DEB23D9521DEA192007F9934 /* vtool.1 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.man; path = vtool.1; sourceTree = "<group>"; };
 		DEB5E8D0228B04D000263617 /* version_number_test.c */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = version_number_test.c; sourceTree = "<group>"; usesTabs = 0; };
 		DEB7156022A194230031FD9F /* args.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = args.c; sourceTree = "<group>"; };
@@ -2166,6 +2166,7 @@
 		DEEE93752453A6F500ADCA3D /* xcode.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = xcode.c; sourceTree = "<group>"; };
 		DEEE93772453A71C00ADCA3D /* xcode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = xcode.h; sourceTree = "<group>"; };
 		DEF3BC9723C68D8200EF319C /* mach-o.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = "mach-o.modulemap"; sourceTree = "<group>"; };
+		F378CA53255251EE00AC8F83 /* mach-o.private.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = "mach-o.private.modulemap"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3800,6 +3801,7 @@
 			isa = PBXGroup;
 			children = (
 				DEF3BC9723C68D8200EF319C /* mach-o.modulemap */,
+				F378CA53255251EE00AC8F83 /* mach-o.private.modulemap */,
 			);
 			path = modules;
 			sourceTree = "<group>";
@@ -11698,6 +11700,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				INSTALLHDRS_SCRIPT_PHASE = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -11706,6 +11709,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				INSTALLHDRS_SCRIPT_PHASE = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

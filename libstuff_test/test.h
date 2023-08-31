@@ -56,13 +56,18 @@ int test_run(void);
 int test_run_tests(struct test tests[], uint32_t ntests);
 
 void test_abort(void);
-void test_printinfo(const char * __restrict format, ...);
-void test_printerr(const char * __restrict format, ...);
+void test_printinfo(const char * __restrict format, ...)
+     __attribute__((format(printf, 1, 2)));
+void test_printerr(const char * __restrict format, ...)
+     __attribute__((format(printf, 1, 2)));
 
-void test_vprintinfo(const char * __restrict format, va_list ap);
-void test_vprinterr(const char * __restrict format, va_list ap);
+void test_vprintinfo(const char * __restrict format, va_list ap)
+     __attribute__((format(printf, 1, 0)));
+void test_vprinterr(const char * __restrict format, va_list ap)
+     __attribute__((format(printf, 1, 0)));
 
-void check_set_prefix(const char* fmt, ...);
+void check_set_prefix(const char* fmt, ...)
+     __attribute__((format(printf, 1, 2)));
   
 int check_bool (const char* name, bool orig, bool copy);
 int check_uint32(const char* name, uint32_t orig, uint32_t copy);

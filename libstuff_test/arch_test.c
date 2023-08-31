@@ -50,7 +50,7 @@ static void check_arch_family(const char* name, cpu_type_t cputype)
   if (af) {
     check_string("name", name, af->name);
   } else if (name) {
-    test_printerr("arch family not found for cputype %u: %s", cputype);
+    test_printerr("arch family not found for cputype %u: %s", cputype, name);
   }
 }
 

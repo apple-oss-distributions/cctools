@@ -191,21 +191,16 @@ void test_abort(void)
   s_test_result = TEST_ABORT;
 }
 
+__attribute__((format(printf, 1, 0)))
 static void test_vprint(const char * __restrict fmt, va_list args)
 {
   assert(fmt);
   
   s_print_called = 1;
-  
-  size_t len = strlen(fmt);
-  char* format = (char*)calloc(1, len+4);
-  if (format)
-  {
-    sprintf(format, "\n\t\t%s", fmt);
-    vprintf(format, args);
-    free(format);
-  }
+  printf("\n\t\t");
+  vprintf(fmt, args);
 }
+
 
 void test_printinfo(const char * __restrict format, ...)
 {

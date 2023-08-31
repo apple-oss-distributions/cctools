@@ -33,4 +33,5 @@ __private_extern__ void print(
 #endif
     ;
 __private_extern__ void vprint(
-    const char *format, va_list ap);
+    const char *format, va_list ap)
+    __attribute__((format(printf, 1, 0)));

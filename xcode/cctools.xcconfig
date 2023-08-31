@@ -127,6 +127,6 @@ INSTALL_MODE_FLAG = a=rX
 // cctools provides its own overrides for certain CoreOS headers. Clang will
 // complain quite loudly about this particular situation, and so the warning is
 // disabled here. 
-OTHER_CFLAGS = -Wno-ambiguous-macro
+OTHER_CFLAGS = -Wno-ambiguous-macro -Wformat-nonliteral
 
 STRIP_STYLE = debugging

@@ -285,7 +285,7 @@ char **envp)
 	cmd_flags.bincl_name = NULL;
 	cmd_flags.A = FALSE;
 	cmd_flags.P = FALSE;
-	cmd_flags.format = "%llx";
+	cmd_flags.format = "llx";
 
         files = allocate(sizeof(char *) * argc);
 	for(i = 1; i < argc; i++){
@@ -331,13 +331,13 @@ char **envp)
 		    }
 		    switch(argv[i+1][0]){
 		    case 'd':
-			cmd_flags.format = "%lld";
+			cmd_flags.format = "lld";
 			break;
 		    case 'o':
-			cmd_flags.format = "%llo";
+			cmd_flags.format = "llo";
 			break;
 		    case 'x':
-			cmd_flags.format = "%llx";
+			cmd_flags.format = "llx";
 			break;
 		    default:
 			error("invalid argument to option: %s %s",
@@ -1573,37 +1573,24 @@ struct process_flags *process_flags,
 char *arch_name)
 {
     uint32_t i, library_ordinal;
-    char *ta_xfmt, *i_xfmt, *dashes, *spaces;
     uint32_t mh_flags;
 
 	mh_flags = 0;
-	if(ofile->mh != NULL ||
-	   (ofile->lto != NULL &&
-	    (ofile->lto_cputype & CPU_ARCH_ABI64) != CPU_ARCH_ABI64)){
-	    ta_xfmt = "%08llx";
-	    i_xfmt =  "%08x";
-	    if(ofile->mh != NULL)
-		mh_flags = ofile->mh->flags;
-	    spaces = "        ";
-	    dashes = "--------";
-	}
-	else{
-	    ta_xfmt = "%016llx";
-	    i_xfmt =  "%016x";
-	    if(ofile->mh64 != NULL)
-		mh_flags = ofile->mh64->flags;
-	    spaces = "                ";
-	    dashes = "----------------";
-	}
+    enum bool is32 = (ofile->mh != NULL
+            || (ofile->lto != NULL
+                && (ofile->lto_cputype & CPU_ARCH_ABI64) != CPU_ARCH_ABI64));
+    const char* const spaces = is32 ? "        " : "                ";
+    const char* const dashes = is32 ? "--------" : "----------------";
+
 	for(i = 0; i < nsymbols; i++){
 	    if(cmd_flags->x == TRUE){
-		printf(ta_xfmt, symbols[i].nl.n_value);
+		printf("%0*llx", is32 ? 8 : 16, symbols[i].nl.n_value);
 		printf(" %02x %02x %04x ",
 		       (unsigned int)(symbols[i].nl.n_type & 0xff),
 		       (unsigned int)(symbols[i].nl.n_sect & 0xff),
 		       (unsigned int)(symbols[i].nl.n_desc & 0xffff));
 		if(symbols[i].nl.n_un.n_strx == 0){
-		    printf(i_xfmt, symbols[i].nl.n_un.n_strx);
+		    printf("%0*x", is32 ? 8 : 16, symbols[i].nl.n_un.n_strx);
 		    if(ofile->lto != NULL)
 			printf(" %s", symbols[i].name);
 		    else
@@ -1621,17 +1608,17 @@ char *arch_name)
 		   (symbols[i].nl.n_type & N_TYPE) == N_INDR){
 		    if(symbols[i].nl.n_value == 0){
 			printf(" (indirect for ");
-			printf(ta_xfmt, symbols[i].nl.n_value);
+			printf("%0*llx", is32 ? 8 : 16, symbols[i].nl.n_value);
 			printf(" (null))\n");
 		    }
 		    else if(symbols[i].nl.n_value > strsize){
 			printf(" (indirect for ");
-			printf(ta_xfmt, symbols[i].nl.n_value);
+			printf("%0*llx", is32 ? 8 : 16, symbols[i].nl.n_value);
 			printf(" (bad string index))\n");
 		    }
 		    else{
 			printf(" (indirect for ");
-			printf(ta_xfmt, symbols[i].nl.n_value);
+			printf("%0*llx", is32 ? 8 : 16, symbols[i].nl.n_value);
 			printf(" %s)\n", symbols[i].indr_name);
 		    }
 		}
@@ -1656,7 +1643,7 @@ char *arch_name)
 		    else
 			printf("%s: ", ofile->file_name);
 		}
-		printf(ta_xfmt, symbols[i].nl.n_value);
+		printf("%0*llx", is32 ? 8 : 16, symbols[i].nl.n_value);
 		printf(" - %02x %04x %5.5s %s\n",
 		       (unsigned int)symbols[i].nl.n_sect & 0xff,
 		       (unsigned int)symbols[i].nl.n_desc & 0xffff,
@@ -1688,7 +1675,7 @@ char *arch_name)
 		if(ofile->lto)
 		    printf("%s", dashes);
 		else
-		    printf(ta_xfmt, symbols[i].nl.n_value);
+		    printf("%0*llx", is32 ? 8 : 16, symbols[i].nl.n_value);
 	    }
 
 	    switch(symbols[i].nl.n_type & N_TYPE){
@@ -1835,6 +1822,24 @@ char *arch_name)
 }
 
 /*
+ * print_symbol() prints the symbol value with the correct format.
+ */
+static
+void
+print_symbol(
+uint64_t value,
+const char* format)
+{
+    uint64_t fmt_len;
+    fmt_len = strlen(format);
+    if (strncmp(format, "lld", fmt_len) == 0)
+        printf("%lld", value);
+    else if (strncmp(format, "llo", fmt_len) == 0)
+        printf("%llo", value);
+    else if (strncmp(format, "llx", fmt_len) == 0)
+        printf("%llx", value);
+}
+/*
  * print_symbols() is called with the -m flag is not specified and prints
  * symbols in the standard BSD format.
  */
@@ -1853,33 +1858,23 @@ struct value_diff *value_diffs)
 {
     uint32_t i;
     unsigned char c;
-    char *ta_xfmt, *i_xfmt, *spaces, *dashes;
     const char *p;
 
-	if(ofile->mh != NULL ||
-	   (ofile->lto != NULL &&
-	    (ofile->lto_cputype & CPU_ARCH_ABI64) != CPU_ARCH_ABI64)){
-	    ta_xfmt = "%08llx";
-	    i_xfmt =  "%08x";
-	    spaces = "        ";
-	    dashes = "--------";
-	}
-	else{
-	    ta_xfmt = "%016llx";
-	    i_xfmt =  "%016x";
-	    spaces = "                ";
-	    dashes = "----------------";
-	}
+    enum bool is32 = (ofile->mh != NULL ||
+                      (ofile->lto != NULL &&
+                       (ofile->lto_cputype & CPU_ARCH_ABI64) != CPU_ARCH_ABI64));
+    const char* const spaces = is32 ? "        " : "                ";
+    const char* const dashes = is32 ? "--------" : "----------------";
 
 	for(i = 0; i < nsymbols; i++){
 	    if(cmd_flags->x == TRUE){
-		printf(ta_xfmt, symbols[i].nl.n_value);
+		printf("%0*llx", is32 ? 8 : 16, symbols[i].nl.n_value);
 		printf(" %02x %02x %04x ",
 		       (unsigned int)(symbols[i].nl.n_type & 0xff),
 		       (unsigned int)(symbols[i].nl.n_sect & 0xff),
 		       (unsigned int)(symbols[i].nl.n_desc & 0xffff));
 		if(symbols[i].nl.n_un.n_strx == 0){
-		    printf(i_xfmt, symbols[i].nl.n_un.n_strx);
+		    printf("%0*x", is32 ? 8 : 16, symbols[i].nl.n_un.n_strx);
 		    if(ofile->lto != NULL)
 			printf(" %s", symbols[i].name);
 		    else
@@ -1897,17 +1892,17 @@ struct value_diff *value_diffs)
 		   (symbols[i].nl.n_type & N_TYPE) == N_INDR){
 		    if(symbols[i].nl.n_value == 0){
 			printf(" (indirect for ");
-			printf(ta_xfmt, symbols[i].nl.n_value);
+			printf("%0*llx", is32 ? 8 : 16, symbols[i].nl.n_value);
 			printf(" (null))\n");
 		    }
 		    else if(symbols[i].nl.n_value > strsize){
 			printf(" (indirect for ");
-			printf(ta_xfmt, symbols[i].nl.n_value);
+			printf("%0*llx", is32 ? 8 : 16, symbols[i].nl.n_value);
 			printf(" (bad string index))\n");
 		    }
 		    else{
 			printf(" (indirect for ");
-			printf(ta_xfmt, symbols[i].nl.n_value);
+			printf("%0*llx", is32 ? 8 : 16, symbols[i].nl.n_value);
 			printf(" %s)\n", symbols[i].nl.n_value + strings);
 		    }
 		}
@@ -1974,7 +1969,7 @@ struct value_diff *value_diffs)
 		if((symbols[i].nl.n_type & N_EXT) && c != '?')
 		    c = toupper(c);
 		printf("%c ", c);
-		printf(cmd_flags->format, symbols[i].nl.n_value);
+		print_symbol(symbols[i].nl.n_value, cmd_flags->format);
 		printf(" 0\n"); /* the 0 is the size for conformance */
 		continue;
 	    }
@@ -1995,7 +1990,7 @@ struct value_diff *value_diffs)
 		    else
 			printf("%s: ", ofile->file_name);
 		}
-		printf(ta_xfmt, symbols[i].nl.n_value);
+		printf("%0*llx", is32 ? 8 : 16, symbols[i].nl.n_value);
 		printf(" - %02x %04x %5.5s ",
 		       (unsigned int)symbols[i].nl.n_sect & 0xff,
 		       (unsigned int)symbols[i].nl.n_desc & 0xffff,
@@ -2077,13 +2072,13 @@ struct value_diff *value_diffs)
 		    printf("%s", spaces);
 		else{
 		    if(cmd_flags->v && value_diffs != NULL){
-			printf(ta_xfmt, value_diffs[i].size);
+			printf("%0*llx", is32 ? 8 : 16, symbols[i].nl.n_value);
 			printf(" ");
 		    }
 		    if(ofile->lto)
 			printf("%s", dashes);
 		    else
-			printf(ta_xfmt, symbols[i].nl.n_value);
+			printf("%0*llx", is32 ? 8 : 16, symbols[i].nl.n_value);
 		}
 		printf(" %c ", c);
 	    }

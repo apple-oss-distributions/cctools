@@ -1,0 +1,3 @@
+module MachO_Private [system] {
+  extern module dyld "dyld.private.modulemap"
+}

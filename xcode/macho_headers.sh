@@ -45,7 +45,7 @@ install_files() {
 #
 # install_files ${src} ${dst} bool.h
 
-# install the /usr/include/mach-o module map
+# install /usr/include/mach-o and /usr/local/include/mach-o module maps
 
 if [ \( "${RC_PROJECT_COMPILATION_PLATFORM}" = "osx" \) -a \( "${RC_PURPLE}" = "YES" \) ]
 then
@@ -56,4 +56,6 @@ else
     src=${SRCROOT}/include/modules
     dst=${DSTROOT}/usr/include/mach-o
     install -c -m 444 ${src}/mach-o.modulemap ${dst}/module.modulemap
+    dst=${DSTROOT}/usr/local/include/mach-o
+    install -c -m 444 ${src}/mach-o.private.modulemap ${dst}/module.modulemap
 fi

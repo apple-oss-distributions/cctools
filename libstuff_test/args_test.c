@@ -20,6 +20,7 @@
 
 #define countof(X) (sizeof(X) / sizeof(*X))
 
+__attribute__((format(printf, 1, 2)))
 static char* masprintf(const char * __restrict format, ...)
 {
   assert(format);
