@@ -13,3 +13,6 @@ INSTALL_PATH = /usr/local/lib/system
 
 // XCODE defaults to not installing .a files
 SKIP_INSTALL=NO
+
+// differenciate between libmacho.dylib and libmacho.a
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) STATIC_LIBMACHO=1

@@ -8,9 +8,6 @@
 // Configuration settings file format documentation can be found at:
 // https://help.apple.com/xcode/#/dev745c5c974
 
-// We need to use the macosx.internal SDKROOT in order for TAPI to work at all.
-SDKROOT=macosx.internal
-
 // When we build in B&I, the APP_EXTENSION_SAFE mach_header flag will be set
 // on by default. In order for TAPI to model this correctly when building
 // outside of B&I we can just default to using app extension safe API.
@@ -18,7 +15,8 @@ APPLICATION_EXTENSION_API_ONLY = YES
 
 // libmacho is installed in /usr/lib/system
 EXECUTABLE_PREFIX = lib
-INSTALL_PATH = ${CCTOOLS_LOCATION}/usr/lib/system
+INSTALL_PATH = ${SYSTEM_PREFIX}/usr/lib/system
+INSTALL_PATH[sdk=driverkit*] = ${CCTOOLS_LOCATION}/usr/lib/system
 PRODUCT_NAME = macho
 
 // The "dylib version" is an old Mach-O version numbering scheme stamped into
@@ -45,11 +43,12 @@ HEADER_SEARCH_PATHS = ${CCTB_DRIVERKIT_HEADERS_INCLUDE_PATH} ${inherited}
 // to link against system_sim_kernel instead of system_kernel when building
 // for simulator runtimes.
 LIBRARY_SEARCH_PATHS = ${SDKROOT}${CCTOOLS_LOCATION}/usr/lib/system
-LIBMACHO_DYLIBS = -lcompiler_rt -ldyld -lsystem_c
-LIBMACHO_SYSTEM_KERNEL = system_kernel
-LIBMACHO_SYSTEM_KERNEL[sdk=*simulator*] = system_sim_kernel
+LIBMACHO_DYLIBS = -L${SDKROOT}${SYSTEM_PREFIX}/usr/lib/system -llibc
+LIBMACHO_DYLIBS[sdk=driverkit*] = -lcompiler_rt -ldyld -lsystem_c
+LIBMACHO_SYSTEM_KERNEL =
+LIBMACHO_SYSTEM_KERNEL[sdk=driverkit*] = -lsystem_kernel
 
-OTHER_LDFLAGS = -nodefaultlibs -umbrella System -Wl,-application_extension ${LIBMACHO_DYLIBS} -l${LIBMACHO_SYSTEM_KERNEL}
+OTHER_LDFLAGS = -nodefaultlibs -umbrella System -Wl,-application_extension ${LIBMACHO_DYLIBS} ${LIBMACHO_SYSTEM_KERNEL}
 
 // The libmacho dynamic library target can only install a subset of the mach-o
 // header files, due to Xcode's limitation that there can be only one public
@@ -82,9 +81,9 @@ LIBMACHO_TAPI_FLAGS = -umbrella System -fapplication-extension
 
 // MDT <rdar://problem/59894566> cctools_ofiles does not install <mach-o/ldsyms.h> during installhdrs
 // Politely ask tapi to ignore these two files.
-EXCLUDE_NLIST_H = -exclude-public-header ${DSTROOT}${PUBLIC_HEADERS_FOLDER_PATH}/nlist.h
-EXCLUDE_LDSYMS_H = -exclude-public-header ${DSTROOT}${PUBLIC_HEADERS_FOLDER_PATH}/ldsyms.h
+EXCLUDE_NLIST_H[sdk=driverkit*] = -exclude-public-header ${DSTROOT}${PUBLIC_HEADERS_FOLDER_PATH}/nlist.h
+EXCLUDE_LDSYMS_H[sdk=driverkit*] = -exclude-public-header ${DSTROOT}${PUBLIC_HEADERS_FOLDER_PATH}/ldsyms.h
 
 SUPPORTS_TEXT_BASED_API = YES
 TAPI_VERIFY_MODE = Pedantic
-OTHER_TAPI_FLAGS = ${LIBMACHO_TAPI_FLAGS} -I${CCTB_DRIVERKIT_HEADERS_INCLUDE_PATH} ${EXCLUDE_NLIST_H} ${EXCLUDE_LDSYMS_H}
+OTHER_TAPI_FLAGS = -extra-public-header ./include/driverkit/getsect.h ${LIBMACHO_TAPI_FLAGS} -I${CCTB_DRIVERKIT_HEADERS_INCLUDE_PATH} ${EXCLUDE_NLIST_H} ${EXCLUDE_LDSYMS_H}

@@ -5,55 +5,57 @@ include ${TESTROOT}/include/common.makefile
 
 all:
 	# compile a test program
-	${CC} -arch x86_64 -o hello ${TESTROOT}/src/hello.c
+	${CC} -arch x86_64 -o hello hello.s -c
+	${CC} -arch i386 -o hello_32 ${TESTROOT}/src/hello.c -c
+
+	# disassemble text of a 32-bit MachO
+	${OTOOLC} -xV hello_32 | ${CHECK} -p DIS32
+# DIS32: hello_32:
+# DIS32-NEXT: (__TEXT,__text) section
+# DIS32-NEXT: _main:
+# DIS32-NEXT: 00000000	pushl	%ebp
 
 	# disassemble text
 	${OTOOLC} -t hello | ${CHECK} -p DIS
 # DIS: hello:
-# DIS_NEXT: (__TEXT,__text) section
-# DIS_NEXT:0000000100000f50 55 48 89 e5 48 83 ec 10 48 8d 3d 3b 00 00 00 c7
-# DIS_NEXT:0000000100000f60 45 fc 00 00 00 00 b0 00 e8 0d 00 00 00 31 c9 89
-# DIS_NEXT:0000000100000f70 45 f8 89 c8 48 83 c4 10 5d c3
+# DIS-NEXT: (__TEXT,__text) section
+# DIS-NEXT: 0000000000000000 55 48 89 e5 48 83 ec 10 c7 45 fc 00 00 00 00 48
 
 	# disassemble text verbosely
 	${OTOOLC} -tv hello | ${CHECK} -p DISV
 # DISV: hello:
-# DISV_NEXT: (__TEXT,__text) section
-# DISV_NEXT: _main:
-# DISV_NEXT: 0000000100000f50	pushq	%rbp
-# DISV_NEXT: 0000000100000f51	movq	%rsp, %rbp
-# DISV_NEXT: 0000000100000f54	subq	$0x10, %rsp
-# DISV_NEXT: 0000000100000f58	leaq	0x3b(%rip), %rdi
-# DISV_NEXT: 0000000100000f5f	movl	$0x0, -0x4(%rbp)
-# DISV_NEXT: 0000000100000f66	movb	$0x0, %al
-# DISV_NEXT: 0000000100000f68	callq	0x100000f7a
-# DISV_NEXT: 0000000100000f6d	xorl	%ecx, %ecx
-# DISV_NEXT: 0000000100000f6f	movl	%eax, -0x8(%rbp)
-# DISV_NEXT: 0000000100000f72	movl	%ecx, %eax
-# DISV_NEXT: 0000000100000f74	addq	$0x10, %rsp
-# DISV_NEXT: 0000000100000f78	popq	%rbp
-# DISV_NEXT: 0000000100000f79	retq
+# DISV-NEXT: (__TEXT,__text) section
+# DISV-NEXT: _main:
+# DISV-NEXT: 0000000000000000	pushq	%rbp
+# DISV-NEXT: 0000000000000001	movq	%rsp, %rbp
+# DISV-NEXT: 0000000000000004	subq	$0x10, %rsp
+# DISV-NEXT: 0000000000000008	movl	$0x0, -0x4(%rbp)
+# DISV-NEXT: 000000000000000f	leaq	0xf(%rip), %rdi
+# DISV-NEXT: 0000000000000016	movb	$0x0, %al
+# DISV-NEXT: 0000000000000018	callq	0x1d
+# DISV-NEXT: 000000000000001d	xorl	%eax, %eax
+# DISV-NEXT: 000000000000001f	addq	$0x10, %rsp
+# DISV-NEXT: 0000000000000023	popq	%rbp
+# DISV-NEXT: 0000000000000024	retq
 
 	# disassemble text Verbosely
 	${OTOOLC} -tV hello | ${CHECK} -p DISVV
 # DISVV: hello:
-# DISVV_NEXT:(__TEXT,__text) section
-# DISVV_NEXT:_main:
-# DISVV_NEXT:0000000100000f50	pushq	%rbp
-# DISVV_NEXT:0000000100000f51	movq	%rsp, %rbp
-# DISVV_NEXT:0000000100000f54	subq	$0x10, %rsp
-# DISVV_NEXT:0000000100000f58	leaq	0x3b(%rip), %rdi        ## literal pool for: "hello, world!\n"
-# DISVV_NEXT:0000000100000f5f	movl	$0x0, -0x4(%rbp)
-# DISVV_NEXT:0000000100000f66	movb	$0x0, %al
-# DISVV_NEXT:0000000100000f68	callq	0x100000f7a             ## symbol stub for: _printf
-# DISVV_NEXT:0000000100000f6d	xorl	%ecx, %ecx
-# DISVV_NEXT:0000000100000f6f	movl	%eax, -0x8(%rbp)
-# DISVV_NEXT:0000000100000f72	movl	%ecx, %eax
-# DISVV_NEXT:0000000100000f74	addq	$0x10, %rsp
-# DISVV_NEXT:0000000100000f78	popq	%rbp
-# DISVV_NEXT:0000000100000f79	retq
+# DISVV-NEXT:(__TEXT,__text) section
+# DISVV-NEXT:_main:
+# DISVV-NEXT: .*pushq	%rbp
+# DISVV-NEXT: .*movq	%rsp, %rbp
+# DISVV-NEXT: .*subq	$0x10, %rsp
+# DISVV-NEXT: .*movl	$_main, -0x4(%rbp)
+# DISVV-NEXT: .*leaq	0xf(%rip), %rdi                 ## literal pool for: "hello, world!.*
+# DISVV-NEXT: .*movb	$0x0, %al
+# DISVV-NEXT: .*callq	_printf
+# DISVV-NEXT: .*xorl	%eax, %eax
+# DISVV-NEXT: .*addq	$0x10, %rsp
+# DISVV-NEXT: .*popq	%rbp
+# DISVV-NEXT: .*retq
 
 	echo PASS
 
 clean:
-	rm -f hello
+	rm -f hello hello_32

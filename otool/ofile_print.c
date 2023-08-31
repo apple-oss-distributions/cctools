@@ -209,6 +209,7 @@
 #include <limits.h>
 #include <ar.h>
 #include <libc.h>
+#include <mach/machine-cctools.h>
 #include <mach-o/fat.h>
 #include <mach-o/loader.h>
 #include <mach-o/reloc.h>
@@ -226,6 +227,7 @@
 #include "stuff/guess_short_name.h"
 #include "dyld_bind_info.h"
 #include "ofile_print.h"
+
 
 /* <mach/loader.h> */
 /* The maximum section alignment allowed to be specified, as a power of two */
@@ -2184,6 +2186,12 @@ NS32:
 	    case MH_FILESET:
 		printf("    FILESET");
 		break;
+            case MH_GPU_EXECUTE:
+                printf("GPU_EXECUTE");
+                break;
+            case MH_GPU_DYLIB:
+                printf("  GPU_DYLIB");
+                break;
 	    default:
 		printf(" %10u", filetype);
 		break;
@@ -4186,6 +4194,27 @@ enum bool verbose)
 	case TOOL_LLD:
 	    printf("LLD\n");
 	    break;
+        case TOOL_METAL:
+            printf("TOOL_METAL\n");
+            break;
+        case TOOL_AIRLLD:
+            printf("AIRLLD\n");
+            break;
+        case TOOL_AIRNT:
+            printf("AIRNT\n");
+            break;
+        case TOOL_AIRNT_PLUGIN:
+            printf("AIRNT_PLUGIN\n");
+            break;
+        case TOOL_AIRPACK:
+            printf("AIRPACK\n");
+            break;
+        case TOOL_GPUARCHIVER:
+            printf("GPUARCHIVER\n");
+            break;
+        case TOOL_METAL_FRAMEWORK:
+            printf("METAL_FRAMEWORK\n");
+            break;
 	default:
 	    printf("%u\n", tool);
 	    break;
@@ -7348,9 +7377,9 @@ enum bool verbose)
 			       cputype == CPU_TYPE_X86_64) {
 				    printf("quad   ");
 			    }
-			    else if(cputype == CPU_TYPE_POWERPC ||
+			   else if(cputype == CPU_TYPE_POWERPC ||
 				    cputype == CPU_TYPE_POWERPC64 ||
-				    cputype == CPU_TYPE_VEO){
+			            cputype == CPU_TYPE_VEO){
 				printf("long   ");
 				predicted = TRUE;
 			    }
@@ -7515,6 +7544,7 @@ static char *arm64_r_types[] = {
         "AUTH    ",
 	" 12 (?) ", " 13 (?) ", " 14 (?) ", " 15 (?) "
 };
+
 
 static
 void

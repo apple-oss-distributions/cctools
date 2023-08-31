@@ -124,9 +124,11 @@ HEADER_SEARCH_PATHS = include/**
 
 INSTALL_MODE_FLAG = a=rX
 
+CCTB_XCODE_DEFINE_YES = -DCCTB_XCODE
+
 // cctools provides its own overrides for certain CoreOS headers. Clang will
 // complain quite loudly about this particular situation, and so the warning is
 // disabled here. 
-OTHER_CFLAGS = -Wno-ambiguous-macro -Wformat-nonliteral
+OTHER_CFLAGS = -Wno-ambiguous-macro -Wformat-nonliteral ${CCTB_XCODE_DEFINE_${CCTB_XCODE}}
 
 STRIP_STYLE = debugging
