@@ -2,9 +2,9 @@
 
 set -x
 
-if [ "${DRIVERKIT}" = 1 ]; then
+if [ "${DRIVERKIT}" == 1 ]; then
     mkdir -p ${DSTROOT}/${PUBLIC_HEADERS_FOLDER_PATH}
-    cp ${SRCROOT}/include/driverkit/getsect.h ${DSTROOT}/${PUBLIC_HEADERS_FOLDER_PATH}/
+    cp ${SRCROOT}/include/standalone/getsect.h ${DSTROOT}/${PUBLIC_HEADERS_FOLDER_PATH}/
     cp ${SRCROOT}/include/mach-o/nlist.h ${DSTROOT}/${PUBLIC_HEADERS_FOLDER_PATH}/
     cp ${SRCROOT}/include/mach-o/loader.h ${DSTROOT}/${PUBLIC_HEADERS_FOLDER_PATH}/
     cp ${SRCROOT}/include/mach-o/reloc.h ${DSTROOT}/${PUBLIC_HEADERS_FOLDER_PATH}/
@@ -17,10 +17,4 @@ if [ "${DRIVERKIT}" = 1 ]; then
     cp ${SRCROOT}/include/mach-o/arm64/reloc.h ${DSTROOT}/${PUBLIC_HEADERS_FOLDER_PATH}/arm64/
     mkdir -p ${DSTROOT}/${PUBLIC_HEADERS_FOLDER_PATH}/x86_64
     cp ${SRCROOT}/include/mach-o/x86_64/reloc.h ${DSTROOT}/${PUBLIC_HEADERS_FOLDER_PATH}/x86_64/
-elif [ "${SYSTEM_PREFIX}" != "" ]; then
-    mkdir -p ${DSTROOT}${SYSTEM_PREFIX}/usr/include/mach-o
-    cp ${SRCROOT}/include/driverkit/getsect.h ${DSTROOT}${SYSTEM_PREFIX}/usr/include/mach-o
-    cp ${SRCROOT}/include/mach-o/nlist.h ${DSTROOT}${SYSTEM_PREFIX}/usr/include/mach-o
-    cp ${SRCROOT}/include/mach-o/loader.h ${DSTROOT}${SYSTEM_PREFIX}/usr/include/mach-o
-    cp ${SRCROOT}/include/mach-o/fat.h ${DSTROOT}${SYSTEM_PREFIX}/usr/include/mach-o
 fi

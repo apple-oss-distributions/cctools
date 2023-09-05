@@ -86,4 +86,4 @@ EXCLUDE_LDSYMS_H[sdk=driverkit*] = -exclude-public-header ${DSTROOT}${PUBLIC_HEA
 
 SUPPORTS_TEXT_BASED_API = YES
 TAPI_VERIFY_MODE = Pedantic
-OTHER_TAPI_FLAGS = -extra-public-header ./include/driverkit/getsect.h ${LIBMACHO_TAPI_FLAGS} -I${CCTB_DRIVERKIT_HEADERS_INCLUDE_PATH} ${EXCLUDE_NLIST_H} ${EXCLUDE_LDSYMS_H}
+OTHER_TAPI_FLAGS = -extra-public-header ./include/standalone/getsect.h ${LIBMACHO_TAPI_FLAGS} -I${CCTB_DRIVERKIT_HEADERS_INCLUDE_PATH} ${EXCLUDE_NLIST_H} ${EXCLUDE_LDSYMS_H}

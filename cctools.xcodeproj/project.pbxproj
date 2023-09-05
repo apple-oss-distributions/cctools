@@ -1546,7 +1546,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		8C02F22A279AF7B300BF629A /* copy_macho_headers_driverkit.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = copy_macho_headers_driverkit.sh; sourceTree = "<group>"; };
+		8C02F22A279AF7B300BF629A /* copy_macho_headers_standalone.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = copy_macho_headers_standalone.sh; sourceTree = "<group>"; };
 		DE000B3621CDB9DB000CEC53 /* libmacho.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmacho.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE000B3A21CDB9FE000CEC53 /* macho_static.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = macho_static.xcconfig; sourceTree = "<group>"; };
 		DE000B5E21CDBE77000CEC53 /* libmacho_static.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmacho_static.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2857,7 +2857,7 @@
 				DE09622221CC79A800C4ADA1 /* create_symlink.sh */,
 				DE822A0421CDA47C008CD150 /* macho_headers.sh */,
 				DE0961EE21CC550500C4ADA1 /* public_assemblers.sh */,
-				8C02F22A279AF7B300BF629A /* copy_macho_headers_driverkit.sh */,
+				8C02F22A279AF7B300BF629A /* copy_macho_headers_standalone.sh */,
 			);
 			path = xcode;
 			sourceTree = "<group>";
@@ -3086,7 +3086,6 @@
 			children = (
 				DE09606021CC1ABC00C4ADA1 /* architecture */,
 				DE09602B21CC1ABC00C4ADA1 /* coff */,
-				DE5DC68421F7ED5200A7CA07 /* driverkit */,
 				DE0960B821CC1ABC00C4ADA1 /* elf */,
 				DE09605C21CC1ABC00C4ADA1 /* gnu */,
 				DE09603921CC1ABC00C4ADA1 /* i386 */,
@@ -3121,6 +3120,7 @@
 		DE09603621CC1ABC00C4ADA1 /* standalone */ = {
 			isa = PBXGroup;
 			children = (
+				DE5DC68521F7ED5200A7CA07 /* getsect.h */,
 				DE09603721CC1ABC00C4ADA1 /* libsa.h */,
 			);
 			path = standalone;
@@ -3641,14 +3641,6 @@
 				DE09632521CD638600C4ADA1 /* libc++.tbd */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		DE5DC68421F7ED5200A7CA07 /* driverkit */ = {
-			isa = PBXGroup;
-			children = (
-				DE5DC68521F7ED5200A7CA07 /* getsect.h */,
-			);
-			path = driverkit;
 			sourceTree = "<group>";
 		};
 		DE76108321CC103000736984 = {
@@ -4932,7 +4924,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
-			shellScript = "echo 1\n${SRCROOT}/xcode/copy_macho_headers_driverkit.sh\n";
+			shellScript = "echo 1\n${SRCROOT}/xcode/copy_macho_headers_standalone.sh\n";
 		};
 		DE0961ED21CC54B800C4ADA1 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
