@@ -139,6 +139,7 @@ enum index_type {
     index_type_splitseg,
     index_type_funcstarts,
     index_type_dice,
+    index_type_atominfo,
     index_type_csdir,
     index_type_ldhint,
     index_type_trie,
@@ -180,6 +181,7 @@ static void test_reset_load_command_pointers(int is64, enum index_type except)
     obj->seg_linkedit64 = UNINITIALIZED;
     obj->code_sig_cmd = UNINITIALIZED;
     obj->split_info_cmd = UNINITIALIZED;
+    obj->atom_info_cmd = UNINITIALIZED;
     obj->func_starts_info_cmd = UNINITIALIZED;
     obj->data_in_code_cmd = UNINITIALIZED;
     obj->code_sign_drs_cmd = UNINITIALIZED;
@@ -350,6 +352,11 @@ static void test_reset_load_command_pointers(int is64, enum index_type except)
     if (except != index_type_dice)
 	mh_add_load_command(mh_void, &obj->load_commands, &dice, sizeof(dice));
 
+    /* add a atom info command */
+    struct linkedit_data_command rm = random_ledata_cmd(LC_ATOM_INFO);
+    if (except != index_type_atominfo)
+    mh_add_load_command(mh_void, &obj->load_commands, &rm, sizeof(rm));
+
     /* add code sign directives */
     struct linkedit_data_command csdr =
 	random_ledata_cmd(LC_DYLIB_CODE_SIGN_DRS);
@@ -436,10 +443,14 @@ static void test_reset_load_command_pointers(int is64, enum index_type except)
 		  sizeof(cs), except);
     check_loadcmd(index_type_splitseg, "split seg", &ss, obj->split_info_cmd,
 		  sizeof(ss), except);
+    check_loadcmd(index_type_atominfo, "atom info", &ss, obj->atom_info_cmd,
+		  sizeof(ss), except);
     check_loadcmd(index_type_funcstarts, "function starts", &fs,
 		  obj->func_starts_info_cmd,  sizeof(fs), except);
     check_loadcmd(index_type_dice, "data in code", &dice,
 		  obj->data_in_code_cmd,  sizeof(dice), except);
+    check_loadcmd(index_type_dice, "atom info", &rm,
+          obj->atom_info_cmd,  sizeof(rm), except);
     check_loadcmd(index_type_csdir, "codesign directives", &csdr,
 		  obj->code_sign_drs_cmd,  sizeof(csdr), except);
     check_loadcmd(index_type_ldhint, "linker hints", &ldhint,
@@ -481,6 +492,7 @@ static void test_reset_all(uint32_t is64)
 	index_type_splitseg,
 	index_type_funcstarts,
 	index_type_dice,
+	index_type_atominfo,
 	index_type_csdir,
 	index_type_ldhint,
 	index_type_trie,

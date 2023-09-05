@@ -23,12 +23,7 @@ APPLICATION_EXTENSION_API_ONLY = YES
 INSTALL_PATH = /usr/lib/system
 
 // libmacho is zippered
-//
-// MDT Workaround for <rdar://problem/47985287> Guardian Submission Failure - Yager - cctools - 938
-// stop zippering libmacho in cctools_ofiles_sdk.
-CCTB_IS_cctools_ofiles_sdk = YES
 IS_ZIPPERED_ = YES
-IS_ZIPPERED = IS_ZIPPERED_${CCTB_IS_${CCTB_PROJECT}}
 
 // MDT <rdar://problem/49996819> libmacho.dylib has a zippered 32bit slice on macOSJazz
 // Do not zipper i386
@@ -48,9 +43,6 @@ LIBRARY_SEARCH_PATHS = ${SDKROOT}/usr/lib/system
 LIBMACHO_DYLIBS = -lcompiler_rt -lsystem_malloc -ldyld -lsystem_c
 LIBMACHO_SYSTEM_KERNEL = system_kernel
 LIBMACHO_SYSTEM_KERNEL[sdk=*simulator*] = system_sim_kernel
-
-LIBMACHO_ZIPPER_LD_FLAGS_MACOS_YES = -Wl,-iosmac_version_min,12.0
-LIBMACHO_ZIPPER_LD_FLAGS = ${LIBMACHO_ZIPPER_LD_FLAGS_MACOS_${CCTB_MACOS}}
 
 // MDT <rdar://problem/49996819> libmacho.dylib has a zippered 32bit slice on macOSJazz
 // Do not zipper i386
@@ -95,9 +87,6 @@ PUBLIC_HEADERS_FOLDER_PATH=/usr/include/mach-o
 // individual options have been assigned into their own small variables, at
 // the expense of obfuscating the true value of OTHER_TAPI_FLAGSS.
 LIBMACHO_TAPI_FLAGS = -umbrella System -fapplication-extension
-
-LIBMACHO_OTHER_TAPI_FLAGS_MACOS_YES = -target-variant x86_64-apple-ios12.0-macabi
-LIBMACHO_ZIPPER_TAPI_FLAGS = ${LIBMACHO_OTHER_TAPI_FLAGS_MACOS_${CCTB_MACOS}}
 
 // MDT <rdar://problem/49996819> libmacho.dylib has a zippered 32bit slice on macOSJazz
 // Do not zipper i386

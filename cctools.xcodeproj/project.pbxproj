@@ -1735,7 +1735,7 @@
 		DE095FD821CC1ABB00C4ADA1 /* crc32.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = crc32.c; sourceTree = "<group>"; };
 		DE095FD921CC1ABB00C4ADA1 /* coff_bytesex.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = coff_bytesex.c; sourceTree = "<group>"; };
 		DE095FDA21CC1ABB00C4ADA1 /* hash_string.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = hash_string.c; sourceTree = "<group>"; };
-		DE095FDB21CC1ABB00C4ADA1 /* ofile.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ofile.c; sourceTree = "<group>"; tabWidth = 8; usesTabs = 1; };
+		DE095FDB21CC1ABB00C4ADA1 /* ofile.c */ = {isa = PBXFileReference; indentWidth = 8; lastKnownFileType = sourcecode.c.c; path = ofile.c; sourceTree = "<group>"; tabWidth = 8; usesTabs = 1; };
 		DE095FDD21CC1ABB00C4ADA1 /* SymLoc.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SymLoc.c; sourceTree = "<group>"; };
 		DE095FDE21CC1ABB00C4ADA1 /* bytesex.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = bytesex.c; sourceTree = "<group>"; };
 		DE095FDF21CC1ABB00C4ADA1 /* rnd.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = rnd.c; sourceTree = "<group>"; };

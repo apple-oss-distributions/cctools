@@ -65,6 +65,7 @@ ifneq ("$(wildcard ${CCTOOLS_ROOT})","")
 	NM	 =	`xcrun --sdk $(SDKROOT) -f nm`
 	NMC	 =	$(CCTOOLS_ROOT)/usr/bin/nm-classic
 	NMEDIT	 =	$(CCTOOLS_ROOT)/usr/bin/nmedit
+	DYLD_INFO = `xcrun --sdk $(SDKROOT) -f dyld_info`
 # 	OTOOL	 =	$(CCTOOLS_ROOT)/usr/bin/otool
 	OTOOLC	 =	$(CCTOOLS_ROOT)/usr/bin/otool-classic
 	OTOOL	 =	`xcrun --sdk $(SDKROOT) -f otool`
@@ -93,6 +94,7 @@ else
 	NM	 =	`xcrun --sdk $(SDKROOT) -f nm`
 	NMC	 =	`xcrun --sdk $(SDKROOT) -f nm-classic`
 	NMEDIT	 =	`xcrun --sdk $(SDKROOT) -f nmedit`
+	DYLD_INFO = `xcrun --sdk $(SDKROOT) -f dyld_info`
 	OTOOL	 =	`xcrun --sdk $(SDKROOT) -f otool`
 	OTOOLC	 =	`xcrun --sdk $(SDKROOT) -f otool-classic`
 	PAGESTUFF =	`xcrun --sdk $(SDKROOT) -f pagestuff`
