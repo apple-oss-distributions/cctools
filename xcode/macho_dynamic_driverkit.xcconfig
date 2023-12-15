@@ -49,6 +49,7 @@ LIBMACHO_SYSTEM_KERNEL =
 LIBMACHO_SYSTEM_KERNEL[sdk=driverkit*] = -lsystem_kernel
 
 OTHER_LDFLAGS = -nodefaultlibs -umbrella System -Wl,-application_extension ${LIBMACHO_DYLIBS} ${LIBMACHO_SYSTEM_KERNEL}
+OTHER_LDFLAGS[sdk=exclavekit*] = -lsystem_malloc ${inherited}
 
 // The libmacho dynamic library target can only install a subset of the mach-o
 // header files, due to Xcode's limitation that there can be only one public

@@ -2080,6 +2080,7 @@
 		DE8229F921CD8DD6008CD150 /* libmacho.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libmacho.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE8229FD21CD8DF7008CD150 /* macho_dynamic.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = macho_dynamic.xcconfig; sourceTree = "<group>"; };
 		DE822A0421CDA47C008CD150 /* macho_headers.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = macho_headers.sh; sourceTree = "<group>"; };
+		DE8CDDD329396A2700411D60 /* mach-o.exclaves.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = "mach-o.exclaves.modulemap"; sourceTree = "<group>"; };
 		DE97E91321F3B67600C7947D /* private_test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = private_test.xcconfig; sourceTree = "<group>"; };
 		DE97E91821F3B72700C7947D /* libstuff_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libstuff_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE97E91A21F3B72700C7947D /* libstuff_test.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = libstuff_test.c; sourceTree = "<group>"; };
@@ -3710,6 +3711,7 @@
 		DEF3BC9623C68D8200EF319C /* modules */ = {
 			isa = PBXGroup;
 			children = (
+				DE8CDDD329396A2700411D60 /* mach-o.exclaves.modulemap */,
 				DEF3BC9723C68D8200EF319C /* mach-o.modulemap */,
 				F378CA53255251EE00AC8F83 /* mach-o.private.modulemap */,
 			);
