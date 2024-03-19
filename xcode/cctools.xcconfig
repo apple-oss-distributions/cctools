@@ -82,20 +82,16 @@ CCTB_VERSION   = ${RC_ProjectSourceVersion}
 // This avoids embedding large, unwieldy tables of values in our value names.
 // Instead, we build a number of small, unwieldy tables ...
 //
-// MDT TODO: Should we use TOOLCHAIN_INSTALL_DIR instead of DT_TOOLCHAIN_DIR?
-//
-//     <rdar://problem/20656765> Drive tools projects to adopt TOOLCHAIN_INSTALL_DIR instead of DT_TOOLCHAIN_DIR
-//     <rdar://problem/20656786> Set TOOLCHAIN_INSTALL_DIR in additional to DT_TOOLCHAIN_DIR for specifying toolchain install path
 
 // second level (build train) CCTOOLS_LOCATION lookups:
-CCTOOLS_LOCATION2_TOOLS_FOR_MAC_OR_DT_YES   = ${DT_VARIANT}${DT_TOOLCHAIN_DIR}
+CCTOOLS_LOCATION2_TOOLS_FOR_MAC_OR_DT_YES   = $(DT_VARIANT)/$(TOOLCHAIN_INSTALL_DIR)
 CCTOOLS_LOCATION2_OFILES_SIM_FOR_BRIDGE_YES = ${DEVELOPER_DIR}/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator${IPHONE_SDK_MARKETING_VERSION}.sdk
 
 // first level (build alias) CCTOOLS_LOCATION lookups:
 CCTOOLS_LOCATION1_cctools            = ${CCTOOLS_LOCATION2_TOOLS_FOR_MAC_OR_DT_${CCTB_MACOS}${CCTB_XCODE}}
 CCTOOLS_LOCATION1_cctools_ofiles_driverkit = ${DRIVERKITROOT}
 CCTOOLS_LOCATION1_cctools_ofiles_Sim = ${CCTOOLS_LOCATION2_OFILES_SIM_FOR_BRIDGE_${CCTB_BRIDGEOS}}
-CCTOOLS_LOCATION1_cctools_sdk        = ${DT_VARIANT}${DT_TOOLCHAIN_DIR}
+CCTOOLS_LOCATION1_cctools_sdk        = $(DT_VARIANT)/$(TOOLCHAIN_INSTALL_DIR)
 
 // abstract assignment of CCTOOLS_LOCATION:
 CCTOOLS_LOCATION = ${CCTOOLS_LOCATION1_${CCTB_PROJECT}}

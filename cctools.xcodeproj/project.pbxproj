@@ -1652,7 +1652,7 @@
 		DE095F7D21CC1ABB00C4ADA1 /* strip.c */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = strip.c; sourceTree = "<group>"; tabWidth = 8; usesTabs = 1; };
 		DE095F7E21CC1ABB00C4ADA1 /* inout.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = inout.c; sourceTree = "<group>"; };
 		DE095F7F21CC1ABB00C4ADA1 /* nm.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = nm.c; sourceTree = "<group>"; };
-		DE095F8121CC1ABB00C4ADA1 /* libtool.c */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = libtool.c; sourceTree = "<group>"; usesTabs = 1; };
+		DE095F8121CC1ABB00C4ADA1 /* libtool.c */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = libtool.c; sourceTree = "<group>"; tabWidth = 8; usesTabs = 1; };
 		DE095F8221CC1ABB00C4ADA1 /* check_dylib.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = check_dylib.c; sourceTree = "<group>"; };
 		DE095F8321CC1ABB00C4ADA1 /* indr.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = indr.c; sourceTree = "<group>"; };
 		DE095F8421CC1ABB00C4ADA1 /* ctf_insert.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ctf_insert.c; sourceTree = "<group>"; };
@@ -2080,6 +2080,7 @@
 		DE8229F921CD8DD6008CD150 /* libmacho.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libmacho.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE8229FD21CD8DF7008CD150 /* macho_dynamic.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = macho_dynamic.xcconfig; sourceTree = "<group>"; };
 		DE822A0421CDA47C008CD150 /* macho_headers.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = macho_headers.sh; sourceTree = "<group>"; };
+		DE8CDDD329396A2700411D60 /* mach-o.exclavekit.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = "mach-o.exclavekit.modulemap"; sourceTree = "<group>"; };
 		DE97E91321F3B67600C7947D /* private_test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = private_test.xcconfig; sourceTree = "<group>"; };
 		DE97E91821F3B72700C7947D /* libstuff_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libstuff_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE97E91A21F3B72700C7947D /* libstuff_test.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = libstuff_test.c; sourceTree = "<group>"; };
@@ -2106,6 +2107,7 @@
 		DECA2C8222CCD2E1004DA27E /* align.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = align.h; sourceTree = "<group>"; };
 		DECA2C8322CCD348004DA27E /* align.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = align.c; sourceTree = "<group>"; };
 		DECA2C8622CCFCD7004DA27E /* align_test.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = align_test.c; sourceTree = "<group>"; };
+		DED5A8A22B06B7AD007CD300 /* mach-o.exclavecore.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = "mach-o.exclavecore.modulemap"; sourceTree = "<group>"; };
 		DEDFD7E22299C66D00230D7D /* test_main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = test_main.h; sourceTree = "<group>"; };
 		DEDFD7E32299C7F100230D7D /* rnd_test.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = rnd_test.c; sourceTree = "<group>"; };
 		DEEE93752453A6F500ADCA3D /* xcode.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = xcode.c; sourceTree = "<group>"; };
@@ -3710,6 +3712,8 @@
 		DEF3BC9623C68D8200EF319C /* modules */ = {
 			isa = PBXGroup;
 			children = (
+				DED5A8A22B06B7AD007CD300 /* mach-o.exclavecore.modulemap */,
+				DE8CDDD329396A2700411D60 /* mach-o.exclavekit.modulemap */,
 				DEF3BC9723C68D8200EF319C /* mach-o.modulemap */,
 				F378CA53255251EE00AC8F83 /* mach-o.private.modulemap */,
 			);
