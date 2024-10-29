@@ -1,0 +1,16 @@
+#!/bin/zsh
+
+DIR="$(dirname "$(realpath "$0")")"
+
+# remove -q and -Q args (which clang does not support)
+for arg do
+  shift
+  [ "$arg" = "-q" ] && continue
+  [ "$arg" = "-Q" ] && continue
+  set -- "$@" "$arg"
+done
+
+# use clang driver to run clang's integrated assembler
+$DIR/clang -x assembler -c "$@"
+
+

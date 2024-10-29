@@ -4195,6 +4195,8 @@ enum bool verbose)
 	    case PLATFORM_SEPOS:
 		printf("SEPOS\n");
 		break;
+
+
 	    default:
 	        printf("%u\n", bv->platform);
 		break;
