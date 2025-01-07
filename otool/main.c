@@ -50,7 +50,6 @@
 #include "fixup-chains.h"
 #include "ofile_print.h"
 #include "i386_disasm.h"
-#include "ppc_disasm.h"
 #include "arm_disasm.h"
 #include "arm64_disasm.h"
 #include "llvm-c/Disassembler.h"
@@ -4380,15 +4379,7 @@ uint64_t seg_addr)
 			    printf("\t");
 		    }
 		}
-		if(cputype == CPU_TYPE_POWERPC64)
-		    j = ppc_disassemble(sect, (uint32_t)size - i,
-				(uint32_t)cur_addr, (uint32_t)addr,
-				object_byte_sex, relocs, nrelocs, symbols,
-				symbols64, nsymbols, sorted_symbols,
-				nsorted_symbols, strings, strings_size,
-				indirect_symbols, nindirect_symbols,
-				load_commands, ncmds, sizeofcmds, verbose);
-		else if(cputype == CPU_TYPE_X86_64)
+		if(cputype == CPU_TYPE_X86_64)
 		    j = i386_disassemble(sect, (uint32_t)size - i, cur_addr, addr,
 				object_byte_sex, relocs, nrelocs, ext_relocs,
 				next_relocs, loc_relocs, nloc_relocs, dbi, ndbi,
@@ -4408,15 +4399,6 @@ uint64_t seg_addr)
 				load_commands, ncmds, sizeofcmds, verbose,
 				llvm_mc, i386_dc, x86_64_dc, object_addr,
 				object_size, &(insts[n]), NULL, 0);
-		else if(cputype == CPU_TYPE_POWERPC ||
-			cputype == CPU_TYPE_VEO)
-		    j = ppc_disassemble(sect, (uint32_t)size - i,
-					(uint32_t)cur_addr, (uint32_t)addr,
-				object_byte_sex, relocs, nrelocs, symbols,
-				symbols64, nsymbols, sorted_symbols,
-				nsorted_symbols, strings, strings_size,
-				indirect_symbols, nindirect_symbols,
-				load_commands, ncmds, sizeofcmds, verbose);
 		else if(cputype == CPU_TYPE_ARM)
 		    j = arm_disassemble(sect, (uint32_t)size - i,
 				(uint32_t)cur_addr, (uint32_t)addr,

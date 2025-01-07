@@ -20,6 +20,10 @@
  * 
  * @APPLE_LICENSE_HEADER_END@
  */
+
+#ifndef _MACHO_ARM_RELOC_H_
+#define _MACHO_ARM_RELOC_H_
+
 /*
  * Relocation types used in the arm implementation.  Relocation entries for
  * things other than instructions use the same generic relocation as discribed
@@ -28,6 +32,7 @@
  * for instructions.  Since they are for instructions the r_address field
  * indicates the 32 bit instruction that the relocation is to be preformed on.
  */
+
 enum reloc_type_arm
 {
     ARM_RELOC_VANILLA,	/* generic relocation as discribed above */
@@ -58,3 +63,5 @@ enum reloc_type_arm
     ARM_RELOC_HALF,
     ARM_RELOC_HALF_SECTDIFF
 };
+
+#endif /* #ifndef _MACHO_ARM_RELOC_H_ */

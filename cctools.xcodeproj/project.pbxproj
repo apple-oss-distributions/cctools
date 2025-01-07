@@ -148,12 +148,6 @@
 				DE3EC641240DEC2B008CD445 /* PBXTargetDependency */,
 				DE3EC643240DEC2B008CD445 /* PBXTargetDependency */,
 				DE3EC645240DEC2B008CD445 /* PBXTargetDependency */,
-				DE3EC647240DEC2B008CD445 /* PBXTargetDependency */,
-				DE3EC649240DEC2B008CD445 /* PBXTargetDependency */,
-				DE3EC64B240DEC2B008CD445 /* PBXTargetDependency */,
-				DE569B12240E83A6009E5579 /* PBXTargetDependency */,
-				DE3EC64D240DEC2B008CD445 /* PBXTargetDependency */,
-				DE3EC64F240DEC2B008CD445 /* PBXTargetDependency */,
 				DE3EC651240DEC2B008CD445 /* PBXTargetDependency */,
 				DE3EC5E9240DE793008CD445 /* PBXTargetDependency */,
 			);
@@ -180,27 +174,15 @@
 		DE000B3C21CDBA79000CEC53 /* get_end.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F6C21CC1ABB00C4ADA1 /* get_end.c */; };
 		DE000B3D21CDBA79000CEC53 /* getsecbyname.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F7321CC1ABB00C4ADA1 /* getsecbyname.c */; };
 		DE000B3E21CDBA79000CEC53 /* getsegbyname.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F6621CC1ABB00C4ADA1 /* getsegbyname.c */; };
-		DE000B3F21CDBA79000CEC53 /* hppa_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F7221CC1ABB00C4ADA1 /* hppa_swap.c */; };
 		DE000B4021CDBA79000CEC53 /* i386_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F6821CC1ABB00C4ADA1 /* i386_swap.c */; };
-		DE000B4121CDBA79000CEC53 /* i860_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F7521CC1ABB00C4ADA1 /* i860_swap.c */; };
-		DE000B4221CDBA79000CEC53 /* m68k_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F7421CC1ABB00C4ADA1 /* m68k_swap.c */; };
-		DE000B4321CDBA79000CEC53 /* m88k_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F6921CC1ABB00C4ADA1 /* m88k_swap.c */; };
-		DE000B4421CDBA79000CEC53 /* ppc_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F6F21CC1ABB00C4ADA1 /* ppc_swap.c */; };
 		DE000B4521CDBA79000CEC53 /* slot_name.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F6721CC1ABB00C4ADA1 /* slot_name.c */; };
-		DE000B4621CDBA79000CEC53 /* sparc_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F7021CC1ABB00C4ADA1 /* sparc_swap.c */; };
 		DE000B4721CDBA79000CEC53 /* swap.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F7121CC1ABB00C4ADA1 /* swap.c */; };
 		DE000B4D21CDBE77000CEC53 /* arch.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F6B21CC1ABB00C4ADA1 /* arch.c */; };
 		DE000B4E21CDBE77000CEC53 /* get_end.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F6C21CC1ABB00C4ADA1 /* get_end.c */; };
 		DE000B4F21CDBE77000CEC53 /* getsecbyname.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F7321CC1ABB00C4ADA1 /* getsecbyname.c */; };
 		DE000B5021CDBE77000CEC53 /* getsegbyname.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F6621CC1ABB00C4ADA1 /* getsegbyname.c */; };
-		DE000B5121CDBE77000CEC53 /* hppa_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F7221CC1ABB00C4ADA1 /* hppa_swap.c */; };
 		DE000B5221CDBE77000CEC53 /* i386_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F6821CC1ABB00C4ADA1 /* i386_swap.c */; };
-		DE000B5321CDBE77000CEC53 /* i860_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F7521CC1ABB00C4ADA1 /* i860_swap.c */; };
-		DE000B5421CDBE77000CEC53 /* m68k_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F7421CC1ABB00C4ADA1 /* m68k_swap.c */; };
-		DE000B5521CDBE77000CEC53 /* m88k_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F6921CC1ABB00C4ADA1 /* m88k_swap.c */; };
-		DE000B5621CDBE77000CEC53 /* ppc_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F6F21CC1ABB00C4ADA1 /* ppc_swap.c */; };
 		DE000B5721CDBE77000CEC53 /* slot_name.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F6721CC1ABB00C4ADA1 /* slot_name.c */; };
-		DE000B5821CDBE77000CEC53 /* sparc_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F7021CC1ABB00C4ADA1 /* sparc_swap.c */; };
 		DE000B5921CDBE77000CEC53 /* swap.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F7121CC1ABB00C4ADA1 /* swap.c */; };
 		DE000B6B21CDBEFD000CEC53 /* libstuff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE09612C21CC218E00C4ADA1 /* libstuff.a */; };
 		DE000B6C21CDBF1A000CEC53 /* redo_prebinding.h in Headers */ = {isa = PBXBuildFile; fileRef = DE0960A121CC1ABC00C4ADA1 /* redo_prebinding.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -300,7 +282,6 @@
 		DE09631621CD629A00C4ADA1 /* i386_disasm.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095FF621CC1ABC00C4ADA1 /* i386_disasm.c */; };
 		DE09631A21CD629A00C4ADA1 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = DE09600421CC1ABC00C4ADA1 /* main.c */; };
 		DE09631C21CD629A00C4ADA1 /* ofile_print.c in Sources */ = {isa = PBXBuildFile; fileRef = DE09600721CC1ABC00C4ADA1 /* ofile_print.c */; };
-		DE09631D21CD629A00C4ADA1 /* ppc_disasm.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095FF021CC1ABC00C4ADA1 /* ppc_disasm.c */; };
 		DE09631E21CD629A00C4ADA1 /* print_bitcode.c in Sources */ = {isa = PBXBuildFile; fileRef = DE09600221CC1ABC00C4ADA1 /* print_bitcode.c */; };
 		DE09631F21CD629A00C4ADA1 /* print_objc.c in Sources */ = {isa = PBXBuildFile; fileRef = DE09601121CC1ABC00C4ADA1 /* print_objc.c */; };
 		DE09632021CD629A00C4ADA1 /* print_objc2_32bit.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095FF821CC1ABC00C4ADA1 /* print_objc2_32bit.c */; };
@@ -372,20 +353,9 @@
 		DE3EC603240DEA19008CD445 /* reloc.h in Headers */ = {isa = PBXBuildFile; fileRef = DE0960A721CC1ABC00C4ADA1 /* reloc.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DE3EC604240DEA2A008CD445 /* reloc.h in Headers */ = {isa = PBXBuildFile; fileRef = DE0960AF21CC1ABC00C4ADA1 /* reloc.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DE3EC605240DEA45008CD445 /* reloc.h in Headers */ = {isa = PBXBuildFile; fileRef = DE0960B421CC1ABC00C4ADA1 /* reloc.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		DE3EC636240DEB89008CD445 /* swap.h in Headers */ = {isa = PBXBuildFile; fileRef = DE09608A21CC1ABC00C4ADA1 /* swap.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		DE3EC637240DEB94008CD445 /* reloc.h in Headers */ = {isa = PBXBuildFile; fileRef = DE09609721CC1ABC00C4ADA1 /* reloc.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		DE3EC638240DEB96008CD445 /* swap.h in Headers */ = {isa = PBXBuildFile; fileRef = DE09609621CC1ABC00C4ADA1 /* swap.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		DE3EC639240DEBA2008CD445 /* reloc.h in Headers */ = {isa = PBXBuildFile; fileRef = DE09609A21CC1ABC00C4ADA1 /* reloc.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		DE3EC63A240DEBA5008CD445 /* swap.h in Headers */ = {isa = PBXBuildFile; fileRef = DE09609921CC1ABC00C4ADA1 /* swap.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		DE3EC63B240DEBAB008CD445 /* reloc.h in Headers */ = {isa = PBXBuildFile; fileRef = DE0960AA21CC1ABC00C4ADA1 /* reloc.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		DE3EC63C240DEBAE008CD445 /* swap.h in Headers */ = {isa = PBXBuildFile; fileRef = DE0960A921CC1ABC00C4ADA1 /* swap.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		DE3EC63D240DEBB7008CD445 /* reloc.h in Headers */ = {isa = PBXBuildFile; fileRef = DE0960AD21CC1ABC00C4ADA1 /* reloc.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		DE3EC63E240DEBBA008CD445 /* swap.h in Headers */ = {isa = PBXBuildFile; fileRef = DE0960AC21CC1ABC00C4ADA1 /* swap.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		DE3EC63F240DEBD4008CD445 /* bool.h in Headers */ = {isa = PBXBuildFile; fileRef = DE09604421CC1ABC00C4ADA1 /* bool.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		DE4B2072232815EF00C8A22F /* depinfo.c in Sources */ = {isa = PBXBuildFile; fileRef = DE4B2071232815EF00C8A22F /* depinfo.c */; };
 		DE4B2076232818A600C8A22F /* libstuff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE09612C21CC218E00C4ADA1 /* libstuff.a */; };
-		DE569B0F240E8352009E5579 /* reloc.h in Headers */ = {isa = PBXBuildFile; fileRef = DE09608E21CC1ABC00C4ADA1 /* reloc.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		DE569B10240E8356009E5579 /* swap.h in Headers */ = {isa = PBXBuildFile; fileRef = DE09608D21CC1ABC00C4ADA1 /* swap.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		DE5DC66B21F7EA8000A7CA07 /* getsecbyname.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F7321CC1ABB00C4ADA1 /* getsecbyname.c */; };
 		DE66B7B92469D73D002B4EAD /* reset_load_command_pointers_test.c in Sources */ = {isa = PBXBuildFile; fileRef = DE66B7B82469D73D002B4EAD /* reset_load_command_pointers_test.c */; };
 		DE822A0821CDAB13008CD150 /* arch.h in Headers */ = {isa = PBXBuildFile; fileRef = DE0960B521CC1ABC00C4ADA1 /* arch.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -400,14 +370,8 @@
 		DE822A1221CDAB2B008CD150 /* get_end.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F6C21CC1ABB00C4ADA1 /* get_end.c */; };
 		DE822A1321CDAB2B008CD150 /* getsecbyname.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F7321CC1ABB00C4ADA1 /* getsecbyname.c */; };
 		DE822A1421CDAB2B008CD150 /* getsegbyname.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F6621CC1ABB00C4ADA1 /* getsegbyname.c */; };
-		DE822A1521CDAB2B008CD150 /* hppa_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F7221CC1ABB00C4ADA1 /* hppa_swap.c */; };
 		DE822A1621CDAB2B008CD150 /* i386_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F6821CC1ABB00C4ADA1 /* i386_swap.c */; };
-		DE822A1721CDAB2B008CD150 /* i860_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F7521CC1ABB00C4ADA1 /* i860_swap.c */; };
-		DE822A1821CDAB2B008CD150 /* m68k_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F7421CC1ABB00C4ADA1 /* m68k_swap.c */; };
-		DE822A1921CDAB2B008CD150 /* m88k_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F6921CC1ABB00C4ADA1 /* m88k_swap.c */; };
-		DE822A1C21CDAB2B008CD150 /* ppc_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F6F21CC1ABB00C4ADA1 /* ppc_swap.c */; };
 		DE822A1E21CDAB2B008CD150 /* slot_name.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F6721CC1ABB00C4ADA1 /* slot_name.c */; };
-		DE822A1F21CDAB2B008CD150 /* sparc_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F7021CC1ABB00C4ADA1 /* sparc_swap.c */; };
 		DE822A2021CDAB2B008CD150 /* swap.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F7121CC1ABB00C4ADA1 /* swap.c */; };
 		DE8239C424E0A1B9004CD381 /* libstuff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE09612C21CC218E00C4ADA1 /* libstuff.a */; };
 		DE97E91B21F3B72700C7947D /* libstuff_test.c in Sources */ = {isa = PBXBuildFile; fileRef = DE97E91A21F3B72700C7947D /* libstuff_test.c */; };
@@ -857,41 +821,6 @@
 			remoteGlobalIDString = DE3EC5F3240DE9B3008CD445;
 			remoteInfo = macho_h_arm64;
 		};
-		DE3EC646240DEC2B008CD445 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DE76108421CC103000736984 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = DE3EC60E240DEB56008CD445;
-			remoteInfo = macho_h_hppa;
-		};
-		DE3EC648240DEC2B008CD445 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DE76108421CC103000736984 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = DE3EC61E240DEB5B008CD445;
-			remoteInfo = macho_h_i860;
-		};
-		DE3EC64A240DEC2B008CD445 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DE76108421CC103000736984 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = DE3EC609240DEB51008CD445;
-			remoteInfo = macho_h_m68k;
-		};
-		DE3EC64C240DEC2B008CD445 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DE76108421CC103000736984 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = DE3EC616240DEB5A008CD445;
-			remoteInfo = macho_h_ppc;
-		};
-		DE3EC64E240DEC2B008CD445 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DE76108421CC103000736984 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = DE3EC626240DEB5E008CD445;
-			remoteInfo = macho_h_sparc;
-		};
 		DE3EC650240DEC2B008CD445 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DE76108421CC103000736984 /* Project object */;
@@ -905,13 +834,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = DE09612B21CC218E00C4ADA1;
 			remoteInfo = stuff;
-		};
-		DE569B11240E83A6009E5579 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DE76108421CC103000736984 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = DE569B0A240E8339009E5579;
-			remoteInfo = macho_h_m88k;
 		};
 		DE5DC68921F7F44200A7CA07 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1352,6 +1274,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8495D6B12C06966B00BCCAF9 /* MachO.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = MachO.modulemap; sourceTree = "<group>"; };
+		8495D6B22C06967400BCCAF9 /* MachO_Private.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = MachO_Private.modulemap; sourceTree = "<group>"; };
+		8495D6B32C0696D200BCCAF9 /* MachO.exclavecore.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = MachO.exclavecore.modulemap; sourceTree = "<group>"; };
+		8495D6B42C0696DF00BCCAF9 /* MachO.exclavekit.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = MachO.exclavekit.modulemap; sourceTree = "<group>"; };
+		84C55EF82C6D3B6800C4677E /* MachO_Private.exclavekit.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = MachO_Private.exclavekit.modulemap; sourceTree = "<group>"; };
+		84C55EF92C6D3B7E00C4677E /* mach-o.exclavekit.private.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = "mach-o.exclavekit.private.modulemap"; sourceTree = "<group>"; };
 		8C02F22A279AF7B300BF629A /* copy_macho_headers_standalone.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = copy_macho_headers_standalone.sh; sourceTree = "<group>"; };
 		DE000B3621CDB9DB000CEC53 /* libmacho.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmacho.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE000B3A21CDB9FE000CEC53 /* macho_static.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = macho_static.xcconfig; sourceTree = "<group>"; };
@@ -1439,17 +1367,11 @@
 		DE095F6621CC1ABB00C4ADA1 /* getsegbyname.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = getsegbyname.c; sourceTree = "<group>"; };
 		DE095F6721CC1ABB00C4ADA1 /* slot_name.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = slot_name.c; sourceTree = "<group>"; };
 		DE095F6821CC1ABB00C4ADA1 /* i386_swap.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = i386_swap.c; sourceTree = "<group>"; };
-		DE095F6921CC1ABB00C4ADA1 /* m88k_swap.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = m88k_swap.c; sourceTree = "<group>"; };
 		DE095F6B21CC1ABB00C4ADA1 /* arch.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = arch.c; sourceTree = "<group>"; tabWidth = 8; };
 		DE095F6C21CC1ABB00C4ADA1 /* get_end.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = get_end.c; sourceTree = "<group>"; };
 		DE095F6D21CC1ABB00C4ADA1 /* dylib.ofileList */ = {isa = PBXFileReference; lastKnownFileType = text; path = dylib.ofileList; sourceTree = "<group>"; };
-		DE095F6F21CC1ABB00C4ADA1 /* ppc_swap.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ppc_swap.c; sourceTree = "<group>"; };
-		DE095F7021CC1ABB00C4ADA1 /* sparc_swap.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = sparc_swap.c; sourceTree = "<group>"; };
 		DE095F7121CC1ABB00C4ADA1 /* swap.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = swap.c; sourceTree = "<group>"; };
-		DE095F7221CC1ABB00C4ADA1 /* hppa_swap.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = hppa_swap.c; sourceTree = "<group>"; };
 		DE095F7321CC1ABB00C4ADA1 /* getsecbyname.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = getsecbyname.c; sourceTree = "<group>"; tabWidth = 8; };
-		DE095F7421CC1ABB00C4ADA1 /* m68k_swap.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = m68k_swap.c; sourceTree = "<group>"; };
-		DE095F7521CC1ABB00C4ADA1 /* i860_swap.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = i860_swap.c; sourceTree = "<group>"; };
 		DE095F7821CC1ABB00C4ADA1 /* checksyms.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = checksyms.c; sourceTree = "<group>"; };
 		DE095F7921CC1ABB00C4ADA1 /* redo_prebinding.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = redo_prebinding.c; sourceTree = "<group>"; };
 		DE095F7A21CC1ABB00C4ADA1 /* cmpdylib.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = cmpdylib.c; sourceTree = "<group>"; };
@@ -1560,7 +1482,6 @@
 		DE095FEC21CC1ABB00C4ADA1 /* seg_addr_table.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = seg_addr_table.c; sourceTree = "<group>"; };
 		DE095FED21CC1ABB00C4ADA1 /* errors.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = errors.c; sourceTree = "<group>"; };
 		DE095FEE21CC1ABB00C4ADA1 /* hppa.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = hppa.c; sourceTree = "<group>"; };
-		DE095FF021CC1ABC00C4ADA1 /* ppc_disasm.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ppc_disasm.c; sourceTree = "<group>"; };
 		DE095FF121CC1ABC00C4ADA1 /* dyld_bind_info.c */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = dyld_bind_info.c; sourceTree = "<group>"; tabWidth = 8; usesTabs = 0; };
 		DE095FF221CC1ABC00C4ADA1 /* arm_disasm.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = arm_disasm.c; sourceTree = "<group>"; };
 		DE095FF521CC1ABC00C4ADA1 /* ofile_print.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofile_print.h; sourceTree = "<group>"; };
@@ -1574,7 +1495,6 @@
 		DE09600221CC1ABC00C4ADA1 /* print_bitcode.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = print_bitcode.c; sourceTree = "<group>"; };
 		DE09600421CC1ABC00C4ADA1 /* main.c */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; usesTabs = 1; };
 		DE09600521CC1ABC00C4ADA1 /* dyld_bind_info.h */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = dyld_bind_info.h; sourceTree = "<group>"; };
-		DE09600621CC1ABC00C4ADA1 /* ppc_disasm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ppc_disasm.h; sourceTree = "<group>"; };
 		DE09600721CC1ABC00C4ADA1 /* ofile_print.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ofile_print.c; sourceTree = "<group>"; tabWidth = 8; };
 		DE09600B21CC1ABC00C4ADA1 /* arm64_disasm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = arm64_disasm.h; sourceTree = "<group>"; };
 		DE09600C21CC1ABC00C4ADA1 /* i386_disasm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = i386_disasm.h; sourceTree = "<group>"; };
@@ -1667,19 +1587,12 @@
 		DE09608321CC1ABC00C4ADA1 /* thread_status.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = thread_status.h; sourceTree = "<group>"; };
 		DE09608521CC1ABC00C4ADA1 /* thread_status.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = thread_status.h; sourceTree = "<group>"; };
 		DE09608721CC1ABC00C4ADA1 /* thread_status.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = thread_status.h; sourceTree = "<group>"; };
-		DE09608A21CC1ABC00C4ADA1 /* swap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = swap.h; sourceTree = "<group>"; };
 		DE09608B21CC1ABC00C4ADA1 /* rld_state.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rld_state.h; sourceTree = "<group>"; };
-		DE09608D21CC1ABC00C4ADA1 /* swap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = swap.h; sourceTree = "<group>"; };
-		DE09608E21CC1ABC00C4ADA1 /* reloc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = reloc.h; sourceTree = "<group>"; };
 		DE09608F21CC1ABC00C4ADA1 /* kld.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = kld.h; sourceTree = "<group>"; };
 		DE09609021CC1ABC00C4ADA1 /* getsect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = getsect.h; sourceTree = "<group>"; };
 		DE09609121CC1ABC00C4ADA1 /* ranlib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ranlib.h; sourceTree = "<group>"; };
 		DE09609221CC1ABC00C4ADA1 /* sarld.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sarld.h; sourceTree = "<group>"; };
 		DE09609421CC1ABC00C4ADA1 /* swap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = swap.h; sourceTree = "<group>"; };
-		DE09609621CC1ABC00C4ADA1 /* swap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = swap.h; sourceTree = "<group>"; };
-		DE09609721CC1ABC00C4ADA1 /* reloc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = reloc.h; sourceTree = "<group>"; };
-		DE09609921CC1ABC00C4ADA1 /* swap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = swap.h; sourceTree = "<group>"; };
-		DE09609A21CC1ABC00C4ADA1 /* reloc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = reloc.h; sourceTree = "<group>"; };
 		DE09609B21CC1ABC00C4ADA1 /* swap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = swap.h; sourceTree = "<group>"; };
 		DE09609C21CC1ABC00C4ADA1 /* stab.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stab.h; sourceTree = "<group>"; };
 		DE09609D21CC1ABC00C4ADA1 /* dyld_gdb.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = dyld_gdb.h; sourceTree = "<group>"; };
@@ -1692,10 +1605,6 @@
 		DE0960A421CC1ABC00C4ADA1 /* reloc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = reloc.h; sourceTree = "<group>"; };
 		DE0960A521CC1ABC00C4ADA1 /* dyld_debug.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = dyld_debug.h; sourceTree = "<group>"; };
 		DE0960A721CC1ABC00C4ADA1 /* reloc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = reloc.h; sourceTree = "<group>"; };
-		DE0960A921CC1ABC00C4ADA1 /* swap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = swap.h; sourceTree = "<group>"; };
-		DE0960AA21CC1ABC00C4ADA1 /* reloc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = reloc.h; sourceTree = "<group>"; };
-		DE0960AC21CC1ABC00C4ADA1 /* swap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = swap.h; sourceTree = "<group>"; };
-		DE0960AD21CC1ABC00C4ADA1 /* reloc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = reloc.h; sourceTree = "<group>"; };
 		DE0960AF21CC1ABC00C4ADA1 /* reloc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = reloc.h; sourceTree = "<group>"; };
 		DE0960B021CC1ABC00C4ADA1 /* ldsyms.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ldsyms.h; sourceTree = "<group>"; };
 		DE0960B121CC1ABC00C4ADA1 /* fat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fat.h; sourceTree = "<group>"; };
@@ -1763,16 +1672,10 @@
 		DE3EC5EF240DE9B1008CD445 /* libmacho_h_arm.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmacho_h_arm.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE3EC5FA240DE9B3008CD445 /* libmacho_h_arm64.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmacho_h_arm64.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE3EC602240DE9BB008CD445 /* libmacho_h_x86_64.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmacho_h_x86_64.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		DE3EC60A240DEB51008CD445 /* libmacho_h_m68k.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmacho_h_m68k.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		DE3EC615240DEB56008CD445 /* libmacho_h_hppa.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmacho_h_hppa.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		DE3EC61D240DEB5A008CD445 /* libmacho_h_ppc.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmacho_h_ppc.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		DE3EC625240DEB5B008CD445 /* libmacho_h_i860.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmacho_h_i860.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		DE3EC62D240DEB5E008CD445 /* libmacho_h_sparc.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmacho_h_sparc.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE3EC635240DEB5E008CD445 /* libdyld_h.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libdyld_h.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE4B20552326CB1C00C8A22F /* depinfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = depinfo.h; sourceTree = "<group>"; };
 		DE4B206F232815EF00C8A22F /* depinfo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = depinfo; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE4B2071232815EF00C8A22F /* depinfo.c */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.c; path = depinfo.c; sourceTree = "<group>"; };
-		DE569B0B240E8339009E5579 /* libmacho_h_m88k.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libmacho_h_m88k.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE5DC67B21F7EA8000A7CA07 /* libmacho.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libmacho.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE5DC68521F7ED5200A7CA07 /* getsect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = getsect.h; sourceTree = "<group>"; usesTabs = 0; };
 		DE5DC68721F7EEBB00A7CA07 /* macho_dynamic_driverkit.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = macho_dynamic_driverkit.xcconfig; sourceTree = "<group>"; };
@@ -2087,41 +1990,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		DE3EC608240DEB51008CD445 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DE3EC611240DEB56008CD445 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DE3EC619240DEB5A008CD445 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DE3EC621240DEB5B008CD445 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DE3EC629240DEB5E008CD445 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		DE3EC631240DEB5E008CD445 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -2134,13 +2002,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				DE4B2076232818A600C8A22F /* libstuff.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DE569B09240E8339009E5579 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2502,15 +2363,9 @@
 				DE095F6C21CC1ABB00C4ADA1 /* get_end.c */,
 				DE095F7321CC1ABB00C4ADA1 /* getsecbyname.c */,
 				DE095F6621CC1ABB00C4ADA1 /* getsegbyname.c */,
-				DE095F7221CC1ABB00C4ADA1 /* hppa_swap.c */,
 				DE095F6821CC1ABB00C4ADA1 /* i386_swap.c */,
-				DE095F7521CC1ABB00C4ADA1 /* i860_swap.c */,
-				DE095F7421CC1ABB00C4ADA1 /* m68k_swap.c */,
-				DE095F6921CC1ABB00C4ADA1 /* m88k_swap.c */,
-				DE095F6F21CC1ABB00C4ADA1 /* ppc_swap.c */,
 				DE095F6521CC1ABB00C4ADA1 /* shlib.ofileList */,
 				DE095F6721CC1ABB00C4ADA1 /* slot_name.c */,
-				DE095F7021CC1ABB00C4ADA1 /* sparc_swap.c */,
 				DE095F7121CC1ABB00C4ADA1 /* swap.c */,
 			);
 			path = libmacho;
@@ -2705,8 +2560,6 @@
 				DE09600721CC1ABC00C4ADA1 /* ofile_print.c */,
 				DE095FF521CC1ABC00C4ADA1 /* ofile_print.h */,
 				DE09600E21CC1ABC00C4ADA1 /* otool.h */,
-				DE095FF021CC1ABC00C4ADA1 /* ppc_disasm.c */,
-				DE09600621CC1ABC00C4ADA1 /* ppc_disasm.h */,
 				DE09600221CC1ABC00C4ADA1 /* print_bitcode.c */,
 				DE09601121CC1ABC00C4ADA1 /* print_objc.c */,
 				DE2BDB6F2335491800F3C435 /* print_objc2_util.h */,
@@ -3018,45 +2871,22 @@
 				DE0960B121CC1ABC00C4ADA1 /* fat.h */,
 				DE09609021CC1ABC00C4ADA1 /* getsect.h */,
 				DE09609E21CC1ABC00C4ADA1 /* gmon.h */,
-				DE09609521CC1ABC00C4ADA1 /* hppa */,
 				DE09609321CC1ABC00C4ADA1 /* i386 */,
-				DE0960A821CC1ABC00C4ADA1 /* i860 */,
 				DE09608F21CC1ABC00C4ADA1 /* kld.h */,
 				DE0960B021CC1ABC00C4ADA1 /* ldsyms.h */,
 				DE0960A321CC1ABC00C4ADA1 /* loader.h */,
-				DE09608921CC1ABC00C4ADA1 /* m68k */,
-				DE09608C21CC1ABC00C4ADA1 /* m88k */,
 				DE0960A021CC1ABC00C4ADA1 /* nlist.h */,
-				DE09609821CC1ABC00C4ADA1 /* ppc */,
 				DE09609121CC1ABC00C4ADA1 /* ranlib.h */,
 				DE0960A121CC1ABC00C4ADA1 /* redo_prebinding.h */,
 				DE0960A421CC1ABC00C4ADA1 /* reloc.h */,
 				DE09608B21CC1ABC00C4ADA1 /* rld_state.h */,
 				DE0960B221CC1ABC00C4ADA1 /* rld.h */,
 				DE09609221CC1ABC00C4ADA1 /* sarld.h */,
-				DE0960AB21CC1ABC00C4ADA1 /* sparc */,
 				DE09609C21CC1ABC00C4ADA1 /* stab.h */,
 				DE09609B21CC1ABC00C4ADA1 /* swap.h */,
 				DE0960B321CC1ABC00C4ADA1 /* x86_64 */,
 			);
 			path = "mach-o";
-			sourceTree = "<group>";
-		};
-		DE09608921CC1ABC00C4ADA1 /* m68k */ = {
-			isa = PBXGroup;
-			children = (
-				DE09608A21CC1ABC00C4ADA1 /* swap.h */,
-			);
-			path = m68k;
-			sourceTree = "<group>";
-		};
-		DE09608C21CC1ABC00C4ADA1 /* m88k */ = {
-			isa = PBXGroup;
-			children = (
-				DE09608E21CC1ABC00C4ADA1 /* reloc.h */,
-				DE09608D21CC1ABC00C4ADA1 /* swap.h */,
-			);
-			path = m88k;
 			sourceTree = "<group>";
 		};
 		DE09609321CC1ABC00C4ADA1 /* i386 */ = {
@@ -3067,48 +2897,12 @@
 			path = i386;
 			sourceTree = "<group>";
 		};
-		DE09609521CC1ABC00C4ADA1 /* hppa */ = {
-			isa = PBXGroup;
-			children = (
-				DE09609721CC1ABC00C4ADA1 /* reloc.h */,
-				DE09609621CC1ABC00C4ADA1 /* swap.h */,
-			);
-			path = hppa;
-			sourceTree = "<group>";
-		};
-		DE09609821CC1ABC00C4ADA1 /* ppc */ = {
-			isa = PBXGroup;
-			children = (
-				DE09609A21CC1ABC00C4ADA1 /* reloc.h */,
-				DE09609921CC1ABC00C4ADA1 /* swap.h */,
-			);
-			path = ppc;
-			sourceTree = "<group>";
-		};
 		DE0960A621CC1ABC00C4ADA1 /* arm */ = {
 			isa = PBXGroup;
 			children = (
 				DE0960A721CC1ABC00C4ADA1 /* reloc.h */,
 			);
 			path = arm;
-			sourceTree = "<group>";
-		};
-		DE0960A821CC1ABC00C4ADA1 /* i860 */ = {
-			isa = PBXGroup;
-			children = (
-				DE0960AA21CC1ABC00C4ADA1 /* reloc.h */,
-				DE0960A921CC1ABC00C4ADA1 /* swap.h */,
-			);
-			path = i860;
-			sourceTree = "<group>";
-		};
-		DE0960AB21CC1ABC00C4ADA1 /* sparc */ = {
-			isa = PBXGroup;
-			children = (
-				DE0960AD21CC1ABC00C4ADA1 /* reloc.h */,
-				DE0960AC21CC1ABC00C4ADA1 /* swap.h */,
-			);
-			path = sparc;
 			sourceTree = "<group>";
 		};
 		DE0960AE21CC1ABC00C4ADA1 /* arm64 */ = {
@@ -3202,13 +2996,7 @@
 				DE3EC5EF240DE9B1008CD445 /* libmacho_h_arm.a */,
 				DE3EC5FA240DE9B3008CD445 /* libmacho_h_arm64.a */,
 				DE3EC602240DE9BB008CD445 /* libmacho_h_x86_64.a */,
-				DE3EC60A240DEB51008CD445 /* libmacho_h_m68k.a */,
-				DE3EC615240DEB56008CD445 /* libmacho_h_hppa.a */,
-				DE3EC61D240DEB5A008CD445 /* libmacho_h_ppc.a */,
-				DE3EC625240DEB5B008CD445 /* libmacho_h_i860.a */,
-				DE3EC62D240DEB5E008CD445 /* libmacho_h_sparc.a */,
 				DE3EC635240DEB5E008CD445 /* libdyld_h.a */,
-				DE569B0B240E8339009E5579 /* libmacho_h_m88k.dylib */,
 				DE1FBC0B249BC8B300293E8D /* diagtest */,
 			);
 			name = Products;
@@ -3288,9 +3076,15 @@
 		DEF3BC9623C68D8200EF319C /* modules */ = {
 			isa = PBXGroup;
 			children = (
+				8495D6B32C0696D200BCCAF9 /* MachO.exclavecore.modulemap */,
 				DED5A8A22B06B7AD007CD300 /* mach-o.exclavecore.modulemap */,
+				8495D6B42C0696DF00BCCAF9 /* MachO.exclavekit.modulemap */,
 				DE8CDDD329396A2700411D60 /* mach-o.exclavekit.modulemap */,
+				8495D6B12C06966B00BCCAF9 /* MachO.modulemap */,
 				DEF3BC9723C68D8200EF319C /* mach-o.modulemap */,
+				84C55EF82C6D3B6800C4677E /* MachO_Private.exclavekit.modulemap */,
+				8495D6B22C06967400BCCAF9 /* MachO_Private.modulemap */,
+				84C55EF92C6D3B7E00C4677E /* mach-o.exclavekit.private.modulemap */,
 				F378CA53255251EE00AC8F83 /* mach-o.private.modulemap */,
 			);
 			path = modules;
@@ -3360,64 +3154,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		DE3EC606240DEB51008CD445 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				DE3EC636240DEB89008CD445 /* swap.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DE3EC60F240DEB56008CD445 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				DE3EC638240DEB96008CD445 /* swap.h in Headers */,
-				DE3EC637240DEB94008CD445 /* reloc.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DE3EC617240DEB5A008CD445 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				DE3EC63A240DEBA5008CD445 /* swap.h in Headers */,
-				DE3EC639240DEBA2008CD445 /* reloc.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DE3EC61F240DEB5B008CD445 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				DE3EC63C240DEBAE008CD445 /* swap.h in Headers */,
-				DE3EC63B240DEBAB008CD445 /* reloc.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DE3EC627240DEB5E008CD445 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				DE3EC63E240DEBBA008CD445 /* swap.h in Headers */,
-				DE3EC63D240DEBB7008CD445 /* reloc.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		DE3EC62F240DEB5E008CD445 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				DE3EC63F240DEBD4008CD445 /* bool.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DE569B07240E8339009E5579 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				DE569B0F240E8352009E5579 /* reloc.h in Headers */,
-				DE569B10240E8356009E5579 /* swap.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4034,91 +3775,6 @@
 			productReference = DE3EC602240DE9BB008CD445 /* libmacho_h_x86_64.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		DE3EC609240DEB51008CD445 /* macho_h_m68k */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = DE3EC60B240DEB51008CD445 /* Build configuration list for PBXNativeTarget "macho_h_m68k" */;
-			buildPhases = (
-				DE3EC606240DEB51008CD445 /* Headers */,
-				DE3EC607240DEB51008CD445 /* Sources */,
-				DE3EC608240DEB51008CD445 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = macho_h_m68k;
-			productName = macho_h_m68k;
-			productReference = DE3EC60A240DEB51008CD445 /* libmacho_h_m68k.a */;
-			productType = "com.apple.product-type.library.static";
-		};
-		DE3EC60E240DEB56008CD445 /* macho_h_hppa */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = DE3EC612240DEB56008CD445 /* Build configuration list for PBXNativeTarget "macho_h_hppa" */;
-			buildPhases = (
-				DE3EC60F240DEB56008CD445 /* Headers */,
-				DE3EC610240DEB56008CD445 /* Sources */,
-				DE3EC611240DEB56008CD445 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = macho_h_hppa;
-			productName = macho_h_m68k;
-			productReference = DE3EC615240DEB56008CD445 /* libmacho_h_hppa.a */;
-			productType = "com.apple.product-type.library.static";
-		};
-		DE3EC616240DEB5A008CD445 /* macho_h_ppc */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = DE3EC61A240DEB5A008CD445 /* Build configuration list for PBXNativeTarget "macho_h_ppc" */;
-			buildPhases = (
-				DE3EC617240DEB5A008CD445 /* Headers */,
-				DE3EC618240DEB5A008CD445 /* Sources */,
-				DE3EC619240DEB5A008CD445 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = macho_h_ppc;
-			productName = macho_h_m68k;
-			productReference = DE3EC61D240DEB5A008CD445 /* libmacho_h_ppc.a */;
-			productType = "com.apple.product-type.library.static";
-		};
-		DE3EC61E240DEB5B008CD445 /* macho_h_i860 */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = DE3EC622240DEB5B008CD445 /* Build configuration list for PBXNativeTarget "macho_h_i860" */;
-			buildPhases = (
-				DE3EC61F240DEB5B008CD445 /* Headers */,
-				DE3EC620240DEB5B008CD445 /* Sources */,
-				DE3EC621240DEB5B008CD445 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = macho_h_i860;
-			productName = macho_h_m68k;
-			productReference = DE3EC625240DEB5B008CD445 /* libmacho_h_i860.a */;
-			productType = "com.apple.product-type.library.static";
-		};
-		DE3EC626240DEB5E008CD445 /* macho_h_sparc */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = DE3EC62A240DEB5E008CD445 /* Build configuration list for PBXNativeTarget "macho_h_sparc" */;
-			buildPhases = (
-				DE3EC627240DEB5E008CD445 /* Headers */,
-				DE3EC628240DEB5E008CD445 /* Sources */,
-				DE3EC629240DEB5E008CD445 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = macho_h_sparc;
-			productName = macho_h_m68k;
-			productReference = DE3EC62D240DEB5E008CD445 /* libmacho_h_sparc.a */;
-			productType = "com.apple.product-type.library.static";
-		};
 		DE3EC62E240DEB5E008CD445 /* dyld_h */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = DE3EC632240DEB5E008CD445 /* Build configuration list for PBXNativeTarget "dyld_h" */;
@@ -4132,7 +3788,7 @@
 			dependencies = (
 			);
 			name = dyld_h;
-			productName = macho_h_m68k;
+			productName = dyld_h;
 			productReference = DE3EC635240DEB5E008CD445 /* libdyld_h.a */;
 			productType = "com.apple.product-type.library.static";
 		};
@@ -4153,23 +3809,6 @@
 			productName = depinfo;
 			productReference = DE4B206F232815EF00C8A22F /* depinfo */;
 			productType = "com.apple.product-type.tool";
-		};
-		DE569B0A240E8339009E5579 /* macho_h_m88k */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = DE569B0E240E8339009E5579 /* Build configuration list for PBXNativeTarget "macho_h_m88k" */;
-			buildPhases = (
-				DE569B07240E8339009E5579 /* Headers */,
-				DE569B08240E8339009E5579 /* Sources */,
-				DE569B09240E8339009E5579 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = macho_h_m88k;
-			productName = macho_h_m88k;
-			productReference = DE569B0B240E8339009E5579 /* libmacho_h_m88k.dylib */;
-			productType = "com.apple.product-type.library.dynamic";
 		};
 		DE5DC65C21F7EA8000A7CA07 /* macho dynamic driverkit */ = {
 			isa = PBXNativeTarget;
@@ -4299,13 +3938,7 @@
 					DE3EC5EE240DE9B1008CD445 = {
 						CreatedOnToolsVersion = 12.0;
 					};
-					DE3EC609240DEB51008CD445 = {
-						CreatedOnToolsVersion = 12.0;
-					};
 					DE4B206E232815EF00C8A22F = {
-						CreatedOnToolsVersion = 11.0;
-					};
-					DE569B0A240E8339009E5579 = {
 						CreatedOnToolsVersion = 11.0;
 					};
 					DE8229F821CD8DD6008CD150 = {
@@ -4388,12 +4021,6 @@
 				DE3EC5EE240DE9B1008CD445 /* macho_h_arm */,
 				DE3EC5F3240DE9B3008CD445 /* macho_h_arm64 */,
 				DE3EC5FB240DE9BB008CD445 /* macho_h_x86_64 */,
-				DE3EC609240DEB51008CD445 /* macho_h_m68k */,
-				DE569B0A240E8339009E5579 /* macho_h_m88k */,
-				DE3EC60E240DEB56008CD445 /* macho_h_hppa */,
-				DE3EC616240DEB5A008CD445 /* macho_h_ppc */,
-				DE3EC61E240DEB5B008CD445 /* macho_h_i860 */,
-				DE3EC626240DEB5E008CD445 /* macho_h_sparc */,
 				DE3EC62E240DEB5E008CD445 /* dyld_h */,
 			);
 		};
@@ -4584,14 +4211,8 @@
 				DE000B3C21CDBA79000CEC53 /* get_end.c in Sources */,
 				DE000B3D21CDBA79000CEC53 /* getsecbyname.c in Sources */,
 				DE000B3E21CDBA79000CEC53 /* getsegbyname.c in Sources */,
-				DE000B3F21CDBA79000CEC53 /* hppa_swap.c in Sources */,
 				DE000B4021CDBA79000CEC53 /* i386_swap.c in Sources */,
-				DE000B4121CDBA79000CEC53 /* i860_swap.c in Sources */,
-				DE000B4221CDBA79000CEC53 /* m68k_swap.c in Sources */,
-				DE000B4321CDBA79000CEC53 /* m88k_swap.c in Sources */,
-				DE000B4421CDBA79000CEC53 /* ppc_swap.c in Sources */,
 				DE000B4521CDBA79000CEC53 /* slot_name.c in Sources */,
-				DE000B4621CDBA79000CEC53 /* sparc_swap.c in Sources */,
 				DE000B4721CDBA79000CEC53 /* swap.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4604,14 +4225,8 @@
 				DE000B4E21CDBE77000CEC53 /* get_end.c in Sources */,
 				DE000B4F21CDBE77000CEC53 /* getsecbyname.c in Sources */,
 				DE000B5021CDBE77000CEC53 /* getsegbyname.c in Sources */,
-				DE000B5121CDBE77000CEC53 /* hppa_swap.c in Sources */,
 				DE000B5221CDBE77000CEC53 /* i386_swap.c in Sources */,
-				DE000B5321CDBE77000CEC53 /* i860_swap.c in Sources */,
-				DE000B5421CDBE77000CEC53 /* m68k_swap.c in Sources */,
-				DE000B5521CDBE77000CEC53 /* m88k_swap.c in Sources */,
-				DE000B5621CDBE77000CEC53 /* ppc_swap.c in Sources */,
 				DE000B5721CDBE77000CEC53 /* slot_name.c in Sources */,
-				DE000B5821CDBE77000CEC53 /* sparc_swap.c in Sources */,
 				DE000B5921CDBE77000CEC53 /* swap.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4807,7 +4422,6 @@
 				DE09631121CD628900C4ADA1 /* arm_disasm.c in Sources */,
 				DE09631C21CD629A00C4ADA1 /* ofile_print.c in Sources */,
 				DE09632121CD629A00C4ADA1 /* print_objc2_64bit.c in Sources */,
-				DE09631D21CD629A00C4ADA1 /* ppc_disasm.c in Sources */,
 				DE09631E21CD629A00C4ADA1 /* print_bitcode.c in Sources */,
 				DE09631421CD629A00C4ADA1 /* dyld_bind_info.c in Sources */,
 				DE09631221CD629A00C4ADA1 /* arm64_disasm.c in Sources */,
@@ -4926,41 +4540,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		DE3EC607240DEB51008CD445 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DE3EC610240DEB56008CD445 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DE3EC618240DEB5A008CD445 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DE3EC620240DEB5B008CD445 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DE3EC628240DEB5E008CD445 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		DE3EC630240DEB5E008CD445 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -4973,13 +4552,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				DE4B2072232815EF00C8A22F /* depinfo.c in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DE569B08240E8339009E5579 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4999,14 +4571,8 @@
 				DE822A1221CDAB2B008CD150 /* get_end.c in Sources */,
 				DE822A1321CDAB2B008CD150 /* getsecbyname.c in Sources */,
 				DE822A1421CDAB2B008CD150 /* getsegbyname.c in Sources */,
-				DE822A1521CDAB2B008CD150 /* hppa_swap.c in Sources */,
 				DE822A1621CDAB2B008CD150 /* i386_swap.c in Sources */,
-				DE822A1721CDAB2B008CD150 /* i860_swap.c in Sources */,
-				DE822A1821CDAB2B008CD150 /* m68k_swap.c in Sources */,
-				DE822A1921CDAB2B008CD150 /* m88k_swap.c in Sources */,
-				DE822A1C21CDAB2B008CD150 /* ppc_swap.c in Sources */,
 				DE822A1E21CDAB2B008CD150 /* slot_name.c in Sources */,
-				DE822A1F21CDAB2B008CD150 /* sparc_swap.c in Sources */,
 				DE822A2021CDAB2B008CD150 /* swap.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5351,31 +4917,6 @@
 			target = DE3EC5F3240DE9B3008CD445 /* macho_h_arm64 */;
 			targetProxy = DE3EC644240DEC2B008CD445 /* PBXContainerItemProxy */;
 		};
-		DE3EC647240DEC2B008CD445 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = DE3EC60E240DEB56008CD445 /* macho_h_hppa */;
-			targetProxy = DE3EC646240DEC2B008CD445 /* PBXContainerItemProxy */;
-		};
-		DE3EC649240DEC2B008CD445 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = DE3EC61E240DEB5B008CD445 /* macho_h_i860 */;
-			targetProxy = DE3EC648240DEC2B008CD445 /* PBXContainerItemProxy */;
-		};
-		DE3EC64B240DEC2B008CD445 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = DE3EC609240DEB51008CD445 /* macho_h_m68k */;
-			targetProxy = DE3EC64A240DEC2B008CD445 /* PBXContainerItemProxy */;
-		};
-		DE3EC64D240DEC2B008CD445 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = DE3EC616240DEB5A008CD445 /* macho_h_ppc */;
-			targetProxy = DE3EC64C240DEC2B008CD445 /* PBXContainerItemProxy */;
-		};
-		DE3EC64F240DEC2B008CD445 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = DE3EC626240DEB5E008CD445 /* macho_h_sparc */;
-			targetProxy = DE3EC64E240DEC2B008CD445 /* PBXContainerItemProxy */;
-		};
 		DE3EC651240DEC2B008CD445 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = DE3EC5FB240DE9BB008CD445 /* macho_h_x86_64 */;
@@ -5385,11 +4926,6 @@
 			isa = PBXTargetDependency;
 			target = DE09612B21CC218E00C4ADA1 /* stuff */;
 			targetProxy = DE4B2077232818B500C8A22F /* PBXContainerItemProxy */;
-		};
-		DE569B12240E83A6009E5579 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = DE569B0A240E8339009E5579 /* macho_h_m88k */;
-			targetProxy = DE569B11240E83A6009E5579 /* PBXContainerItemProxy */;
 		};
 		DE5DC68A21F7F44200A7CA07 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -9280,371 +8816,6 @@
 			};
 			name = Release;
 		};
-		DE3EC60C240DEB51008CD445 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = DE3EC5D7240DDBF3008CD445 /* macho_headers.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		DE3EC60D240DEB51008CD445 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = DE3EC5D7240DDBF3008CD445 /* macho_headers.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
-		DE3EC613240DEB56008CD445 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = DE3EC5D7240DDBF3008CD445 /* macho_headers.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		DE3EC614240DEB56008CD445 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = DE3EC5D7240DDBF3008CD445 /* macho_headers.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
-		DE3EC61B240DEB5A008CD445 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = DE3EC5D7240DDBF3008CD445 /* macho_headers.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		DE3EC61C240DEB5A008CD445 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = DE3EC5D7240DDBF3008CD445 /* macho_headers.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
-		DE3EC623240DEB5B008CD445 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = DE3EC5D7240DDBF3008CD445 /* macho_headers.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		DE3EC624240DEB5B008CD445 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = DE3EC5D7240DDBF3008CD445 /* macho_headers.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
-		DE3EC62B240DEB5E008CD445 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = DE3EC5D7240DDBF3008CD445 /* macho_headers.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		DE3EC62C240DEB5E008CD445 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = DE3EC5D7240DDBF3008CD445 /* macho_headers.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
 		DE3EC633240DEB5E008CD445 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DE3EC5D7240DDBF3008CD445 /* macho_headers.xcconfig */;
@@ -9830,81 +9001,6 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-			};
-			name = Release;
-		};
-		DE569B0C240E8339009E5579 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = DE3EC5D7240DDBF3008CD445 /* macho_headers.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		DE569B0D240E8339009E5579 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = DE3EC5D7240DDBF3008CD445 /* macho_headers.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				ENABLE_NS_ASSERTIONS = NO;
-				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -10991,51 +10087,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DE3EC60B240DEB51008CD445 /* Build configuration list for PBXNativeTarget "macho_h_m68k" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				DE3EC60C240DEB51008CD445 /* Debug */,
-				DE3EC60D240DEB51008CD445 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		DE3EC612240DEB56008CD445 /* Build configuration list for PBXNativeTarget "macho_h_hppa" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				DE3EC613240DEB56008CD445 /* Debug */,
-				DE3EC614240DEB56008CD445 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		DE3EC61A240DEB5A008CD445 /* Build configuration list for PBXNativeTarget "macho_h_ppc" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				DE3EC61B240DEB5A008CD445 /* Debug */,
-				DE3EC61C240DEB5A008CD445 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		DE3EC622240DEB5B008CD445 /* Build configuration list for PBXNativeTarget "macho_h_i860" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				DE3EC623240DEB5B008CD445 /* Debug */,
-				DE3EC624240DEB5B008CD445 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		DE3EC62A240DEB5E008CD445 /* Build configuration list for PBXNativeTarget "macho_h_sparc" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				DE3EC62B240DEB5E008CD445 /* Debug */,
-				DE3EC62C240DEB5E008CD445 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		DE3EC632240DEB5E008CD445 /* Build configuration list for PBXNativeTarget "dyld_h" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -11050,15 +10101,6 @@
 			buildConfigurations = (
 				DE4B2074232815EF00C8A22F /* Debug */,
 				DE4B2075232815EF00C8A22F /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		DE569B0E240E8339009E5579 /* Build configuration list for PBXNativeTarget "macho_h_m88k" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				DE569B0C240E8339009E5579 /* Debug */,
-				DE569B0D240E8339009E5579 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

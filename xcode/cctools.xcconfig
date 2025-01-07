@@ -30,7 +30,7 @@
 //   apple_version.c file.
 //
 //   RC_ProjectSourceVersion is used to set libmacho's current version number.
-CURRENT_PROJECT_VERSION = ${RC_ProjectNameAndSourceVersion}
+CURRENT_PROJECT_VERSION = ${RC_ProjectName}-${RC_ProjectSourceVersion}
 RC_ProjectNameAndSourceVersion = cctools-localbuild
 RC_ProjectSourceVersion = 1
 

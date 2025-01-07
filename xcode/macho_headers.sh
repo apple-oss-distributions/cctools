@@ -54,6 +54,10 @@ then
     :
 else
     src=${SRCROOT}/include/modules
+    dst=${DSTROOT}/usr/include/
+    install -c -m 444 ${src}/MachO.modulemap ${dst}/MachO.modulemap
+    dst=${DSTROOT}/usr/local/include/
+    install -c -m 444 ${src}/MachO_Private.modulemap ${dst}/MachO_Private.modulemap
     dst=${DSTROOT}/usr/include/mach-o
     install -c -m 444 ${src}/mach-o.modulemap ${dst}/module.modulemap
     dst=${DSTROOT}/usr/local/include/mach-o

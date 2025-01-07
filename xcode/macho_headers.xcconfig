@@ -34,12 +34,6 @@ CCTB_HEADER_SUBDIR_macho_h_i386 = mach-o/i386
 CCTB_HEADER_SUBDIR_macho_h_arm = mach-o/arm
 CCTB_HEADER_SUBDIR_macho_h_arm64 = mach-o/arm64
 CCTB_HEADER_SUBDIR_macho_h_x86_64 = mach-o/x86_64
-CCTB_HEADER_SUBDIR_macho_h_m68k = mach-o/m68k
-CCTB_HEADER_SUBDIR_macho_h_m88k = mach-o/m88k
-CCTB_HEADER_SUBDIR_macho_h_hppa = mach-o/hppa
-CCTB_HEADER_SUBDIR_macho_h_ppc = mach-o/ppc
-CCTB_HEADER_SUBDIR_macho_h_i860 = mach-o/i860
-CCTB_HEADER_SUBDIR_macho_h_sparc = mach-o/sparc
 CCTB_HEADER_SUBDIR_dyld_h = dyld
 CCTB_HEADER_SUBDIR = ${CCTB_HEADER_SUBDIR_${TARGET_NAME}}
 

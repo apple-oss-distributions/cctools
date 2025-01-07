@@ -3854,6 +3854,10 @@ enum bool *nlist_outofsync_with_dyldinfo)
 			    sp->seen = TRUE;
 			    len = strlen(strings + n_strx) + 1;
 			    new_ext_strsize += len;
+			    if((n_type & N_TYPE) == N_INDR && n_value != 0 && n_value != n_strx){
+			        len = strlen(strings + n_value) + 1;
+			        new_ext_strsize += len;
+			    }
 			    if((n_type & N_TYPE) == N_UNDF ||
 			       (n_type & N_TYPE) == N_PBUD)
 				new_nundefsym++;
@@ -3900,7 +3904,7 @@ enum bool *nlist_outofsync_with_dyldinfo)
 		    n_desc & REFERENCED_DYNAMICALLY))){
 		    len = strlen(strings + n_strx) + 1;
 		    new_ext_strsize += len;
-		    if((n_type & N_TYPE) == N_INDR){
+		    if((n_type & N_TYPE) == N_INDR && n_value != 0 && n_value != n_strx){
 			len = strlen(strings + n_value) + 1;
 			new_ext_strsize += len;
 		    }
@@ -3925,7 +3929,7 @@ enum bool *nlist_outofsync_with_dyldinfo)
 		     object->mh->filetype == MH_OBJECT))){
 		    len = strlen(strings + n_strx) + 1;
 		    new_ext_strsize += len;
-		    if((n_type & N_TYPE) == N_INDR){
+		    if((n_type & N_TYPE) == N_INDR && n_value != 0 && n_value != n_strx){
 			len = strlen(strings + n_value) + 1;
 			new_ext_strsize += len;
 		    }
@@ -4287,6 +4291,8 @@ enum bool *nlist_outofsync_with_dyldinfo)
 			new_symbols[inew_syms] = symbols[i];
 		    else
 			new_symbols64[inew_syms] = symbols64[i];
+		    enum bool n_strx_is_n_value = (n_strx != 0) && (n_strx == n_value);
+		    char* pstrx = p;
 		    if(n_strx != 0){
 			strcpy(p, strings + n_strx);
 			if(object->mh != NULL)
@@ -4299,14 +4305,18 @@ enum bool *nlist_outofsync_with_dyldinfo)
 		    }
 		    if((n_type & N_TYPE) == N_INDR){
 			if(n_value != 0){
-			    strcpy(p, strings + n_value);
+			    uint32_t off;
+			    if ( n_strx_is_n_value )
+			      off = (uint32_t)(pstrx - new_strings);
+			    else {
+			      strcpy(p, strings + n_value);
+			      off = (uint32_t)(p - new_strings);
+			      p += strlen(p) + 1;
+			    }
 			    if(object->mh != NULL)
-				new_symbols[inew_syms].n_value =
-				    (uint32_t)(p - new_strings);
+				new_symbols[inew_syms].n_value = off;
 			    else
-				new_symbols64[inew_syms].n_value =
-				    (uint32_t)(p - new_strings);
-			    p += strlen(p) + 1;
+				new_symbols64[inew_syms].n_value = off;
 			}
 		    }
 		    inew_syms++;

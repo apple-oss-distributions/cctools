@@ -1,0 +1,13 @@
+module MachO_Private [system] {
+  umbrella "mach-o"
+
+  module dyld {
+    header "mach-o/dyld_priv.h"
+    export *
+  }
+
+  explicit module * { export * }
+}
+
+module MachO_Private_Placeholder_NewFile [system] {
+}
