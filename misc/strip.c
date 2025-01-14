@@ -3854,6 +3854,10 @@ enum bool *nlist_outofsync_with_dyldinfo)
 			    sp->seen = TRUE;
 			    len = strlen(strings + n_strx) + 1;
 			    new_ext_strsize += len;
+			    if ((n_type & N_TYPE) == N_INDR && n_value != 0) {
+				len = strlen(strings + n_value) + 1;
+				new_ext_strsize += len;
+			    }
 			    if((n_type & N_TYPE) == N_UNDF ||
 			       (n_type & N_TYPE) == N_PBUD)
 				new_nundefsym++;
