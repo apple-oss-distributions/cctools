@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 55;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -12,6 +12,7 @@
 			buildConfigurationList = DE09611521CC205D00C4ADA1 /* Build configuration list for PBXAggregateTarget "cctools" */;
 			buildPhases = (
 				F91F467A2A8AA4F60083C5E8 /* install `as` script tool */,
+				2DACCF8E2C8F651A00156635 /* CopyFiles */,
 			);
 			dependencies = (
 				DE09613621CC2BA200C4ADA1 /* PBXTargetDependency */,
@@ -170,6 +171,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		2DACCF8F2C8F652600156635 /* as.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = DE095F9321CC1ABB00C4ADA1 /* as.1 */; };
 		DE000B3B21CDBA79000CEC53 /* arch.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F6B21CC1ABB00C4ADA1 /* arch.c */; };
 		DE000B3C21CDBA79000CEC53 /* get_end.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F6C21CC1ABB00C4ADA1 /* get_end.c */; };
 		DE000B3D21CDBA79000CEC53 /* getsecbyname.c in Sources */ = {isa = PBXBuildFile; fileRef = DE095F7321CC1ABB00C4ADA1 /* getsecbyname.c */; };
@@ -915,9 +917,19 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		2DACCF8E2C8F651A00156635 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = "${CCTOOLS_USRMAN}/man1";
+			dstSubfolderSpec = 0;
+			files = (
+				2DACCF8F2C8F652600156635 /* as.1 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 		DE0961F821CC77FC00C4ADA1 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -927,7 +939,7 @@
 		};
 		DE09620921CC78BD00C4ADA1 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -937,7 +949,7 @@
 		};
 		DE09621821CC78F500C4ADA1 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -948,7 +960,7 @@
 		};
 		DE09622E21CC809300C4ADA1 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -959,7 +971,7 @@
 		};
 		DE09624221CD4F8F00C4ADA1 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -970,7 +982,7 @@
 		};
 		DE09625621CD500600C4ADA1 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -980,7 +992,7 @@
 		};
 		DE09626C21CD594000C4ADA1 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -990,7 +1002,7 @@
 		};
 		DE09627F21CD599B00C4ADA1 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -1000,7 +1012,7 @@
 		};
 		DE09628F21CD59E800C4ADA1 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -1010,7 +1022,7 @@
 		};
 		DE09629E21CD5A0400C4ADA1 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -1020,7 +1032,7 @@
 		};
 		DE0962AD21CD5A2300C4ADA1 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -1030,7 +1042,7 @@
 		};
 		DE0962BC21CD5A4900C4ADA1 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -1040,7 +1052,7 @@
 		};
 		DE0962CB21CD5A6100C4ADA1 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -1050,7 +1062,7 @@
 		};
 		DE0962E821CD618200C4ADA1 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -1060,7 +1072,7 @@
 		};
 		DE0962F721CD61A600C4ADA1 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -1070,7 +1082,7 @@
 		};
 		DE09630A21CD621600C4ADA1 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -1080,7 +1092,7 @@
 		};
 		DE09632E21CD640900C4ADA1 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -1091,7 +1103,7 @@
 		};
 		DE1F63EE21CD6511004CA2BF /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -1101,7 +1113,7 @@
 		};
 		DE1F641221CD65BC004CA2BF /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRLOCALMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -1111,7 +1123,7 @@
 		};
 		DE1F642321CD66BA004CA2BF /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRLOCALMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -1121,7 +1133,7 @@
 		};
 		DE1F643421CD66F5004CA2BF /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRLOCALMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -1131,7 +1143,7 @@
 		};
 		DE1F644321CD6715004CA2BF /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRLOCALMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -1141,7 +1153,7 @@
 		};
 		DE1F645221CD6734004CA2BF /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRLOCALMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -1150,7 +1162,7 @@
 		};
 		DE1F646121CD67E8004CA2BF /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_EFI}/share/man/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -1203,7 +1215,7 @@
 		};
 		DE1FBC06249BC8B300293E8D /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRLOCALMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -1213,7 +1225,7 @@
 		};
 		DE4B206D232815EF00C8A22F /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRLOCALMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -1223,7 +1235,7 @@
 		};
 		DE97E91621F3B72700C7947D /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = /usr/share/man/man1/;
 			dstSubfolderSpec = 0;
 			files = (
@@ -1242,7 +1254,7 @@
 		};
 		DEB23D8B21DEA11C007F9934 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -1252,7 +1264,7 @@
 		};
 		DEC00B62220012660079FFD3 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "${CCTOOLS_USRLOCALMAN}/man1";
 			dstSubfolderSpec = 0;
 			files = (
@@ -1274,12 +1286,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		8495D6B12C06966B00BCCAF9 /* MachO.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = MachO.modulemap; sourceTree = "<group>"; };
-		8495D6B22C06967400BCCAF9 /* MachO_Private.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = MachO_Private.modulemap; sourceTree = "<group>"; };
-		8495D6B32C0696D200BCCAF9 /* MachO.exclavecore.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = MachO.exclavecore.modulemap; sourceTree = "<group>"; };
-		8495D6B42C0696DF00BCCAF9 /* MachO.exclavekit.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = MachO.exclavekit.modulemap; sourceTree = "<group>"; };
-		84C55EF82C6D3B6800C4677E /* MachO_Private.exclavekit.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = MachO_Private.exclavekit.modulemap; sourceTree = "<group>"; };
-		84C55EF92C6D3B7E00C4677E /* mach-o.exclavekit.private.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = "mach-o.exclavekit.private.modulemap"; sourceTree = "<group>"; };
 		8C02F22A279AF7B300BF629A /* copy_macho_headers_standalone.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = copy_macho_headers_standalone.sh; sourceTree = "<group>"; };
 		DE000B3621CDB9DB000CEC53 /* libmacho.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmacho.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE000B3A21CDB9FE000CEC53 /* macho_static.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = macho_static.xcconfig; sourceTree = "<group>"; };
@@ -1378,7 +1384,7 @@
 		DE095F7B21CC1ABB00C4ADA1 /* seg_hack.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = seg_hack.c; sourceTree = "<group>"; };
 		DE095F7C21CC1ABB00C4ADA1 /* strings.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = strings.c; sourceTree = "<group>"; };
 		DE095F7D21CC1ABB00C4ADA1 /* strip.c */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = strip.c; sourceTree = "<group>"; tabWidth = 8; usesTabs = 1; };
-		DE095F7E21CC1ABB00C4ADA1 /* inout.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = inout.c; sourceTree = "<group>"; };
+		DE095F7E21CC1ABB00C4ADA1 /* inout.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = inout.c; sourceTree = "<group>"; tabWidth = 8; };
 		DE095F7F21CC1ABB00C4ADA1 /* nm.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = nm.c; sourceTree = "<group>"; };
 		DE095F8121CC1ABB00C4ADA1 /* libtool.c */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = libtool.c; sourceTree = "<group>"; tabWidth = 8; usesTabs = 1; };
 		DE095F8221CC1ABB00C4ADA1 /* check_dylib.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = check_dylib.c; sourceTree = "<group>"; };
@@ -1452,7 +1458,7 @@
 		DE095FCC21CC1ABB00C4ADA1 /* print.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = print.c; sourceTree = "<group>"; };
 		DE095FCD21CC1ABB00C4ADA1 /* dylib_roots.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = dylib_roots.c; sourceTree = "<group>"; };
 		DE095FCF21CC1ABB00C4ADA1 /* execute.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = execute.c; sourceTree = "<group>"; };
-		DE095FD021CC1ABB00C4ADA1 /* checkout.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = checkout.c; sourceTree = "<group>"; usesTabs = 1; };
+		DE095FD021CC1ABB00C4ADA1 /* checkout.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = checkout.c; sourceTree = "<group>"; tabWidth = 8; usesTabs = 1; };
 		DE095FD121CC1ABB00C4ADA1 /* fatal_arch.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = fatal_arch.c; sourceTree = "<group>"; };
 		DE095FD221CC1ABB00C4ADA1 /* lto.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = lto.c; sourceTree = "<group>"; usesTabs = 1; };
 		DE095FD321CC1ABB00C4ADA1 /* arch.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = arch.c; sourceTree = "<group>"; };
@@ -1474,7 +1480,7 @@
 		DE095FE421CC1ABB00C4ADA1 /* fatals.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = fatals.c; sourceTree = "<group>"; };
 		DE095FE521CC1ABB00C4ADA1 /* best_arch.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = best_arch.c; sourceTree = "<group>"; };
 		DE095FE621CC1ABB00C4ADA1 /* macosx_deployment_target.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = macosx_deployment_target.c; sourceTree = "<group>"; };
-		DE095FE721CC1ABB00C4ADA1 /* writeout.c */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = writeout.c; sourceTree = "<group>"; usesTabs = 1; };
+		DE095FE721CC1ABB00C4ADA1 /* writeout.c */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = writeout.c; sourceTree = "<group>"; tabWidth = 8; usesTabs = 1; };
 		DE095FE821CC1ABB00C4ADA1 /* arch_usage.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = arch_usage.c; sourceTree = "<group>"; };
 		DE095FE921CC1ABB00C4ADA1 /* llvm.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = llvm.c; sourceTree = "<group>"; };
 		DE095FEA21CC1ABB00C4ADA1 /* swap_headers.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = swap_headers.c; sourceTree = "<group>"; };
@@ -1542,7 +1548,7 @@
 		DE09604721CC1ABC00C4ADA1 /* version_number.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = version_number.h; sourceTree = "<group>"; };
 		DE09604821CC1ABC00C4ADA1 /* hppa.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hppa.h; sourceTree = "<group>"; };
 		DE09604921CC1ABC00C4ADA1 /* errors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = errors.h; sourceTree = "<group>"; };
-		DE09604A21CC1ABC00C4ADA1 /* breakout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = breakout.h; sourceTree = "<group>"; };
+		DE09604A21CC1ABC00C4ADA1 /* breakout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = breakout.h; sourceTree = "<group>"; tabWidth = 8; };
 		DE09604B21CC1ABC00C4ADA1 /* seg_addr_table.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = seg_addr_table.h; sourceTree = "<group>"; };
 		DE09604C21CC1ABC00C4ADA1 /* llvm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = llvm.h; sourceTree = "<group>"; };
 		DE09604D21CC1ABC00C4ADA1 /* macosx_deployment_target.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = macosx_deployment_target.h; sourceTree = "<group>"; };
@@ -1694,7 +1700,6 @@
 		DE8229F921CD8DD6008CD150 /* libmacho.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libmacho.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE8229FD21CD8DF7008CD150 /* macho_dynamic.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = macho_dynamic.xcconfig; sourceTree = "<group>"; };
 		DE822A0421CDA47C008CD150 /* macho_headers.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = macho_headers.sh; sourceTree = "<group>"; };
-		DE8CDDD329396A2700411D60 /* mach-o.exclavekit.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = "mach-o.exclavekit.modulemap"; sourceTree = "<group>"; };
 		DE97E91321F3B67600C7947D /* private_test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = private_test.xcconfig; sourceTree = "<group>"; };
 		DE97E91821F3B72700C7947D /* libstuff_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libstuff_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE97E91A21F3B72700C7947D /* libstuff_test.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = libstuff_test.c; sourceTree = "<group>"; };
@@ -1720,13 +1725,10 @@
 		DECA2C8222CCD2E1004DA27E /* align.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = align.h; sourceTree = "<group>"; };
 		DECA2C8322CCD348004DA27E /* align.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = align.c; sourceTree = "<group>"; };
 		DECA2C8622CCFCD7004DA27E /* align_test.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = align_test.c; sourceTree = "<group>"; };
-		DED5A8A22B06B7AD007CD300 /* mach-o.exclavecore.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = "mach-o.exclavecore.modulemap"; sourceTree = "<group>"; };
 		DEDFD7E22299C66D00230D7D /* test_main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = test_main.h; sourceTree = "<group>"; };
 		DEDFD7E32299C7F100230D7D /* rnd_test.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = rnd_test.c; sourceTree = "<group>"; };
 		DEEE93752453A6F500ADCA3D /* xcode.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = xcode.c; sourceTree = "<group>"; };
 		DEEE93772453A71C00ADCA3D /* xcode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = xcode.h; sourceTree = "<group>"; };
-		DEF3BC9723C68D8200EF319C /* mach-o.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = "mach-o.modulemap"; sourceTree = "<group>"; };
-		F378CA53255251EE00AC8F83 /* mach-o.private.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = "mach-o.private.modulemap"; sourceTree = "<group>"; };
 		F91F46792A8AA4930083C5E8 /* as */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = as; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -2614,7 +2616,6 @@
 				DE0960BA21CC1ABC00C4ADA1 /* llvm-c */,
 				DE09606F21CC1ABC00C4ADA1 /* mach */,
 				DE09608821CC1ABC00C4ADA1 /* mach-o */,
-				DEF3BC9623C68D8200EF319C /* modules */,
 				DE0960B621CC1ABC00C4ADA1 /* opcode */,
 				DE09603621CC1ABC00C4ADA1 /* standalone */,
 				DE09603D21CC1ABC00C4ADA1 /* stuff */,
@@ -3071,23 +3072,6 @@
 				DE66B7B82469D73D002B4EAD /* reset_load_command_pointers_test.c */,
 			);
 			path = libstuff_test;
-			sourceTree = "<group>";
-		};
-		DEF3BC9623C68D8200EF319C /* modules */ = {
-			isa = PBXGroup;
-			children = (
-				8495D6B32C0696D200BCCAF9 /* MachO.exclavecore.modulemap */,
-				DED5A8A22B06B7AD007CD300 /* mach-o.exclavecore.modulemap */,
-				8495D6B42C0696DF00BCCAF9 /* MachO.exclavekit.modulemap */,
-				DE8CDDD329396A2700411D60 /* mach-o.exclavekit.modulemap */,
-				8495D6B12C06966B00BCCAF9 /* MachO.modulemap */,
-				DEF3BC9723C68D8200EF319C /* mach-o.modulemap */,
-				84C55EF82C6D3B6800C4677E /* MachO_Private.exclavekit.modulemap */,
-				8495D6B22C06967400BCCAF9 /* MachO_Private.modulemap */,
-				84C55EF92C6D3B7E00C4677E /* mach-o.exclavekit.private.modulemap */,
-				F378CA53255251EE00AC8F83 /* mach-o.private.modulemap */,
-			);
-			path = modules;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -4065,7 +4049,7 @@
 		};
 		DE09623121CC809300C4ADA1 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 12;
+			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
@@ -4714,6 +4698,9 @@
 		};
 		DE09626421CD593000C4ADA1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
+			platformFilters = (
+				macos,
+			);
 			target = DE09623B21CD4F8F00C4ADA1 /* libtool */;
 			targetProxy = DE09626321CD593000C4ADA1 /* PBXContainerItemProxy */;
 		};
@@ -5347,18 +5334,24 @@
 		DE09611621CC205D00C4ADA1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "macosx linux kernelkit.iphoneos iphonesimulator iphoneos exclavekit.macosx exclavekit.iphoneos exclavecore.macosx exclavecore.iphoneos driverkit";
+				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Debug;
 		};
 		DE09611721CC205D00C4ADA1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "macosx linux kernelkit.iphoneos iphonesimulator iphoneos exclavekit.macosx exclavekit.iphoneos exclavecore.macosx exclavecore.iphoneos driverkit";
+				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Release;
 		};
@@ -6012,6 +6005,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -6029,8 +6023,18 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"include/**",
+					"${TOOLCHAIN_DIR}/usr/local/include",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"${inherited}",
+					"-L${TOOLCHAIN_DIR}/usr/local/lib",
+					"-lcctoolshelper",
+					"-lc++",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -6071,6 +6075,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -6082,7 +6087,17 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"include/**",
+					"${TOOLCHAIN_DIR}/usr/local/include",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				OTHER_LDFLAGS = (
+					"${inherited}",
+					"-L${TOOLCHAIN_DIR}/usr/local/lib",
+					"-lcctoolshelper",
+					"-lc++",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};

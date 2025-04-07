@@ -8,6 +8,3 @@ module MachO_Private [system] {
 
   explicit module * { export * }
 }
-
-module MachO_Private_Placeholder_NewFile [system] {
-}

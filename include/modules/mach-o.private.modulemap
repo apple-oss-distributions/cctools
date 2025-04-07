@@ -1,4 +1,0 @@
-extern module MachO_Private "../MachO_Private.modulemap"
-
-module MachO_Private_Placeholder_OldFile [system] {
-}

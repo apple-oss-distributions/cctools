@@ -27,11 +27,6 @@ elif [ "${SYSTEM_PREFIX}" == "/System/ExclaveKit" ]; then
     cp ${SRCROOT}/include/mach-o/nlist.h ${DSTROOT}${SYSTEM_PREFIX}/usr/include/mach-o
     cp ${SRCROOT}/include/standalone/getsect.h ${DSTROOT}${SYSTEM_PREFIX}/usr/include/mach-o
 
-    cp ${SRCROOT}/include/modules/MachO.exclavekit.modulemap ${DSTROOT}${SYSTEM_PREFIX}/usr/include/MachO.modulemap
-    cp ${SRCROOT}/include/modules/MachO_Private.exclavekit.modulemap ${DSTROOT}${SYSTEM_PREFIX}/usr/local/include/MachO_Private.modulemap
-    cp ${SRCROOT}/include/modules/mach-o.exclavekit.modulemap ${DSTROOT}${SYSTEM_PREFIX}/usr/include/mach-o/module.modulemap
-    cp ${SRCROOT}/include/modules/mach-o.exclavekit.private.modulemap ${DSTROOT}${SYSTEM_PREFIX}/usr/local/include/mach-o/module.modulemap
-
 elif [ "${SYSTEM_PREFIX}" == "/System/ExclaveCore" ]; then
     mkdir -p ${DSTROOT}${SYSTEM_PREFIX}/usr/include/mach-o
 
@@ -39,7 +34,4 @@ elif [ "${SYSTEM_PREFIX}" == "/System/ExclaveCore" ]; then
     cp ${SRCROOT}/include/mach-o/loader.h ${DSTROOT}${SYSTEM_PREFIX}/usr/include/mach-o
     cp ${SRCROOT}/include/mach-o/nlist.h ${DSTROOT}${SYSTEM_PREFIX}/usr/include/mach-o
     cp ${SRCROOT}/include/standalone/getsect.h ${DSTROOT}${SYSTEM_PREFIX}/usr/include/mach-o
-
-    cp ${SRCROOT}/include/modules/MachO.exclavecore.modulemap ${DSTROOT}${SYSTEM_PREFIX}/usr/include/MachO.modulemap
-    cp ${SRCROOT}/include/modules/mach-o.exclavecore.modulemap ${DSTROOT}${SYSTEM_PREFIX}/usr/include/mach-o/module.modulemap
 fi

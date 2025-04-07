@@ -2,6 +2,3 @@ module MachO [system] {
   umbrella "mach-o"
   module * { export * }
 }
-
-module MachO_Placeholder_NewFile [system] {
-}

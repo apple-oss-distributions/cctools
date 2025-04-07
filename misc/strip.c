@@ -49,7 +49,7 @@
 #include "stuff/write64.h"
 #include "stuff/diagnostics.h"
 #ifdef TRIE_SUPPORT
-#include <mach-o/prune_trie.h>
+#include <mach-o/cctools_helpers.h>
 #endif /* TRIE_SUPPORT */
 
 /* These are set from the command line arguments */
@@ -1571,6 +1571,27 @@ struct object *object)
 		    object->dyld_exports_trie->datasize;
 	    }
 
+	    if(object->function_variants != NULL) {
+		object->input_sym_info_size +=
+		    object->function_variants->datasize;
+		object->output_sym_info_size +=
+		    object->function_variants->datasize;
+		object->output_function_variants_data =
+		    object->object_addr + object->function_variants->dataoff;
+		object->output_function_variants_data_size =
+		    object->function_variants->datasize;
+	    }
+	    if(object->function_variant_fixups != NULL) {
+		object->input_sym_info_size +=
+		    object->function_variant_fixups->datasize;
+		object->output_sym_info_size +=
+		    object->function_variant_fixups->datasize;
+		object->output_function_variant_fixups_data =
+		    object->object_addr + object->function_variant_fixups->dataoff;
+		object->output_function_variant_fixups_data_size =
+		    object->function_variant_fixups->datasize;
+	    }
+
 	    if(object->dyst != NULL){
 #ifndef NMEDIT
 		/*
@@ -1957,6 +1978,16 @@ struct object *object)
 		    offset += object->dyld_exports_trie->datasize;
 		}
 		
+		if(object->function_variants != NULL){
+		    object->function_variants->dataoff = offset;
+		    offset += object->function_variants->datasize;
+		}
+
+		if(object->function_variant_fixups != NULL){
+		    object->function_variant_fixups->dataoff = offset;
+		    offset += object->function_variant_fixups->datasize;
+		}
+
 		if(object->dyst->nlocrel != 0){
 		    object->output_loc_relocs = (struct relocation_info *)
 			(object->object_addr + object->dyst->locreloff);

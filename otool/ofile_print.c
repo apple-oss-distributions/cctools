@@ -2367,6 +2367,7 @@ enum bool very_verbose)
     struct uuid_command uuid;
     struct linkedit_data_command ld;
     struct rpath_command rpath;
+    struct target_triple_command triple;
     struct encryption_info_command encrypt;
     struct encryption_info_command_64 encrypt64;
     struct linker_option_command lo;
@@ -2713,6 +2714,8 @@ enum bool very_verbose)
 	    case LC_LINKER_OPTIMIZATION_HINT:
 	    case LC_DYLD_EXPORTS_TRIE:
 	    case LC_DYLD_CHAINED_FIXUPS:
+	    case LC_FUNCTION_VARIANTS:
+	    case LC_FUNCTION_VARIANT_FIXUPS:
 		memset((char *)&ld, '\0', sizeof(struct linkedit_data_command));
 		size = left < sizeof(struct linkedit_data_command) ?
 		       left : sizeof(struct linkedit_data_command);
@@ -2731,6 +2734,14 @@ enum bool very_verbose)
 		    swap_rpath_command(&rpath, host_byte_sex);
 		print_rpath_command(&rpath, lc);
 		break;
+
+            case LC_TARGET_TRIPLE:
+                memset((char *)&triple, '\0', sizeof(struct target_triple_command));
+                size = left < sizeof(struct target_triple_command) ?
+                       left : sizeof(struct target_triple_command);
+                memcpy((char *)&triple, (char *)lc, size);
+                print_target_triple_command(&triple, lc);
+                break;
 
 	    case LC_ENCRYPTION_INFO:
 		memset((char *)&encrypt, '\0',
@@ -4081,6 +4092,10 @@ uint64_t object_size)
 	    printf("      cmd LC_DYLD_EXPORTS_TRIE\n");
         else if(ld->cmd == LC_DYLD_CHAINED_FIXUPS)
 	    printf("      cmd LC_DYLD_CHAINED_FIXUPS\n");
+        else if(ld->cmd == LC_FUNCTION_VARIANTS)
+            printf("      cmd LC_FUNCTION_VARIANTS\n");
+        else if(ld->cmd == LC_FUNCTION_VARIANT_FIXUPS)
+            printf("      cmd LC_FUNCTION_VARIANT_FIXUPS\n");
 	else
 	    printf("      cmd %u (?)\n", ld->cmd);
 	printf("  cmdsize %u", ld->cmdsize);
@@ -4184,11 +4199,47 @@ enum bool verbose)
 	    case PLATFORM_DRIVERKIT:
 		printf("DRIVERKIT\n");
 		break;
+	    case PLATFORM_VISIONOS:
+		printf("XROS\n");
+		break;
+	    case PLATFORM_VISIONOSSIMULATOR:
+		printf("XROSSIMULATOR\n");
+		break;
 	    case PLATFORM_FIRMWARE:
 		printf("FIRMWARE\n");
 		break;
 	    case PLATFORM_SEPOS:
 		printf("SEPOS\n");
+		break;
+	    case PLATFORM_MACOS_EXCLAVECORE:
+		printf("MACOS_EXCLAVECORE\n");
+		break;
+	    case PLATFORM_MACOS_EXCLAVEKIT:
+		printf("MACOS_EXCLAVEKIT\n");
+		break;
+	    case PLATFORM_IOS_EXCLAVECORE:
+		printf("IOS_EXCLAVECORE\n");
+		break;
+	    case PLATFORM_IOS_EXCLAVEKIT:
+		printf("IOS_EXCLAVEKIT\n");
+		break;
+	    case PLATFORM_TVOS_EXCLAVECORE:
+		printf("TVOS_EXCLAVECORE\n");
+		break;
+	    case PLATFORM_TVOS_EXCLAVEKIT:
+		printf("TVOS_EXCLAVEKIT\n");
+		break;
+	    case PLATFORM_WATCHOS_EXCLAVECORE:
+		printf("WATCHOS_EXCLAVECORE\n");
+		break;
+	    case PLATFORM_WATCHOS_EXCLAVEKIT:
+		printf("WATCHOS_EXCLAVEKIT\n");
+		break;
+	    case PLATFORM_VISIONOS_EXCLAVECORE:
+		printf("VISIONOS_EXCLAVECORE\n");
+		break;
+	    case PLATFORM_VISIONOS_EXCLAVEKIT:
+		printf("VISIONOS_EXCLAVEKIT\n");
 		break;
 
 
@@ -4400,6 +4451,33 @@ struct load_command *lc)
 	else{
 	    printf("         path ?(bad offset %u)\n", rpath->path.offset);
 	}
+}
+
+
+/*
+ * print an LC_TARGET_TRIPLE command.  The target_triple_command structure specified must be
+ * aligned correctly and in the host byte sex.
+ */
+void
+print_target_triple_command(
+struct target_triple_command *triple,
+struct load_command *lc)
+{
+    char *p;
+
+    printf("          cmd LC_TARGET_TRIPLE\n");
+    printf("      cmdsize %u", triple->cmdsize);
+    if(triple->cmdsize < sizeof(struct target_triple_command))
+        printf(" Incorrect size\n");
+    else
+        printf("\n");
+    if(triple->triple.offset < triple->cmdsize){
+        p = (char *)lc + triple->triple.offset;
+        printf("       triple %s (offset %u)\n", p, triple->triple.offset);
+    }
+    else{
+        printf("       triple ?(bad offset %u)\n", triple->triple.offset);
+   }
 }
 
 /*
