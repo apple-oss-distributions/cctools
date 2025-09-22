@@ -2177,6 +2177,15 @@ cpu_subtype_t cpusubtype)
 	    case CPU_SUBTYPE_ARM_V7EM:
 		printf("armv7em");
 		break;
+	    case CPU_SUBTYPE_ARM_V8M_MAIN:
+		printf("armv8m.main\n");
+		break;
+	    case CPU_SUBTYPE_ARM_V8M_BASE:
+		printf("armv8m.base\n");
+		break;
+	    case CPU_SUBTYPE_ARM_V8_1M_MAIN:
+		printf("armv8.1m.main\n");
+		break;
 	    default:
 		goto print_arch_unknown;
 	    }
@@ -2494,6 +2503,18 @@ cpu_subtype_t cpusubtype)
 	    case CPU_SUBTYPE_ARM_V7EM:
 		printf("    cputype CPU_TYPE_ARM\n"
 		       "    cpusubtype CPU_SUBTYPE_ARM_V7EM\n");
+		break;
+	    case CPU_SUBTYPE_ARM_V8M_MAIN:
+		printf("    cputype CPU_TYPE_ARM\n"
+		       "    cpusubtype CPU_SUBTYPE_ARM_V8M_MAIN\n");
+		break;
+	    case CPU_SUBTYPE_ARM_V8M_BASE:
+		printf("    cputype CPU_TYPE_ARM\n"
+		       "    cpusubtype CPU_SUBTYPE_ARM_V8M_BASE\n");
+		break;
+	    case CPU_SUBTYPE_ARM_V8_1M_MAIN:
+		printf("    cputype CPU_TYPE_ARM\n"
+		       "    cpusubtype CPU_SUBTYPE_ARM_V8_1M_MAIN\n");
 		break;
 	    case CPU_SUBTYPE_ARM_ALL:
 		printf("    cputype CPU_TYPE_ARM\n"

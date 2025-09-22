@@ -168,6 +168,9 @@ static void test_get_arch_from_flag(void)
   check_arch_flag("armv7k", CPU_TYPE_ARM,     CPU_SUBTYPE_ARM_V7K);
   check_arch_flag("armv7m", CPU_TYPE_ARM,     CPU_SUBTYPE_ARM_V7M);
   check_arch_flag("armv7em", CPU_TYPE_ARM,    CPU_SUBTYPE_ARM_V7EM);
+  check_arch_flag("armv8m.main", CPU_TYPE_ARM,    CPU_SUBTYPE_ARM_V8M_MAIN);
+  check_arch_flag("armv8m.base", CPU_TYPE_ARM,    CPU_SUBTYPE_ARM_V8M_BASE);
+  check_arch_flag("armv8.1m.main", CPU_TYPE_ARM,  CPU_SUBTYPE_ARM_V8_1M_MAIN);
   check_arch_flag("arm64v8", CPU_TYPE_ARM64,   CPU_SUBTYPE_ARM64_V8);
   check_arch_flag("unknown", 0, 0);
 }
@@ -232,6 +235,9 @@ static void test_get_arch_name_from_types(void)
   check_arch_name("armv7k", CPU_TYPE_ARM,     CPU_SUBTYPE_ARM_V7K);
   check_arch_name("armv7m", CPU_TYPE_ARM,     CPU_SUBTYPE_ARM_V7M);
   check_arch_name("armv7em", CPU_TYPE_ARM,    CPU_SUBTYPE_ARM_V7EM);
+  check_arch_name("armv8m.main", CPU_TYPE_ARM,    CPU_SUBTYPE_ARM_V8M_MAIN);
+  check_arch_name("armv8m.base", CPU_TYPE_ARM,    CPU_SUBTYPE_ARM_V8M_BASE);
+  check_arch_name("armv8.1m.main", CPU_TYPE_ARM,    CPU_SUBTYPE_ARM_V8_1M_MAIN);
   check_arch_name("arm64v8", CPU_TYPE_ARM64,   CPU_SUBTYPE_ARM64_V8);
   check_arch_name("cputype 0 cpusubtype 0", 0, 0);
 }
@@ -296,6 +302,9 @@ static void test_get_arch_name_if_known(void)
   check_arch_if_known("armv7k", CPU_TYPE_ARM,     CPU_SUBTYPE_ARM_V7K);
   check_arch_if_known("armv7m", CPU_TYPE_ARM,     CPU_SUBTYPE_ARM_V7M);
   check_arch_if_known("armv7em", CPU_TYPE_ARM,    CPU_SUBTYPE_ARM_V7EM);
+  check_arch_if_known("armv8m.main", CPU_TYPE_ARM,    CPU_SUBTYPE_ARM_V8M_MAIN);
+  check_arch_if_known("armv8m.base", CPU_TYPE_ARM,    CPU_SUBTYPE_ARM_V8M_BASE);
+  check_arch_if_known("armv8.1m.main", CPU_TYPE_ARM,    CPU_SUBTYPE_ARM_V8_1M_MAIN);
   check_arch_if_known("arm64v8", CPU_TYPE_ARM64,   CPU_SUBTYPE_ARM64_V8);
   check_arch_if_known(NULL, 0, 0);
 }
