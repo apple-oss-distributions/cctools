@@ -43,13 +43,17 @@ HEADER_SEARCH_PATHS = ${CCTB_DRIVERKIT_HEADERS_INCLUDE_PATH} ${inherited}
 // to link against system_sim_kernel instead of system_kernel when building
 // for simulator runtimes.
 LIBRARY_SEARCH_PATHS = ${SDKROOT}${CCTOOLS_LOCATION}/usr/lib/system
-LIBMACHO_DYLIBS = -L${SDKROOT}${SYSTEM_PREFIX}/usr/lib/system -llibc
-LIBMACHO_DYLIBS[sdk=driverkit*] = -lcompiler_rt -ldyld -lsystem_c
-LIBMACHO_SYSTEM_KERNEL =
-LIBMACHO_SYSTEM_KERNEL[sdk=driverkit*] = -lsystem_kernel
+LIBMACHO_DYLIBS = -L${SDKROOT}${SYSTEM_PREFIX}/usr/lib/system 
+LIBMACHO_DYLIBS[sdk=exclavekit*] = $(inherited) -Wl,-upward-llibc -Wl,-upward-lsystem_malloc
+LIBMACHO_DYLIBS[sdk=driverkit*]  = $(inherited) -Wl,-upward-lcompiler_rt -Wl,-upward-ldyld -Wl,-upward-lsystem_c
 
-OTHER_LDFLAGS = -nodefaultlibs -umbrella System -Wl,-application_extension ${LIBMACHO_DYLIBS} ${LIBMACHO_SYSTEM_KERNEL}
-OTHER_LDFLAGS[sdk=exclavekit*] = -lsystem_malloc ${inherited}
+// clang driver force links system_pthread for System umbrella frameworks on x86
+LIBMACHO_DYLIBS[sdk=driverkit*][arch=x86_64] = $(inherited) -Wl,-upward-lsystem_pthread
+
+LIBMACHO_SYSTEM_KERNEL =
+LIBMACHO_SYSTEM_KERNEL[sdk=driverkit*] = -Wl,-upward-lsystem_kernel
+
+OTHER_LDFLAGS = -nodefaultlibs -umbrella System -Wl,-application_extension ${LIBMACHO_DYLIBS} ${LIBMACHO_SYSTEM_KERNEL} -Wl,-ignore_auto_link
 
 // The libmacho dynamic library target can only install a subset of the mach-o
 // header files, due to Xcode's limitation that there can be only one public

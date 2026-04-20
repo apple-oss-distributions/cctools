@@ -8,9 +8,6 @@
 // Configuration settings file format documentation can be found at:
 // https://help.apple.com/xcode/#/dev745c5c974
 
-// libmacho builds the standard set of variants
-BUILD_VARIANTS = normal debug profile
-
 // We need to use the macosx.internal SDKROOT in order for TAPI to work at all.
 SDKROOT=macosx.internal
 
@@ -40,7 +37,9 @@ DYLIB_CURRENT_VERSION = ${CCTB_VERSION}
 // One wrinkle is, when building against any simulator SDK, libmacho needs to
 // link against libsystem_sim_kernel instead of libsystem_kernel.
 LIBRARY_SEARCH_PATHS = ${SDKROOT}/usr/lib/system
-LIBMACHO_DYLIBS = -lcompiler_rt -lsystem_malloc -ldyld -lsystem_c
+LIBMACHO_DYLIBS = -Wl,-upward-lcompiler_rt -Wl,-upward-lsystem_malloc -ldyld -Wl,-upward-lsystem_c -Wl,-ignore_auto_link
+// clang driver force links system_pthread for System umbrella frameworks on x86
+LIBMACHO_DYLIBS[arch=x86_64] = $(inherited) -Wl,-upward-lsystem_pthread
 LIBMACHO_SYSTEM_KERNEL = system_kernel
 LIBMACHO_SYSTEM_KERNEL[sdk=*simulator*] = system_sim_kernel
 
@@ -48,7 +47,7 @@ LIBMACHO_SYSTEM_KERNEL[sdk=*simulator*] = system_sim_kernel
 // Do not zipper i386
 LIBMACHO_ZIPPER_LD_FLAGS[arch=i386] =
 
-OTHER_LDFLAGS = -nodefaultlibs -umbrella System -Wl,-application_extension ${LIBMACHO_DYLIBS} -l${LIBMACHO_SYSTEM_KERNEL} ${LIBMACHO_ZIPPER_LD_FLAGS}
+OTHER_LDFLAGS = -nodefaultlibs -umbrella System -Wl,-application_extension ${LIBMACHO_DYLIBS} -Wl,-upward-l${LIBMACHO_SYSTEM_KERNEL} ${LIBMACHO_ZIPPER_LD_FLAGS}
 
 // The libmacho dynamic library target can only install a subset of the mach-o
 // header files, due to Xcode's limitation that there can be only one public
